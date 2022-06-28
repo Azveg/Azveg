@@ -1,0 +1,14 @@
+name: "best-practices-it"
+output_dir: "."
+navbar:
+  title: "Best Practices IT"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "About Me"
+      href: about.html
+    - text: "Markdown"
+      href: Markdown.html
+output:
+  html_document:
+    theme: journal
