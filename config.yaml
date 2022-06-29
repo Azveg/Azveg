@@ -1,4 +1,4 @@
-theme: "github-style"
+theme: "https://bestpractices.netlify.app/"
 baseURL: http://example.org/
 languageCode: en-us
 title: My New Hugo Site
