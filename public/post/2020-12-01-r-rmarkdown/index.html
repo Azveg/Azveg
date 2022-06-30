@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <script type="application/javascript" src='https://bestpractices.netlify.app/js/theme-mode.js'></script>
+    <link rel="stylesheet" href='https://bestpractices.netlify.app/css/frameworks.min.css' />
+    <link rel="stylesheet" href='https://bestpractices.netlify.app/css/github.min.css' />
+    <link rel="stylesheet" href='https://bestpractices.netlify.app/css/github-style.css' />
+    <link rel="stylesheet" href='https://bestpractices.netlify.app/css/light.css' />
+    <link rel="stylesheet" href='https://bestpractices.netlify.app/css/dark.css' />
+    <link rel="stylesheet" href='https://bestpractices.netlify.app/css/syntax.css' />
+    <title>CheatSheet dplyr - Best Practices IT</title>
+    
+    <link rel="icon" type="image/x-icon" href='https://bestpractices.netlify.app/images/favicon.ico'>
+    
+    <meta name="theme-color" content="#1e2327">
+
+    
+    <meta name="description"
+  content="Разбор популярных методов обработки данных пакета dplyr. Выборка, фильтрация, сортировка, агрегатные и оконные функции, а также соединение наборов данных" />
+<meta name="keywords"
+  content='' />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://bestpractices.netlify.app/post/2020-12-01-r-rmarkdown/" />
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="CheatSheet dplyr - Best Practices IT" />
+<meta name="twitter:description"
+  content="Разбор популярных методов обработки данных пакета dplyr. Выборка, фильтрация, сортировка, агрегатные и оконные функции, а также соединение наборов данных" />
+<meta name="twitter:site" content="https://bestpractices.netlify.app/" />
+<meta name="twitter:creator" content="[Best Practices IT](https://t.me/best_practices_it)" />
+<meta name="twitter:image"
+  content="https://bestpractices.netlify.app/">
+
+
+<meta property="og:type" content="article" />
+<meta property="og:title" content="CheatSheet dplyr - Best Practices IT">
+<meta property="og:description"
+  content="Разбор популярных методов обработки данных пакета dplyr. Выборка, фильтрация, сортировка, агрегатные и оконные функции, а также соединение наборов данных" />
+<meta property="og:url" content="https://bestpractices.netlify.app/post/2020-12-01-r-rmarkdown/" />
+<meta property="og:site_name" content="CheatSheet dplyr" />
+<meta property="og:image"
+  content="https://bestpractices.netlify.app/">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+<meta property="article:published_time" content="2020-12-01 21:13:14 -0500 -0500" />
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body>
+  <div style="position: relative">
+  <header class="Header js-details-container Details px-3 px-md-4 px-lg-5 flex-wrap flex-md-nowrap open Details--on">
+    <div class="Header-item mobile-none" style="margin-top: -4px; margin-bottom: -4px;">
+      <a class="Header-link" href="https://bestpractices.netlify.app/">
+        <svg class="octicon" height="32" viewBox="0 0 16 16" version="1.1" width="32">
+          <path fill-rule="evenodd"
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+          </path>
+        </svg>
+      </a>
+    </div>
+    <div class="Header-item d-md-none">
+      <button class="Header-link btn-link js-details-target" type="button"
+        onclick="document.querySelector('#header-search').style.display = document.querySelector('#header-search').style.display == 'none'? 'block': 'none'">
+        <svg height="24" class="octicon octicon-three-bars" viewBox="0 0 16 16" version="1.1" width="24">
+          <path fill-rule="evenodd"
+            d="M1 2.75A.75.75 0 011.75 2h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 2.75zm0 5A.75.75 0 011.75 7h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 7.75zM1.75 12a.75.75 0 100 1.5h12.5a.75.75 0 100-1.5H1.75z">
+          </path>
+        </svg>
+      </button>
+    </div>
+    <div style="display: none;" id="header-search"
+      class="Header-item Header-item--full flex-column flex-md-row width-full flex-order-2 flex-md-order-none mr-0 mr-md-3 mt-3 mt-md-0 Details-content--hidden-not-important d-md-flex">
+      <div
+        class="Header-search header-search flex-auto js-site-search position-relative flex-self-stretch flex-md-self-auto mb-3 mb-md-0 mr-0 mr-md-3 scoped-search site-scoped-search js-jump-to">
+        <div class="position-relative">
+          <form target="_blank" action="https://www.google.com/search" accept-charset="UTF-8" method="get"
+            autocomplete="off">
+            <label
+              class="Header-search-label form-control input-sm header-search-wrapper p-0 js-chromeless-input-container header-search-wrapper-jump-to position-relative d-flex flex-justify-between flex-items-center">
+              <input type="text"
+                class="Header-search-input form-control input-sm header-search-input jump-to-field js-jump-to-field js-site-search-focus js-site-search-field is-clearable"
+                name="q" value="" placeholder="Search" autocomplete="off">
+              <input type="hidden" name="q" value="site:https://bestpractices.netlify.app/">
+            </label>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="Header-item Header-item--full flex-justify-center d-md-none position-relative">
+      <a class="Header-link " href="https://bestpractices.netlify.app/">
+        <svg class="octicon octicon-mark-github v-align-middle" height="32" viewBox="0 0 16 16" version="1.1"
+          width="32">
+          <path fill-rule="evenodd"
+            d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+          </path>
+        </svg>
+      </a>
+    </div>
+    <div class="Header-item" style="margin-right: 0;">
+      <a href="javascript:void(0)" class="Header-link no-select" onclick="switchTheme()">
+        <svg style="fill: var(--color-profile-color-modes-toggle-moon);" class="no-select" viewBox="0 0 16 16"
+          version="1.1" width="16" height="16">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M4.52208 7.71754C7.5782 7.71754 10.0557 5.24006 10.0557 2.18394C10.0557 1.93498 10.0392 1.68986 10.0074 1.44961C9.95801 1.07727 10.3495 0.771159 10.6474 0.99992C12.1153 2.12716 13.0615 3.89999 13.0615 5.89383C13.0615 9.29958 10.3006 12.0605 6.89485 12.0605C3.95334 12.0605 1.49286 10.001 0.876728 7.24527C0.794841 6.87902 1.23668 6.65289 1.55321 6.85451C2.41106 7.40095 3.4296 7.71754 4.52208 7.71754Z">
+          </path>
+        </svg>
+      </a>
+    </div>
+  </header>
+</div>
+  
+<div>
+  <main>
+    <div class="gisthead pagehead bg-gray-light pb-0 pt-3 mb-4">
+      <div class="px-0">
+        <div class="mb-3 d-flex px-3 px-md-3 px-lg-5">
+          <div class="flex-auto min-width-0 width-fit mr-3">
+            <div class="d-flex">
+              <div class="d-none d-md-block">
+                <a class="avatar mr-2 flex-shrink-0" href="https://bestpractices.netlify.app/">
+                  <img class=" avatar-user"
+                    src="https://bestpractices.netlify.app/images/avatar.png"
+                    width="32" height="32"></a>
+              </div>
+              <div class="d-flex flex-column">
+                <h1 class="break-word f3 text-normal mb-md-0 mb-1">
+                  <span class="author">
+                    <a href="https://bestpractices.netlify.app/"></a></span><span
+                    class="path-divider">/</span><strong class="css-truncate-target mr-1" style="max-width: 410px"><a
+                      href="https://bestpractices.netlify.app/post/2020-12-01-r-rmarkdown/">CheatSheet dplyr</a></strong>
+                </h1>
+                <div class="note m-0">
+                  Created <relative-time datetime="Tue, 01 Dec 2020 21:13:14 -0500"
+                    class="no-wrap">
+                    Tue, 01 Dec 2020 21:13:14 -0500</relative-time>
+
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-lg px-3 new-discussion-timeline">
+      <div class="repository-content gist-content">
+        <div>
+          <div class="js-gist-file-update-container js-task-list-container file-box">
+            <div id="file-pytest" class="file my-2">
+              <div id="post-header" class="file-header d-flex flex-md-items-center flex-items-start sticky-header" style="z-index: 2">
+                <div class="file-info d-flex flex-md-items-center flex-items-start flex-order-1 flex-auto">
+                  <div class="text-mono f6 flex-auto pr-3 flex-order-2 flex-md-order-1 mt-2 mt-md-0">
+                    
+                    <summary id="toc-toggle" onclick="clickToc()" class="btn btn-octicon m-0 mr-2 p-2">
+                      <svg aria-hidden="true" viewBox="0 0 16 16" height="16" width="16" class="octicon octicon-list-unordered">
+                        <path fill-rule="evenodd" d="M2 4a1 1 0 100-2 1 1 0 000 2zm3.75-1.5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zM3 8a1 1 0 11-2 0 1 1 0 012 0zm-1 6a1 1 0 100-2 1 1 0 000 2z"></path>
+                      </svg>
+                    </summary>
+                    <details-menu class="SelectMenu" id="toc-details" style="display: none;">
+                      <div class="SelectMenu-modal rounded-3 mt-1" style="max-height: 340px;">
+                        <div class="SelectMenu-list SelectMenu-list--borderless p-2" style="overscroll-behavior: contain;" id="toc-list">
+                        </div>
+                      </div>
+                    </details-menu>
+                      4691 Words
+                    
+
+                  </div>
+                  <div class="file-actions flex-order-2 pt-0">
+                    
+                    
+                    <a class="muted-link mr-3" href="/tags/r-markdown">
+                      <svg class="octicon octicon-tag" viewBox="0 0 16 16" version="1.1" width="16" height="16">
+                        <path fill-rule="evenodd"
+                          d="M2.5 7.775V2.75a.25.25 0 01.25-.25h5.025a.25.25 0 01.177.073l6.25 6.25a.25.25 0 010 .354l-5.025 5.025a.25.25 0 01-.354 0l-6.25-6.25a.25.25 0 01-.073-.177zm-1.5 0V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 010 2.474l-5.026 5.026a1.75 1.75 0 01-2.474 0l-6.25-6.25A1.75 1.75 0 011 7.775zM6 5a1 1 0 100 2 1 1 0 000-2z">
+                        </path>
+                      </svg>
+                      R Markdown
+                    </a>
+                    
+                    <a class="muted-link mr-3" href="/tags/dplyr">
+                      <svg class="octicon octicon-tag" viewBox="0 0 16 16" version="1.1" width="16" height="16">
+                        <path fill-rule="evenodd"
+                          d="M2.5 7.775V2.75a.25.25 0 01.25-.25h5.025a.25.25 0 01.177.073l6.25 6.25a.25.25 0 010 .354l-5.025 5.025a.25.25 0 01-.354 0l-6.25-6.25a.25.25 0 01-.073-.177zm-1.5 0V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 010 2.474l-5.026 5.026a1.75 1.75 0 01-2.474 0l-6.25-6.25A1.75 1.75 0 011 7.775zM6 5a1 1 0 100 2 1 1 0 000-2z">
+                        </path>
+                      </svg>
+                      dplyr
+                    </a>
+                    
+                    
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="Box-body px-5 pb-5" style="z-index: 1">
+                <article class="markdown-body entry-content container-lg">
+
+
+<p>Выполним установку пакета dplyr и загрузим набор данных starwars</p>
+<div class="code">
+<p>library(dplyr) <br>
+starwars &lt;- dplyr::starwars</p>
+</div>
+<div id="выборка-данных" class="section level2 tabset tabset-fade tabset-pills">
+<h2>Выборка данных</h2>
+<p>В R возможно делать выборку столбцов разными стособами. Просто перечислить названия столбцов или их номера, перечислить какие столбцы не нужно выводить или выводить столбцы с именем соответствующим определенному условию. <br></p>
+<div id="перечисление" class="section level3">
+<h3>Перечисление</h3>
+<pre class="r"><code>starwars %&gt;% 
+  select(name)
+## # A tibble: 87 x 1
+##    name              
+##    &lt;chr&gt;             
+##  1 Luke Skywalker    
+##  2 C-3PO             
+##  3 R2-D2             
+##  4 Darth Vader       
+##  5 Leia Organa       
+##  6 Owen Lars         
+##  7 Beru Whitesun lars
+##  8 R5-D4             
+##  9 Biggs Darklighter 
+## 10 Obi-Wan Kenobi    
+## # ... with 77 more rows</code></pre>
+</div>
+<div id="отрицательное-перечисление" class="section level3">
+<h3>Отрицательное перечисление</h3>
+<p>Если нужно указать какой столбец не включать в выборку то ставится знак минус:<br></p>
+<pre class="r"><code>starwars %&gt;% 
+  select(-c(name, mass))
+## # A tibble: 87 x 12
+##    height hair_color    skin_color  eye_color birth_year sex    gender homeworld
+##     &lt;int&gt; &lt;chr&gt;         &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt;    
+##  1    172 blond         fair        blue            19   male   mascu~ Tatooine 
+##  2    167 &lt;NA&gt;          gold        yellow         112   none   mascu~ Tatooine 
+##  3     96 &lt;NA&gt;          white, blue red             33   none   mascu~ Naboo    
+##  4    202 none          white       yellow          41.9 male   mascu~ Tatooine 
+##  5    150 brown         light       brown           19   female femin~ Alderaan 
+##  6    178 brown, grey   light       blue            52   male   mascu~ Tatooine 
+##  7    165 brown         light       blue            47   female femin~ Tatooine 
+##  8     97 &lt;NA&gt;          white, red  red             NA   none   mascu~ Tatooine 
+##  9    183 black         light       brown           24   male   mascu~ Tatooine 
+## 10    182 auburn, white fair        blue-gray       57   male   mascu~ Stewjon  
+## # ... with 77 more rows, and 4 more variables: species &lt;chr&gt;, films &lt;list&gt;,
+## #   vehicles &lt;list&gt;, starships &lt;list&gt;</code></pre>
+</div>
+<div id="по-номерам" class="section level3">
+<h3>По номерам</h3>
+<p>Или можно указать номера столбцов<br></p>
+<pre class="r"><code>starwars %&gt;% 
+  select(1, 2)
+## # A tibble: 87 x 2
+##    name               height
+##    &lt;chr&gt;               &lt;int&gt;
+##  1 Luke Skywalker        172
+##  2 C-3PO                 167
+##  3 R2-D2                  96
+##  4 Darth Vader           202
+##  5 Leia Organa           150
+##  6 Owen Lars             178
+##  7 Beru Whitesun lars    165
+##  8 R5-D4                  97
+##  9 Biggs Darklighter     183
+## 10 Obi-Wan Kenobi        182
+## # ... with 77 more rows</code></pre>
+</div>
+<div id="по-условию" class="section level3 tabset tabset-fade tabset-pills">
+<h3>По условию</h3>
+<ul>
+<li><p><code>contains</code><em>: название столбца содержит символ</em></p></li>
+<li><p><code>ends_with</code><em>: название столбца заканчивается на</em></p></li>
+<li><p><code>matches</code><em>: название столбца соответствует регулярному выражению</em></p></li>
+<li><p><code>num_range</code><em>: поиск занумерованных столбцов, например, «V1, V2, V3…»</em></p></li>
+<li><p><code>one_of</code><em>: название столбца соответствует одному из вариантов</em></p></li>
+<li><p><code>starts_with</code><em>: название столбца начинается с</em></p></li>
+</ul>
+<p>подробнее в <code>?select</code></p>
+<p>Примеры:</p>
+<div id="contains" class="section level4">
+<h4>contains</h4>
+<pre class="r"><code># отберем столбцы, название которых содержит букву «а».
+starwars %&gt;% 
+  select(contains(&#39;a&#39;))
+## # A tibble: 87 x 5
+##    name                mass hair_color    birth_year starships
+##    &lt;chr&gt;              &lt;dbl&gt; &lt;chr&gt;              &lt;dbl&gt; &lt;list&gt;   
+##  1 Luke Skywalker        77 blond               19   &lt;chr [2]&gt;
+##  2 C-3PO                 75 &lt;NA&gt;               112   &lt;chr [0]&gt;
+##  3 R2-D2                 32 &lt;NA&gt;                33   &lt;chr [0]&gt;
+##  4 Darth Vader          136 none                41.9 &lt;chr [1]&gt;
+##  5 Leia Organa           49 brown               19   &lt;chr [0]&gt;
+##  6 Owen Lars            120 brown, grey         52   &lt;chr [0]&gt;
+##  7 Beru Whitesun lars    75 brown               47   &lt;chr [0]&gt;
+##  8 R5-D4                 32 &lt;NA&gt;                NA   &lt;chr [0]&gt;
+##  9 Biggs Darklighter     84 black               24   &lt;chr [1]&gt;
+## 10 Obi-Wan Kenobi        77 auburn, white       57   &lt;chr [5]&gt;
+## # ... with 77 more rows</code></pre>
+</div>
+<div id="one_of" class="section level4">
+<h4>one_of</h4>
+<pre class="r"><code># отберем столбцы, название которых является одним из указанных
+starwars %&gt;% 
+  select(one_of(&#39;mass&#39;, &#39;height&#39;))
+## # A tibble: 87 x 2
+##     mass height
+##    &lt;dbl&gt;  &lt;int&gt;
+##  1    77    172
+##  2    75    167
+##  3    32     96
+##  4   136    202
+##  5    49    150
+##  6   120    178
+##  7    75    165
+##  8    32     97
+##  9    84    183
+## 10    77    182
+## # ... with 77 more rows</code></pre>
+</div>
+<div id="matches" class="section level4">
+<h4>matches</h4>
+<pre class="r"><code># поиск по регулярному выражению
+starwars %&gt;% 
+  select(matches(&#39;.*t+.+&#39;))
+## # A tibble: 87 x 2
+##    birth_year starships
+##         &lt;dbl&gt; &lt;list&gt;   
+##  1       19   &lt;chr [2]&gt;
+##  2      112   &lt;chr [0]&gt;
+##  3       33   &lt;chr [0]&gt;
+##  4       41.9 &lt;chr [1]&gt;
+##  5       19   &lt;chr [0]&gt;
+##  6       52   &lt;chr [0]&gt;
+##  7       47   &lt;chr [0]&gt;
+##  8       NA   &lt;chr [0]&gt;
+##  9       24   &lt;chr [1]&gt;
+## 10       57   &lt;chr [5]&gt;
+## # ... with 77 more rows</code></pre>
+</div>
+</div>
+<div id="вернуть-вектор" class="section level3">
+<h3>Вернуть вектор</h3>
+<p>Если нужно вернуть столбец не как таблицу, а вектор, то делаем через <code>pull</code><br />
+</p>
+<pre class="r"><code>starwars %&gt;% 
+  pull(&#39;name&#39;)
+##  [1] &quot;Luke Skywalker&quot;        &quot;C-3PO&quot;                 &quot;R2-D2&quot;                
+##  [4] &quot;Darth Vader&quot;           &quot;Leia Organa&quot;           &quot;Owen Lars&quot;            
+##  [7] &quot;Beru Whitesun lars&quot;    &quot;R5-D4&quot;                 &quot;Biggs Darklighter&quot;    
+## [10] &quot;Obi-Wan Kenobi&quot;        &quot;Anakin Skywalker&quot;      &quot;Wilhuff Tarkin&quot;       
+## [13] &quot;Chewbacca&quot;             &quot;Han Solo&quot;              &quot;Greedo&quot;               
+## [16] &quot;Jabba Desilijic Tiure&quot; &quot;Wedge Antilles&quot;        &quot;Jek Tono Porkins&quot;     
+## [19] &quot;Yoda&quot;                  &quot;Palpatine&quot;             &quot;Boba Fett&quot;            
+## [22] &quot;IG-88&quot;                 &quot;Bossk&quot;                 &quot;Lando Calrissian&quot;     
+## [25] &quot;Lobot&quot;                 &quot;Ackbar&quot;                &quot;Mon Mothma&quot;           
+## [28] &quot;Arvel Crynyd&quot;          &quot;Wicket Systri Warrick&quot; &quot;Nien Nunb&quot;            
+## [31] &quot;Qui-Gon Jinn&quot;          &quot;Nute Gunray&quot;           &quot;Finis Valorum&quot;        
+## [34] &quot;Jar Jar Binks&quot;         &quot;Roos Tarpals&quot;          &quot;Rugor Nass&quot;           
+## [37] &quot;Ric Olie&quot;              &quot;Watto&quot;                 &quot;Sebulba&quot;              
+## [40] &quot;Quarsh Panaka&quot;         &quot;Shmi Skywalker&quot;        &quot;Darth Maul&quot;           
+## [43] &quot;Bib Fortuna&quot;           &quot;Ayla Secura&quot;           &quot;Dud Bolt&quot;             
+## [46] &quot;Gasgano&quot;               &quot;Ben Quadinaros&quot;        &quot;Mace Windu&quot;           
+## [49] &quot;Ki-Adi-Mundi&quot;          &quot;Kit Fisto&quot;             &quot;Eeth Koth&quot;            
+## [52] &quot;Adi Gallia&quot;            &quot;Saesee Tiin&quot;           &quot;Yarael Poof&quot;          
+## [55] &quot;Plo Koon&quot;              &quot;Mas Amedda&quot;            &quot;Gregar Typho&quot;         
+## [58] &quot;Corde&quot;                 &quot;Cliegg Lars&quot;           &quot;Poggle the Lesser&quot;    
+## [61] &quot;Luminara Unduli&quot;       &quot;Barriss Offee&quot;         &quot;Dorme&quot;                
+## [64] &quot;Dooku&quot;                 &quot;Bail Prestor Organa&quot;   &quot;Jango Fett&quot;           
+## [67] &quot;Zam Wesell&quot;            &quot;Dexter Jettster&quot;       &quot;Lama Su&quot;              
+## [70] &quot;Taun We&quot;               &quot;Jocasta Nu&quot;            &quot;Ratts Tyerell&quot;        
+## [73] &quot;R4-P17&quot;                &quot;Wat Tambor&quot;            &quot;San Hill&quot;             
+## [76] &quot;Shaak Ti&quot;              &quot;Grievous&quot;              &quot;Tarfful&quot;              
+## [79] &quot;Raymus Antilles&quot;       &quot;Sly Moore&quot;             &quot;Tion Medon&quot;           
+## [82] &quot;Finn&quot;                  &quot;Rey&quot;                   &quot;Poe Dameron&quot;          
+## [85] &quot;BB8&quot;                   &quot;Captain Phasma&quot;        &quot;Padme Amidala&quot;</code></pre>
+<p><br></p>
+</div>
+</div>
+<div id="фильтрация-строк" class="section level2 tabset tabset-fade tabset-pills">
+<h2>Фильтрация строк</h2>
+<div id="по-логическому-условию" class="section level3">
+<h3>По логическому условию</h3>
+<pre class="r"><code>starwars %&gt;% 
+  filter(mass &gt; 50)
+## # A tibble: 46 x 14
+##    name     height  mass hair_color skin_color eye_color birth_year sex   gender
+##    &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; 
+##  1 Luke Sk~    172    77 blond      fair       blue            19   male  mascu~
+##  2 C-3PO       167    75 &lt;NA&gt;       gold       yellow         112   none  mascu~
+##  3 Darth V~    202   136 none       white      yellow          41.9 male  mascu~
+##  4 Owen La~    178   120 brown, gr~ light      blue            52   male  mascu~
+##  5 Beru Wh~    165    75 brown      light      blue            47   fema~ femin~
+##  6 Biggs D~    183    84 black      light      brown           24   male  mascu~
+##  7 Obi-Wan~    182    77 auburn, w~ fair       blue-gray       57   male  mascu~
+##  8 Anakin ~    188    84 blond      fair       blue            41.9 male  mascu~
+##  9 Chewbac~    228   112 brown      unknown    blue           200   male  mascu~
+## 10 Han Solo    180    80 brown      fair       brown           29   male  mascu~
+## # ... with 36 more rows, and 5 more variables: homeworld &lt;chr&gt;, species &lt;chr&gt;,
+## #   films &lt;list&gt;, vehicles &lt;list&gt;, starships &lt;list&gt;
+
+#комбинировать несколько условий можно с помощью &amp; и |:
+starwars %&gt;% 
+  filter(mass &gt; 50 &amp; height &gt; 170)
+## # A tibble: 38 x 14
+##    name     height  mass hair_color skin_color eye_color birth_year sex   gender
+##    &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; 
+##  1 Luke Sk~    172    77 blond      fair       blue            19   male  mascu~
+##  2 Darth V~    202   136 none       white      yellow          41.9 male  mascu~
+##  3 Owen La~    178   120 brown, gr~ light      blue            52   male  mascu~
+##  4 Biggs D~    183    84 black      light      brown           24   male  mascu~
+##  5 Obi-Wan~    182    77 auburn, w~ fair       blue-gray       57   male  mascu~
+##  6 Anakin ~    188    84 blond      fair       blue            41.9 male  mascu~
+##  7 Chewbac~    228   112 brown      unknown    blue           200   male  mascu~
+##  8 Han Solo    180    80 brown      fair       brown           29   male  mascu~
+##  9 Greedo      173    74 &lt;NA&gt;       green      black           44   male  mascu~
+## 10 Jabba D~    175  1358 &lt;NA&gt;       green-tan~ orange         600   herm~ mascu~
+## # ... with 28 more rows, and 5 more variables: homeworld &lt;chr&gt;, species &lt;chr&gt;,
+## #   films &lt;list&gt;, vehicles &lt;list&gt;, starships &lt;list&gt;</code></pre>
+<p>Конструировать логические условия можно и другими операторами</p>
+<ul>
+<li><p><code>&gt;=</code></p></li>
+<li><p><code>&lt;=</code></p></li>
+<li><p><code>is.na</code></p></li>
+<li><p><code>!is.na</code></p></li>
+<li><p><code>%in%</code></p></li>
+<li><p><code>!</code></p></li>
+<li><p><code>between</code></p></li>
+<li><p><code>near</code></p></li>
+<li><p><code>xor</code></p></li>
+</ul>
+<p><br></p>
+<pre class="r"><code>starwars %&gt;% 
+  filter(skin_color %in% c(&#39;fair&#39;, &#39;green&#39;))
+## # A tibble: 23 x 14
+##    name     height  mass hair_color skin_color eye_color birth_year sex   gender
+##    &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; 
+##  1 Luke Sk~    172  77   blond      fair       blue            19   male  mascu~
+##  2 Obi-Wan~    182  77   auburn, w~ fair       blue-gray       57   male  mascu~
+##  3 Anakin ~    188  84   blond      fair       blue            41.9 male  mascu~
+##  4 Wilhuff~    180  NA   auburn, g~ fair       blue            64   male  mascu~
+##  5 Han Solo    180  80   brown      fair       brown           29   male  mascu~
+##  6 Greedo      173  74   &lt;NA&gt;       green      black           44   male  mascu~
+##  7 Wedge A~    170  77   brown      fair       hazel           21   male  mascu~
+##  8 Jek Ton~    180 110   brown      fair       blue            NA   male  mascu~
+##  9 Yoda         66  17   white      green      brown          896   male  mascu~
+## 10 Boba Fe~    183  78.2 black      fair       brown           31.5 male  mascu~
+## # ... with 13 more rows, and 5 more variables: homeworld &lt;chr&gt;, species &lt;chr&gt;,
+## #   films &lt;list&gt;, vehicles &lt;list&gt;, starships &lt;list&gt;</code></pre>
+</div>
+<div id="уникальные-значения" class="section level3">
+<h3>Уникальные значения</h3>
+<pre class="r"><code>starwars %&gt;% 
+  distinct(sex)
+## # A tibble: 5 x 1
+##   sex           
+##   &lt;chr&gt;         
+## 1 male          
+## 2 none          
+## 3 female        
+## 4 hermaphroditic
+## 5 &lt;NA&gt;</code></pre>
+</div>
+<div id="по-индексу" class="section level3">
+<h3>По индексу</h3>
+<pre class="r"><code>starwars %&gt;% 
+  slice(5:15)
+## # A tibble: 11 x 14
+##    name     height  mass hair_color skin_color eye_color birth_year sex   gender
+##    &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; 
+##  1 Leia Or~    150    49 brown      light      brown           19   fema~ femin~
+##  2 Owen La~    178   120 brown, gr~ light      blue            52   male  mascu~
+##  3 Beru Wh~    165    75 brown      light      blue            47   fema~ femin~
+##  4 R5-D4        97    32 &lt;NA&gt;       white, red red             NA   none  mascu~
+##  5 Biggs D~    183    84 black      light      brown           24   male  mascu~
+##  6 Obi-Wan~    182    77 auburn, w~ fair       blue-gray       57   male  mascu~
+##  7 Anakin ~    188    84 blond      fair       blue            41.9 male  mascu~
+##  8 Wilhuff~    180    NA auburn, g~ fair       blue            64   male  mascu~
+##  9 Chewbac~    228   112 brown      unknown    blue           200   male  mascu~
+## 10 Han Solo    180    80 brown      fair       brown           29   male  mascu~
+## 11 Greedo      173    74 &lt;NA&gt;       green      black           44   male  mascu~
+## # ... with 5 more variables: homeworld &lt;chr&gt;, species &lt;chr&gt;, films &lt;list&gt;,
+## #   vehicles &lt;list&gt;, starships &lt;list&gt;</code></pre>
+</div>
+<div id="случайные-строки" class="section level3">
+<h3>Случайные строки</h3>
+<pre class="r"><code># возвращает n - случайных строк
+starwars %&gt;% 
+  sample_n(5)
+## # A tibble: 5 x 14
+##   name      height  mass hair_color skin_color eye_color birth_year sex   gender
+##   &lt;chr&gt;      &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; 
+## 1 Plo Koon     188    80 none       orange     black             22 male  mascu~
+## 2 Dud Bolt      94    45 none       blue, grey yellow            NA male  mascu~
+## 3 Arvel Cr~     NA    NA brown      fair       brown             NA male  mascu~
+## 4 Rey           NA    NA brown      light      hazel             NA fema~ femin~
+## 5 Ben Quad~    163    65 none       grey, gre~ orange            NA male  mascu~
+## # ... with 5 more variables: homeworld &lt;chr&gt;, species &lt;chr&gt;, films &lt;list&gt;,
+## #   vehicles &lt;list&gt;, starships &lt;list&gt;
+
+# Нужно указать долю строк из общего числа, которые должны быть в итоговой таблице. 
+# Например, при параметре 0.5 вернется половина строк из таблицы, выбранные случайным образом.
+
+starwars %&gt;% 
+  sample_frac(0.1)
+## # A tibble: 9 x 14
+##   name      height  mass hair_color skin_color eye_color birth_year sex   gender
+##   &lt;chr&gt;      &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; 
+## 1 Gregar T~    185    85 black      dark       brown             NA male  mascu~
+## 2 Dooku        193    80 white      fair       brown            102 male  mascu~
+## 3 Taun We      213    NA none       grey       black             NA fema~ femin~
+## 4 R5-D4         97    32 &lt;NA&gt;       white, red red               NA none  mascu~
+## 5 Ric Olie     183    NA brown      fair       blue              NA &lt;NA&gt;  &lt;NA&gt;  
+## 6 Barriss ~    166    50 black      yellow     blue              40 fema~ femin~
+## 7 Sebulba      112    40 none       grey, red  orange            NA male  mascu~
+## 8 Adi Gall~    184    50 none       dark       blue              NA fema~ femin~
+## 9 Bail Pre~    191    NA black      tan        brown             67 male  mascu~
+## # ... with 5 more variables: homeworld &lt;chr&gt;, species &lt;chr&gt;, films &lt;list&gt;,
+## #   vehicles &lt;list&gt;, starships &lt;list&gt;</code></pre>
+<p><br></p>
+</div>
+</div>
+<div id="сортировка-строк" class="section level2 tabset tabset-fade tabset-pills">
+<h2>Сортировка строк</h2>
+<p><br></p>
+<p>Для сортировки в языке есть достаточно широкие возможности. Вот самые основные виды сортировки:</p>
+<div id="по-возрастанию" class="section level3">
+<h3>По возрастанию</h3>
+<pre class="r"><code>starwars %&gt;% 
+  arrange(mass)
+## # A tibble: 87 x 14
+##    name     height  mass hair_color skin_color eye_color birth_year sex   gender
+##    &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; 
+##  1 Ratts T~     79    15 none       grey, blue unknown           NA male  mascu~
+##  2 Yoda         66    17 white      green      brown            896 male  mascu~
+##  3 Wicket ~     88    20 brown      brown      brown              8 male  mascu~
+##  4 R2-D2        96    32 &lt;NA&gt;       white, bl~ red               33 none  mascu~
+##  5 R5-D4        97    32 &lt;NA&gt;       white, red red               NA none  mascu~
+##  6 Sebulba     112    40 none       grey, red  orange            NA male  mascu~
+##  7 Dud Bolt     94    45 none       blue, grey yellow            NA male  mascu~
+##  8 Padme A~    165    45 brown      light      brown             46 fema~ femin~
+##  9 Wat Tam~    193    48 none       green, gr~ unknown           NA male  mascu~
+## 10 Sly Moo~    178    48 none       pale       white             NA &lt;NA&gt;  &lt;NA&gt;  
+## # ... with 77 more rows, and 5 more variables: homeworld &lt;chr&gt;, species &lt;chr&gt;,
+## #   films &lt;list&gt;, vehicles &lt;list&gt;, starships &lt;list&gt;</code></pre>
+</div>
+<div id="по-убыванию" class="section level3">
+<h3>По убыванию</h3>
+<pre class="r"><code># сортировка по убыванию
+starwars %&gt;% 
+  arrange(desc(mass))
+## # A tibble: 87 x 14
+##    name     height  mass hair_color skin_color eye_color birth_year sex   gender
+##    &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; 
+##  1 Jabba D~    175  1358 &lt;NA&gt;       green-tan~ orange         600   herm~ mascu~
+##  2 Grievous    216   159 none       brown, wh~ green, y~       NA   male  mascu~
+##  3 IG-88       200   140 none       metal      red             15   none  mascu~
+##  4 Darth V~    202   136 none       white      yellow          41.9 male  mascu~
+##  5 Tarfful     234   136 brown      brown      blue            NA   male  mascu~
+##  6 Owen La~    178   120 brown, gr~ light      blue            52   male  mascu~
+##  7 Bossk       190   113 none       green      red             53   male  mascu~
+##  8 Chewbac~    228   112 brown      unknown    blue           200   male  mascu~
+##  9 Jek Ton~    180   110 brown      fair       blue            NA   male  mascu~
+## 10 Dexter ~    198   102 none       brown      yellow          NA   male  mascu~
+## # ... with 77 more rows, and 5 more variables: homeworld &lt;chr&gt;, species &lt;chr&gt;,
+## #   films &lt;list&gt;, vehicles &lt;list&gt;, starships &lt;list&gt;</code></pre>
+</div>
+<div id="по-нескольким-столбцам" class="section level3">
+<h3>По нескольким столбцам</h3>
+<pre class="r"><code># сортировка по нескольким столбцам
+starwars %&gt;% 
+  arrange(height, desc(mass))
+## # A tibble: 87 x 14
+##    name     height  mass hair_color skin_color eye_color birth_year sex   gender
+##    &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; 
+##  1 Yoda         66    17 white      green      brown            896 male  mascu~
+##  2 Ratts T~     79    15 none       grey, blue unknown           NA male  mascu~
+##  3 Wicket ~     88    20 brown      brown      brown              8 male  mascu~
+##  4 Dud Bolt     94    45 none       blue, grey yellow            NA male  mascu~
+##  5 R2-D2        96    32 &lt;NA&gt;       white, bl~ red               33 none  mascu~
+##  6 R4-P17       96    NA none       silver, r~ red, blue         NA none  femin~
+##  7 R5-D4        97    32 &lt;NA&gt;       white, red red               NA none  mascu~
+##  8 Sebulba     112    40 none       grey, red  orange            NA male  mascu~
+##  9 Gasgano     122    NA none       white, bl~ black             NA male  mascu~
+## 10 Watto       137    NA black      blue, grey yellow            NA male  mascu~
+## # ... with 77 more rows, and 5 more variables: homeworld &lt;chr&gt;, species &lt;chr&gt;,
+## #   films &lt;list&gt;, vehicles &lt;list&gt;, starships &lt;list&gt;</code></pre>
+</div>
+<div id="расширенная-сортировка" class="section level3">
+<h3>Расширенная сортировка</h3>
+<p>При сортировке можно использовать вспомогательные функции для <code>select</code>, только внутри функции <code>across</code></p>
+<pre class="r"><code>starwars %&gt;% 
+  arrange(across(ends_with(&#39;_color&#39;), desc))
+## # A tibble: 87 x 14
+##    name     height  mass hair_color skin_color eye_color birth_year sex   gender
+##    &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; 
+##  1 Ki-Adi-~    198    82 white      pale       yellow          92   male  mascu~
+##  2 Yoda         66    17 white      green      brown          896   male  mascu~
+##  3 Dooku       193    80 white      fair       brown          102   male  mascu~
+##  4 Jocasta~    167    NA white      fair       blue            NA   fema~ femin~
+##  5 Captain~     NA    NA unknown    unknown    unknown         NA   &lt;NA&gt;  &lt;NA&gt;  
+##  6 Gasgano     122    NA none       white, bl~ black           NA   male  mascu~
+##  7 Darth V~    202   136 none       white      yellow          41.9 male  mascu~
+##  8 Yarael ~    264    NA none       white      yellow          NA   male  mascu~
+##  9 R4-P17       96    NA none       silver, r~ red, blue       NA   none  femin~
+## 10 Shaak Ti    178    57 none       red, blue~ black           NA   fema~ femin~
+## # ... with 77 more rows, and 5 more variables: homeworld &lt;chr&gt;, species &lt;chr&gt;,
+## #   films &lt;list&gt;, vehicles &lt;list&gt;, starships &lt;list&gt;</code></pre>
+<p><br></p>
+</div>
+</div>
+<div id="группировка-и-агрегатные-функции" class="section level2">
+<h2>Группировка и агрегатные функции</h2>
+<pre class="r"><code># сама по себе группировка не несет смысла, только в сочетании с агрегирующими функциями
+starwars %&gt;% 
+  group_by(eye_color)
+## # A tibble: 87 x 14
+## # Groups:   eye_color [15]
+##    name     height  mass hair_color skin_color eye_color birth_year sex   gender
+##    &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; 
+##  1 Luke Sk~    172    77 blond      fair       blue            19   male  mascu~
+##  2 C-3PO       167    75 &lt;NA&gt;       gold       yellow         112   none  mascu~
+##  3 R2-D2        96    32 &lt;NA&gt;       white, bl~ red             33   none  mascu~
+##  4 Darth V~    202   136 none       white      yellow          41.9 male  mascu~
+##  5 Leia Or~    150    49 brown      light      brown           19   fema~ femin~
+##  6 Owen La~    178   120 brown, gr~ light      blue            52   male  mascu~
+##  7 Beru Wh~    165    75 brown      light      blue            47   fema~ femin~
+##  8 R5-D4        97    32 &lt;NA&gt;       white, red red             NA   none  mascu~
+##  9 Biggs D~    183    84 black      light      brown           24   male  mascu~
+## 10 Obi-Wan~    182    77 auburn, w~ fair       blue-gray       57   male  mascu~
+## # ... with 77 more rows, and 5 more variables: homeworld &lt;chr&gt;, species &lt;chr&gt;,
+## #   films &lt;list&gt;, vehicles &lt;list&gt;, starships &lt;list&gt;</code></pre>
+<pre class="r"><code>starwars %&gt;% 
+  group_by(eye_color) %&gt;% # группируем по полю
+  summarise(
+    &#39;mean mass&#39; = mean(mass), # задаем имя столбцу и применяем функцию
+    &#39;max mass&#39; = max(mass),
+    &#39;min mass&#39; = min(mass),
+    &#39;first mass&#39; = first(mass),
+    &#39;median mass&#39; = median(mass),
+    &#39;quantity&#39; = n()
+  )
+## # A tibble: 15 x 7
+##    eye_color     `mean mass` `max mass` `min mass` `first mass` `median mass`
+##    &lt;chr&gt;               &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;         &lt;dbl&gt;
+##  1 black                NA           NA         NA           74            NA
+##  2 blue                 NA           NA         NA           77            NA
+##  3 blue-gray            77           77         77           77            77
+##  4 brown                NA           NA         NA           49            NA
+##  5 dark                 NA           NA         NA           NA            NA
+##  6 gold                 NA           NA         NA           NA            NA
+##  7 green, yellow       159          159        159          159           159
+##  8 hazel                NA           NA         NA           77            NA
+##  9 orange               NA           NA         NA         1358            NA
+## 10 pink                 NA           NA         NA           NA            NA
+## 11 red                  81.4        140         32           32            90
+## 12 red, blue            NA           NA         NA           NA            NA
+## 13 unknown              NA           NA         NA           15            NA
+## 14 white                48           48         48           48            48
+## 15 yellow               NA           NA         NA           75            NA
+## # ... with 1 more variable: quantity &lt;int&gt;
+# про другие функции summarise в ?summarise</code></pre>
+<p>Рассчитать показатели только для нескольких столбцов сразу</p>
+<pre class="r"><code>starwars %&gt;% 
+  group_by(eye_color) %&gt;% 
+  summarise(
+    across(
+      .cols = c(mass, height), # столбцы к котторым применятся функции
+      .fns = list(mean = mean, max = max, min = min, first = first, median = median), # набор функций
+      .names = &quot;{.col}.fn_{.fn}&quot;  # шаблон имени столбца
+    )
+  )
+## # A tibble: 15 x 11
+##    eye_color   mass.fn_mean mass.fn_max mass.fn_min mass.fn_first mass.fn_median
+##    &lt;chr&gt;              &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;         &lt;dbl&gt;          &lt;dbl&gt;
+##  1 black               NA            NA          NA            74             NA
+##  2 blue                NA            NA          NA            77             NA
+##  3 blue-gray           77            77          77            77             77
+##  4 brown               NA            NA          NA            49             NA
+##  5 dark                NA            NA          NA            NA             NA
+##  6 gold                NA            NA          NA            NA             NA
+##  7 green, yel~        159           159         159           159            159
+##  8 hazel               NA            NA          NA            77             NA
+##  9 orange              NA            NA          NA          1358             NA
+## 10 pink                NA            NA          NA            NA             NA
+## 11 red                 81.4         140          32            32             90
+## 12 red, blue           NA            NA          NA            NA             NA
+## 13 unknown             NA            NA          NA            15             NA
+## 14 white               48            48          48            48             48
+## 15 yellow              NA            NA          NA            75             NA
+## # ... with 5 more variables: height.fn_mean &lt;dbl&gt;, height.fn_max &lt;int&gt;,
+## #   height.fn_min &lt;int&gt;, height.fn_first &lt;int&gt;, height.fn_median &lt;dbl&gt;</code></pre>
+<p><br></p>
+</div>
+<div id="вычисляемые-столбцы" class="section level2 tabset tabset-fade tabset-pills">
+<h2>Вычисляемые столбцы</h2>
+<div id="новый-столбец" class="section level3">
+<h3>Новый столбец</h3>
+<pre class="r"><code>starwars %&gt;% 
+  select(name, height, mass) %&gt;% 
+  mutate(&#39;coef&#39; = mass/height)
+## # A tibble: 87 x 4
+##    name               height  mass  coef
+##    &lt;chr&gt;               &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 Luke Skywalker        172    77 0.448
+##  2 C-3PO                 167    75 0.449
+##  3 R2-D2                  96    32 0.333
+##  4 Darth Vader           202   136 0.673
+##  5 Leia Organa           150    49 0.327
+##  6 Owen Lars             178   120 0.674
+##  7 Beru Whitesun lars    165    75 0.455
+##  8 R5-D4                  97    32 0.330
+##  9 Biggs Darklighter     183    84 0.459
+## 10 Obi-Wan Kenobi        182    77 0.423
+## # ... with 77 more rows</code></pre>
+</div>
+<div id="изменить-несколько-столбцов" class="section level3">
+<h3>Изменить несколько столбцов</h3>
+<p>Применить функцию ко всем столбцам по условию</p>
+<pre class="r"><code>starwars %&gt;% 
+  mutate(
+    across(
+      .cols = where(is.numeric), # применить функцию ко всем числовым столбцам
+      .fns = function(x) x*10 # x в function это стоблцы по условию в cols
+    )
+  )
+## # A tibble: 87 x 14
+##    name     height  mass hair_color skin_color eye_color birth_year sex   gender
+##    &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; 
+##  1 Luke Sk~   1720   770 blond      fair       blue             190 male  mascu~
+##  2 C-3PO      1670   750 &lt;NA&gt;       gold       yellow          1120 none  mascu~
+##  3 R2-D2       960   320 &lt;NA&gt;       white, bl~ red              330 none  mascu~
+##  4 Darth V~   2020  1360 none       white      yellow           419 male  mascu~
+##  5 Leia Or~   1500   490 brown      light      brown            190 fema~ femin~
+##  6 Owen La~   1780  1200 brown, gr~ light      blue             520 male  mascu~
+##  7 Beru Wh~   1650   750 brown      light      blue             470 fema~ femin~
+##  8 R5-D4       970   320 &lt;NA&gt;       white, red red               NA none  mascu~
+##  9 Biggs D~   1830   840 black      light      brown            240 male  mascu~
+## 10 Obi-Wan~   1820   770 auburn, w~ fair       blue-gray        570 male  mascu~
+## # ... with 77 more rows, and 5 more variables: homeworld &lt;chr&gt;, species &lt;chr&gt;,
+## #   films &lt;list&gt;, vehicles &lt;list&gt;, starships &lt;list&gt;</code></pre>
+</div>
+<div id="оконные-функции" class="section level3">
+<h3>Оконные функции</h3>
+<pre class="r"><code>starwars %&gt;% 
+  select(name, height, mass) %&gt;% 
+  mutate(&#39;rnk&#39; = dense_rank(mass)) %&gt;% 
+  mutate(&#39;r_num&#39; = row_number(mass)) 
+## # A tibble: 87 x 5
+##    name               height  mass   rnk r_num
+##    &lt;chr&gt;               &lt;int&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt;
+##  1 Luke Skywalker        172    77    18    25
+##  2 C-3PO                 167    75    17    22
+##  3 R2-D2                  96    32     4     4
+##  4 Darth Vader           202   136    35    55
+##  5 Leia Organa           150    49     8    11
+##  6 Owen Lars             178   120    34    54
+##  7 Beru Whitesun lars    165    75    17    23
+##  8 R5-D4                  97    32     4     5
+##  9 Biggs Darklighter     183    84    24    42
+## 10 Obi-Wan Kenobi        182    77    18    26
+## # ... with 77 more rows</code></pre>
+</div>
+<div id="вычисление-с-условием" class="section level3">
+<h3>Вычисление с условием</h3>
+<pre class="r"><code>starwars %&gt;% 
+  select(name, height, mass) %&gt;% 
+  # логические условия в вычислении
+  mutate(&#39;case_col&#39; = case_when(
+    name == &#39;Luke Skywalker&#39; | name == &#39;Leia Organa&#39;  ~ &#39;Главный герой&#39;,
+    name == &#39;Darth Vader&#39; ~ &#39;Главный злодей&#39;,
+    TRUE ~ &#39;Другой персонаж&#39;
+    ))
+## # A tibble: 87 x 4
+##    name               height  mass case_col       
+##    &lt;chr&gt;               &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;          
+##  1 Luke Skywalker        172    77 Главный герой  
+##  2 C-3PO                 167    75 Другой персонаж
+##  3 R2-D2                  96    32 Другой персонаж
+##  4 Darth Vader           202   136 Главный злодей 
+##  5 Leia Organa           150    49 Главный герой  
+##  6 Owen Lars             178   120 Другой персонаж
+##  7 Beru Whitesun lars    165    75 Другой персонаж
+##  8 R5-D4                  97    32 Другой персонаж
+##  9 Biggs Darklighter     183    84 Другой персонаж
+## 10 Obi-Wan Kenobi        182    77 Другой персонаж
+## # ... with 77 more rows</code></pre>
+</div>
+<div id="обработка-нуллов" class="section level3">
+<h3>Обработка нуллов</h3>
+<pre class="r"><code>starwars %&gt;% 
+  select(name, height, mass) %&gt;% 
+  # логические условия в вычислении
+  mutate(&#39;case_col&#39; = case_when(
+    name == &#39;Luke Skywalker&#39; | name == &#39;Leia Organa&#39;  ~ &#39;Главный герой&#39;,
+    name == &#39;Darth Vader&#39; ~ &#39;Главный злодей&#39;
+    )) %&gt;% 
+  mutate(&#39;coalesce_col&#39; = coalesce(case_col, &#39;другой персонаж&#39;))
+## # A tibble: 87 x 5
+##    name               height  mass case_col       coalesce_col   
+##    &lt;chr&gt;               &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;          
+##  1 Luke Skywalker        172    77 Главный герой  Главный герой  
+##  2 C-3PO                 167    75 &lt;NA&gt;           другой персонаж
+##  3 R2-D2                  96    32 &lt;NA&gt;           другой персонаж
+##  4 Darth Vader           202   136 Главный злодей Главный злодей 
+##  5 Leia Organa           150    49 Главный герой  Главный герой  
+##  6 Owen Lars             178   120 &lt;NA&gt;           другой персонаж
+##  7 Beru Whitesun lars    165    75 &lt;NA&gt;           другой персонаж
+##  8 R5-D4                  97    32 &lt;NA&gt;           другой персонаж
+##  9 Biggs Darklighter     183    84 &lt;NA&gt;           другой персонаж
+## 10 Obi-Wan Kenobi        182    77 &lt;NA&gt;           другой персонаж
+## # ... with 77 more rows</code></pre>
+<p><br></p>
+</div>
+</div>
+<div id="объединение-таблиц" class="section level2">
+<h2>Объединение таблиц</h2>
+<p><br></p>
+<pre class="r"><code># подготовим датафрейм
+df &lt;- starwars %&gt;% 
+  filter(species == &#39;Human&#39;) %&gt;% 
+  rename(&#39;new_name&#39; = &#39;name&#39;)
+
+starwars %&gt;% 
+  inner_join(df, by = c(&#39;name&#39; = &#39;new_name&#39;)) # by аналог ON в SQL
+## # A tibble: 35 x 27
+##    name       height.x mass.x hair_color.x skin_color.x eye_color.x birth_year.x
+##    &lt;chr&gt;         &lt;int&gt;  &lt;dbl&gt; &lt;chr&gt;        &lt;chr&gt;        &lt;chr&gt;              &lt;dbl&gt;
+##  1 Luke Skyw~      172     77 blond        fair         blue                19  
+##  2 Darth Vad~      202    136 none         white        yellow              41.9
+##  3 Leia Orga~      150     49 brown        light        brown               19  
+##  4 Owen Lars       178    120 brown, grey  light        blue                52  
+##  5 Beru Whit~      165     75 brown        light        blue                47  
+##  6 Biggs Dar~      183     84 black        light        brown               24  
+##  7 Obi-Wan K~      182     77 auburn, whi~ fair         blue-gray           57  
+##  8 Anakin Sk~      188     84 blond        fair         blue                41.9
+##  9 Wilhuff T~      180     NA auburn, grey fair         blue                64  
+## 10 Han Solo        180     80 brown        fair         brown               29  
+## # ... with 25 more rows, and 20 more variables: sex.x &lt;chr&gt;, gender.x &lt;chr&gt;,
+## #   homeworld.x &lt;chr&gt;, species.x &lt;chr&gt;, films.x &lt;list&gt;, vehicles.x &lt;list&gt;,
+## #   starships.x &lt;list&gt;, height.y &lt;int&gt;, mass.y &lt;dbl&gt;, hair_color.y &lt;chr&gt;,
+## #   skin_color.y &lt;chr&gt;, eye_color.y &lt;chr&gt;, birth_year.y &lt;dbl&gt;, sex.y &lt;chr&gt;,
+## #   gender.y &lt;chr&gt;, homeworld.y &lt;chr&gt;, species.y &lt;chr&gt;, films.y &lt;list&gt;,
+## #   vehicles.y &lt;list&gt;, starships.y &lt;list&gt;
+
+# чтобы не было суффиксов в именах столбцов можно
+
+# соединять по всем столбцам у которых совпадают имена
+starwars %&gt;% 
+  inner_join(df)
+## Joining, by = c(&quot;height&quot;, &quot;mass&quot;, &quot;hair_color&quot;, &quot;skin_color&quot;, &quot;eye_color&quot;,
+## &quot;birth_year&quot;, &quot;sex&quot;, &quot;gender&quot;, &quot;homeworld&quot;, &quot;species&quot;, &quot;films&quot;, &quot;vehicles&quot;,
+## &quot;starships&quot;)
+## # A tibble: 35 x 15
+##    name     height  mass hair_color skin_color eye_color birth_year sex   gender
+##    &lt;chr&gt;     &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; 
+##  1 Luke Sk~    172    77 blond      fair       blue            19   male  mascu~
+##  2 Darth V~    202   136 none       white      yellow          41.9 male  mascu~
+##  3 Leia Or~    150    49 brown      light      brown           19   fema~ femin~
+##  4 Owen La~    178   120 brown, gr~ light      blue            52   male  mascu~
+##  5 Beru Wh~    165    75 brown      light      blue            47   fema~ femin~
+##  6 Biggs D~    183    84 black      light      brown           24   male  mascu~
+##  7 Obi-Wan~    182    77 auburn, w~ fair       blue-gray       57   male  mascu~
+##  8 Anakin ~    188    84 blond      fair       blue            41.9 male  mascu~
+##  9 Wilhuff~    180    NA auburn, g~ fair       blue            64   male  mascu~
+## 10 Han Solo    180    80 brown      fair       brown           29   male  mascu~
+## # ... with 25 more rows, and 6 more variables: homeworld &lt;chr&gt;, species &lt;chr&gt;,
+## #   films &lt;list&gt;, vehicles &lt;list&gt;, starships &lt;list&gt;, new_name &lt;chr&gt;
+
+# для соединения брать не всю таблицу, а только нужные столбцы
+starwars %&gt;% 
+  inner_join(
+    select(df, c(&#39;new_name&#39;, &#39;mass&#39;)),
+    by = c(&#39;name&#39; = &#39;new_name&#39;)
+    )
+## # A tibble: 35 x 15
+##    name    height mass.x hair_color skin_color eye_color birth_year sex   gender
+##    &lt;chr&gt;    &lt;int&gt;  &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; 
+##  1 Luke S~    172     77 blond      fair       blue            19   male  mascu~
+##  2 Darth ~    202    136 none       white      yellow          41.9 male  mascu~
+##  3 Leia O~    150     49 brown      light      brown           19   fema~ femin~
+##  4 Owen L~    178    120 brown, gr~ light      blue            52   male  mascu~
+##  5 Beru W~    165     75 brown      light      blue            47   fema~ femin~
+##  6 Biggs ~    183     84 black      light      brown           24   male  mascu~
+##  7 Obi-Wa~    182     77 auburn, w~ fair       blue-gray       57   male  mascu~
+##  8 Anakin~    188     84 blond      fair       blue            41.9 male  mascu~
+##  9 Wilhuf~    180     NA auburn, g~ fair       blue            64   male  mascu~
+## 10 Han So~    180     80 brown      fair       brown           29   male  mascu~
+## # ... with 25 more rows, and 6 more variables: homeworld &lt;chr&gt;, species &lt;chr&gt;,
+## #   films &lt;list&gt;, vehicles &lt;list&gt;, starships &lt;list&gt;, mass.y &lt;dbl&gt;</code></pre>
+</div>
+</article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script type="application/javascript" src='https://bestpractices.netlify.app/js/toc.js'></script>
+<link rel="stylesheet" href='https://bestpractices.netlify.app/css/toc.css' />
+
+
+  <div class="footer container-xl width-full p-responsive">
+  <div
+    class="position-relative d-flex flex-row-reverse flex-lg-row flex-wrap flex-lg-nowrap flex-justify-center flex-lg-justify-between flex-sm-items-center pt-6 pb-2 mt-6 f6 text-gray border-top border-gray-light ">
+    <a aria-label="Homepage" title="GitHub" class="footer-octicon d-none d-lg-block mr-lg-4" href="https://bestpractices.netlify.app/">
+      <svg height="24" class="octicon octicon-mark-github" viewBox="0 0 16 16" version="1.1" width="24">
+        <path fill-rule="evenodd"
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+        </path>
+      </svg>
+    </a>
+    <ul class="list-style-none d-flex flex-wrap col-12 flex-justify-center flex-lg-justify-between mb-2 mb-lg-0">
+      
+      <li class="mr-3 mr-lg-0">Theme by <a href='https://github.com/MeiK2333/github-style'>github-style</a></li>
+      
+    </ul>
+  </div>
+  <div class="d-flex flex-justify-center pb-6">
+    <span class="f6 text-gray-light"></span>
+  </div>
+
+
+</div>
+</body>
+
+<script type="application/javascript" src="https://bestpractices.netlify.app/js/github-style.js"></script>
+
+
+
+
+</html>

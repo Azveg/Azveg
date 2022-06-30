@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>R Markdown on Best Practices IT</title>
+    <link>https://bestpractices.netlify.app/tags/r-markdown/</link>
+    <description>Recent content in R Markdown on Best Practices IT</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 01 Dec 2020 21:13:14 -0500</lastBuildDate><atom:link href="https://bestpractices.netlify.app/tags/r-markdown/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CheatSheet dplyr</title>
+      <link>https://bestpractices.netlify.app/post/2020-12-01-r-rmarkdown/</link>
+      <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
+      
+      <guid>https://bestpractices.netlify.app/post/2020-12-01-r-rmarkdown/</guid>
+      <description>Разбор популярных методов обработки данных пакета dplyr. Выборка, фильтрация, сортировка, агрегатные и оконные функции, а также соединение наборов данных</description>
+    </item>
+    
+  </channel>
+</rss>
