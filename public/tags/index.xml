@@ -6,13 +6,31 @@
     <description>Recent content in Tags on Best Practices IT</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 01 Jul 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://bestpractices.netlify.app/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 03 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://bestpractices.netlify.app/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>R</title>
       <link>https://bestpractices.netlify.app/tags/r/</link>
-      <pubDate>Fri, 01 Jul 2022 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 03 Aug 2022 00:00:00 +0000</pubDate>
       
       <guid>https://bestpractices.netlify.app/tags/r/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>UpSetR</title>
+      <link>https://bestpractices.netlify.app/tags/upsetr/</link>
+      <pubDate>Wed, 03 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://bestpractices.netlify.app/tags/upsetr/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>visualization</title>
+      <link>https://bestpractices.netlify.app/tags/visualization/</link>
+      <pubDate>Wed, 03 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://bestpractices.netlify.app/tags/visualization/</guid>
       <description></description>
     </item>
     

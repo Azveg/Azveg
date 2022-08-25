@@ -6,14 +6,23 @@
     <description>Recent content in R on Best Practices IT</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 01 Jul 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://bestpractices.netlify.app/tags/r/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 03 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://bestpractices.netlify.app/tags/r/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>UpSet диаграммы</title>
+      <title></title>
+      <link>https://bestpractices.netlify.app/post/2022-08-03-/</link>
+      <pubDate>Wed, 03 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://bestpractices.netlify.app/post/2022-08-03-/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>UpSet диаграммы - введение</title>
       <link>https://bestpractices.netlify.app/post/2022-07-01-upset/</link>
       <pubDate>Fri, 01 Jul 2022 00:00:00 +0000</pubDate>
       
       <guid>https://bestpractices.netlify.app/post/2022-07-01-upset/</guid>
-      <description>Построение диаграмм пересечения множеств с помощью пакета UpSet как альтернатива или развитие диаграмм Вена</description>
+      <description>Построение диаграмм пересечения множеств с помощью UpSet графиков развитие диаграмм Вена на большом количестве анализируемых атрибутов</description>
     </item>
     
   </channel>

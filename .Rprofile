@@ -17,7 +17,19 @@ options(
   blogdown.knit.on_save = TRUE,
   # build .Rmd to .html (via Pandoc); to build to Markdown, set this option to 'markdown'
   blogdown.method = 'html'
+  
 )
 
 # fix Hugo version
 options(blogdown.hugo.version = "0.101.0")
+
+options(
+  blogdown.ext = ".Rmarkdown",
+  blogdown.subdir = "blog",
+  blogdown.new_bundle = TRUE
+)
+rprofile <- Sys.getenv("R_PROFILE_USER", "~/.Rprofile")
+
+if (file.exists(rprofile) && !grepl("callr", rprofile)) {
+  source(file = rprofile)
+}

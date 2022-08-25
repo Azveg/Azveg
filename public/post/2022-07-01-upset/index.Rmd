@@ -1,18 +1,19 @@
 ---
-title: UpSet диаграммы
+title: UpSet диаграммы - введение
 author: Best Practices IT
 date: '2022-07-01'
-slug: []
 categories:
   - R
 tags:
-  - UpSet
   - R
-cover: ''
+  - UpSet
+  - visualization
 keywords:
-  - 'UpSet'
-  - 'Heatmap'
-summary: 'Построение диаграмм пересечения множеств с помощью пакета UpSet как альтернатива или развитие диаграмм Вена'
+  - UpSet
+  - Heatmap
+  - R
+  - visualization
+summary: Построение диаграмм пересечения множеств с помощью UpSet графиков развитие диаграмм Вена на большом количестве анализируемых атрибутов
 ---
 
 ```{r include=FALSE}
@@ -23,239 +24,65 @@ library(ComplexHeatmap)
 
 ## Про графики UpSet
 
+Понимание взаимосвязей между атрибутами изучаемого набора данных является важной задачей анализа. Основной проблемой в этом контексте является комбинаторный взрыв числа пересечений множеств, если количество множеств превышает тривиальный порог. Наиболее распространенный подход к визуализации наборов -- Диаграммы Венна - не масштабируется дальше трех или четырех наборов.
 
+Графики UpSet дают возможность проводить анализ взаимосвязей гораздо большего числа атрибутов.
 
 
-## Графики UpSet в пакете UpSetR
-
-Пакет UpSet визуализирует пересечения комбинаций значений атрибутов в наборе данных. Значения атрибутов называются наборами, а комбинация значений нескольких атрибутов - наборами комбинаций.
-
-### Примеры реализуемые в пакете UpSetR
-
-Установим необходимый пакет и инициализируем его.
+### Когда использовать UpSet
 
-```{r}
-install.packages('UpSetR')
-library(UpSetR)
-```
+- UpSet лучше всего работает для наборов данных, содержащих более трех и менее 30 наборов. Для менее чем 4 наборов лучшим выбором может быть пропорциональная площади диаграмма Венна, поскольку они более привычны пользователям.
+- UpSet хорошо подходит для анализа распределений и свойств многих элементов. Элементы абстрагируются как “count”, хотя атрибуты элементов могут быть визуализированы в виде интегрированных или смежных графиков.
+- когда вы хотите посмотреть на все комбинации пересечений множеств. Если вы хотите посмотреть на попарные пересечения между наборами, лучшим выбором может быть какая-то матрица комбинаций.
 
+### Описание графиков UpSet
 
-```{r}
-movies <- read.csv(system.file("extdata", "movies.csv", package = "UpSetR"), 
-    header = T, sep = ";")
-```
+UpSet отображает пересечения множества в виде матрицы, как показано на следующем рисунке. Каждый столбец соответствует набору, а столбчатые диаграммы сверху показывают размер набора. Каждая строка соответствует возможному пересечению: заполненные ячейки показывают, какой набор является частью пересечения. Также обратите внимание на линии, соединяющие заполненные ячейки: они показывают, в каком направлении вы должны читать график:
 
-Для построения графика будем использовать функцию upset, придем её аргументы:
+::: {style="display: flex; align-items: center; justify-content: center;"}
+![](images/concept-1-matrix.svg){style="margin: 0 auto;" width="341"}
+:::
 
-- `data` - набор данных
-- `nsets`	- Number of sets to look at
-- `nintersects` - Number of intersections to plot. If set to NA, all intersections will be plotted.
-- `sets` - Specific sets to look at (Include as combinations. Ex: c("Name1", "Name2"))
-- `keep.order` - Keep sets in the order entered using the sets parameter. The default is FALSE, which orders the sets by their sizes.
-- `set.metadata` - Metadata that offers insight to an attribute of the sets. Input should be a data frame where the first column is set names, and the remaining columns are attributes of those sets. To learn how to use this parameter it is highly suggested to view the set metadata vignette. The link can be found on the package's GitHub page.
-- `intersections`	- Specific intersections to include in plot entered as a list of lists. Ex: list(list("Set name1", "Set name2"), list("Set name1", "Set name3")). If data is entered into this parameter the only data shown on the UpSet plot will be the specific intersections listed.
-- `matrix.color` - Color of the intersection points
-- `main.bar.color` - Color of the main bar plot
-- `mainbar.y.label`	- The y-axis label of the intersection size bar plot
-- `mainbar.y.max`	- The maximum y value of the intersection size bar plot scale. May be useful when aligning multiple UpSet plots horizontally.
-- `sets.bar.color` - Color of set size bar plot
-- `sets.x.label` - The x-axis label of the set size bar plot
-- `point.size` - Size of points in matrix plot
-- `line.size`	- Width of lines in matrix plot
-- `mb.ratio` - Ratio between matrix plot and main bar plot (Keep in terms of hundredths)
-- `expression` - Expression to subset attributes of intersection or element query data. Enter as string (Ex: "ColName > 3")
-- `att.pos`	- Position of attribute plot. If NULL or "bottom" the plot will be at below UpSet plot. If "top" it will be above UpSet plot
-- `att.color`	- Color of attribute histogram bins or scatterplot points for unqueried data represented by main bars. Default set to color of main bars.
-- `order.by` - How the intersections in the matrix should be ordered by. Options include frequency (entered as "freq"), degree, or both in any order.
-- `decreasing` - How the variables in order.by should be ordered. "freq" is decreasing (greatest to least) and "degree" is increasing (least to greatest)
-- `show.numbers` - Show numbers of intersection sizes above bars
-- `number.angles`	- The angle of the numbers atop the intersection size bars
-- `group.by` - How the data should be grouped ("degree" or "sets")
-- `cutoff` - The number of intersections from each set (to cut off at) when aggregating by sets
-- `queries` - Unified query of intersections, elements, and custom row functions. Entered as a list that contains a list of queries. query is the type of query being conducted. params are the parameters of the query (if any). color is the color of the points on the plot that will represent the query. If no color is selected one will be provided automatically. active takes TRUE or FALSE, and if TRUE, it will overlay the bars present with the results from the query. If FALSE a tick mark will indicate the intersection size. See examples section on how to do this.
-- `query.legend` - Position query legend on top or bottom of UpSet plot
-- `shade.color` - Color of row shading in matrix
-- `shade.alpha` - Transparency of shading in matrix
-- `matrix.dot.alpha` - Transparency of the empty intersections points in the matrix
-- `empty.intersections` - Additionally display empty sets up to nintersects
-- `color.pal` - Color palette for attribute plots
-- `boxplot.summary` - Boxplots representing the distribution of a selected attribute for each intersection. Select attributes by entering a character vector of attribute names (e.g. c("Name1", "Name2")). The maximum number of attributes that can be entered is 2.
-- `attribute.plots` - Create custom ggplot using intersection data represented in the main bar plot. Prior to adding custom plots, the UpSet plot is set up in a 100 by 100 grid. The attribute.plots parameter takes a list that contains the number of rows that should be allocated for the custom plot, and a list of plots with specified positions. nrows is the number of rows the custom plots should take up. There is already 100 allocated for the custom plot. plots takes a list that contains a function that returns a custom ggplot and the x and y aesthetics for the function. ncols is the number of columns that your ggplots should take up. See examples for how to add custom ggplots.
-- `scale.intersections` - The scale to be used for the intersection sizes. Options: "identity", "log10", "log2"
-- `scale.sets` - The scale to be used for the set sizes. Options: "identity", "log10", "log2"
-- `text.scale` - Numeric, value to scale the text sizes, applies to all axis labels, tick labels, and numbers above bar plot. Can be a universal scale, or a vector containing individual scales in the following format: c(intersection size title, intersection size tick labels, set size title, set size tick labels, set names, numbers above bars)
-- `set_size.angles` - Numeric, angle to rotate the set size plot x-axis text
-- `set_size.show` - Logical, display the set sizes on the set size bar chart
-- `set_size.numbers_size` - If set_size.show is TRUE, adjust the size of the numbers
-- `set_size.scale_max` - Increase the maximum of set size scale
-
-
-
-
-
-Выберем 6 наибольших наборов 
-
-```{r fig.height=8, fig.width=12}
-upset(movies, nsets = 6, number.angles = 0, point.size = 3.5, line.size = 2, 
-    mainbar.y.label = "Genre Intersections", sets.x.label = "Movies Per Genre", 
-    text.scale = c(1.3, 1.3, 1, 1, 2, 0.75))
-```
-
-Выбрать конкретные наборы и задать параметры группировки
-
-```{r}
-upset(movies, sets = c("Action", "Adventure", "Comedy", "Drama", "Mystery", 
-    "Thriller", "Romance", "War", "Western"), mb.ratio = c(0.55, 0.45), order.by = "degree")
-upset(movies, sets = c("Action", "Adventure", "Comedy", "Drama", "Mystery", 
-    "Thriller", "Romance", "War", "Western"), mb.ratio = c(0.55, 0.45), order.by = c("degree", 
-    "freq"))
-```
-
-Задать порядок наборов при сортировке
-
-```{r}
-upset(movies, sets = c("Action", "Adventure", "Comedy", "Drama", "Mystery", 
-    "Thriller", "Romance", "War", "Western"), mb.ratio = c(0.55, 0.45), order.by = "freq", 
-    keep.order = TRUE)
-```
-
-Группировка по наборам
-
-```{r}
-upset(movies, nintersects = 70, group.by = "sets", cutoff = 7)
-```
 
+Рассмотрим как эти пересечения соответствуют сегментам на диаграмме Венна. 
 
-Отображение Пустых Пересечений
+- Первая строка на рисунке полностью пуста – соответствует всем элементам, которые не входят ни в один из наборов. 
+- Зеленая (третья) строка соответствует элементам, которые находятся только в наборе B (не в A или C). 
+- Оранжевая (пятая) строка представляет элементы, которые являются общими для наборов A и B, но не для C. 
+- Наконец, последняя (фиолетовая) строка представляет элементы, общие для всех наборов.
 
-```{r}
-upset(movies, empty.intersections = "on", order.by = "freq")
-```
+::: {style="display: flex; align-items: center; justify-content: center;"}
+![](images/concept_2_intersections.svg){style="margin: 0 auto;" width="400"}
+:::
 
+Этот график хорош тем, что мы можем отобразить размер пересечений (“мощность”) в виде гистограмм прямо рядом с матрицей, как вы можете видеть в следующем примере:
 
-### Атрибуты графиков
+::: {style="display: flex; align-items: center; justify-content: center;"}
+![](images/concept_3_cardinality.svg){style="margin: 0 auto;" width="400"}
+:::
 
-```{r}
-library(UpSetR)
-library(ggplot2)
-library(grid)
-library(plyr)
-```
 
-The attribute.plots parameter is broken down into 3 fields: gridrows, plots, and ncols
+Такое представление мощнойстей делает более понятным сравнение размеров пересечений.
 
-- `gridrows` specifies how much to expand the plot window to add room for attribute plots. The UpSetR plot is plotted on a 100 by 100 grid. So for example, if we set gridrows to 50, the new grid layout would be 150 by 100, setting aside 1/3 of the plot for the attribute plots.
-- `plots` takes a list of paramters. These paramters include plot, x, y (if applicable), and queries.
-- `plot` is a function that returns a ggplot
-- `x` is the x aesthetic to be used in the ggplot (entered as string)
-- `y` is the y aesthetic to be used in the ggplot (entered as string)
-- queries: indicates whether or not to overlay the plot with the queries present. If queries is TRUE, the attribute plot will be overlayed with data from the queries. If queries is FALSE, no query results will be plotted on the attribute plot.
-- `ncols` specifies how the plots should be arranged in the gridrows space. If two attribute plots are entered and ncols is 1,then the plots will display one above the other. Alternatively, if two attribute plots are entered and ncols is 2, the attribute plots will be displayed side by side.
+Матрица также очень полезна, потому что ее можно сортировать различными способами. Обычным способом является сортировка по мощности (размеру), как показано на следующем рисунке, но также возможны и другие виды сортировки.
 
+::: {style="display: flex; align-items: center; justify-content: center;"}
+![](images/concept_4_sorting.svg){style="margin: 0 auto;" width="400"}
+:::
 
-Встроенная гистограмма атрибутов
+Наконец, UpSet одинаково хорошо работает как по горизонтали, так и по вертикали. Вертикальные графики лучше подходят для интерактивных графиков, которые можно прокручивать, в то время как горизонтальные графики лучше всего подходят для статичного представления.
 
-```{r}
-upset(movies, main.bar.color = "black", queries = list(list(query = intersects, 
-    params = list("Drama"), active = T)), attribute.plots = list(gridrows = 50, 
-    plots = list(list(plot = histogram, x = "ReleaseDate", queries = F), list(plot = histogram, 
-        x = "AvgRating", queries = T)), ncols = 2))
-```
+::: {style="display: flex; align-items: center; justify-content: center;"}
+![](images/concept_5_horizontal.svg){style="margin: 0 auto;" width="400"}
+:::
 
 
-Встроенная точечная диаграмма
+Мы уже частично коснулись матрицы в которая содержит комбинации атрибутов, теперь рассмотрим её подробнее.
 
-```{r}
-upset(movies, main.bar.color = "black", queries = list(list(query = intersects, 
-    params = list("Drama"), color = "red", active = F), list(query = intersects, 
-    params = list("Action", "Drama"), active = T), list(query = intersects, 
-    params = list("Drama", "Comedy", "Action"), color = "orange", active = T)), 
-    attribute.plots = list(gridrows = 45, plots = list(list(plot = scatter_plot, 
-        x = "ReleaseDate", y = "AvgRating", queries = T), list(plot = scatter_plot, 
-        x = "AvgRating", y = "Watches", queries = F)), ncols = 2), query.legend = "bottom")
-```
 
+## Комбинационная матрица
 
-Создание пользовательских графиков
-
-```{r}
-myplot <- function(mydata, x, y) {
-    plot <- (ggplot(data = mydata, aes_string(x = x, y = y, colour = "color")) + 
-        geom_point() + scale_color_identity() + theme(plot.margin = unit(c(0, 
-        0, 0, 0), "cm")))
-}
-
-another.plot <- function(data, x, y) {
-    data$decades <- round_any(as.integer(unlist(data[y])), 10, ceiling)
-    data <- data[which(data$decades >= 1970), ]
-    myplot <- (ggplot(data, aes_string(x = x)) + geom_density(aes(fill = factor(decades)), 
-        alpha = 0.4) + theme(plot.margin = unit(c(0, 0, 0, 0), "cm"), legend.key.size = unit(0.4, 
-        "cm")))
-}
-
-upset(movies, main.bar.color = "black", queries = list(list(query = intersects, 
-    params = list("Drama"), color = "red", active = F), list(query = intersects, 
-    params = list("Action", "Drama"), active = T), list(query = intersects, 
-    params = list("Drama", "Comedy", "Action"), color = "orange", active = T)), 
-    attribute.plots = list(gridrows = 45, plots = list(list(plot = myplot, x = "ReleaseDate", 
-        y = "AvgRating", queries = T), list(plot = another.plot, x = "AvgRating", 
-        y = "ReleaseDate", queries = F)), ncols = 2))
-```
-
-Объединение встроенного точечного графика и графика гистограммы с пользовательским графиком myplot, определенным в приведенном выше примере.
-
-```{r}
-upset(movies, main.bar.color = "black", mb.ratio = c(0.5, 0.5), queries = list(list(query = intersects, 
-    params = list("Drama"), color = "red", active = F), list(query = intersects, 
-    params = list("Action", "Drama"), active = T), list(query = intersects, 
-    params = list("Drama", "Comedy", "Action"), color = "orange", active = T)), 
-    attribute.plots = list(gridrows = 50, plots = list(list(plot = histogram, 
-        x = "ReleaseDate", queries = F), list(plot = scatter_plot, x = "ReleaseDate", 
-        y = "AvgRating", queries = T), list(plot = myplot, x = "AvgRating", 
-        y = "Watches", queries = F)), ncols = 3))
-```
-
-boxplot, показывает распределение атрибута по всем пересечениям. Может отображать одновременно не более двух сводок графиков. Параметр boxplot.summary принимает вектор из одного или двух имен атрибутов.
-
-```{r}
-upset(movies, boxplot.summary = c("AvgRating", "ReleaseDate"))
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## Графики UpSet в пакете ComplexHeatmap
-
-Используя пакет ComplexHeatmap для построения графиков нужно приложить больше усилий нежели используя пакет UpSetR, но ComplexHeatmap может дать больше вариантов форматирования графика, а также дополнить его разлиными тепловыми картами.
-
-
-Прежде чем перейти к основным примерам построения графиков в пакете ComplexHeatmap, разберем матрицу комбинаций.
-
-### Матрица комбинаций
+График UpSet строится на комбинациях пересечений атрибутов набора данных. Атрибуты должны иметь значения (0, 1) или (TRUE, FALSE). Совокупность таких атрибутов называется комбинационной матрицей или матрицей комбинаций, рассмотрим её создание на примере пакета ComplexHeatmap.
 
 Матрицу комбинаций можно составить из:
 
@@ -286,6 +113,12 @@ list_to_matrix(ls)
 
 На графике это количество комбинаций или пересечений отображается как ***Intersection size***, а длины векторов или наборы в матрице как ***Set size***.
 
+```{r echo=FALSE, fig.align='center', fig.height=3}
+UpSet(make_comb_mat(ls))
+```
+
+
+
 Теперь создадим матрицу комбинаций функцией make_comb_mat.
 
 У функции `make_comb_mat` есть три режима работы:
@@ -302,7 +135,9 @@ list_to_matrix(ls)
 [![Режимы функции](unnamed-chunk-7-1.png){style="margin: 0 auto;" width="341"}](https://jokergoo.github.io/ComplexHeatmap-reference/book/upset-plot.html#upset-mode)
 :::
 
-```{r echo=FALSE}
+Создадим матрицу комбинаций
+
+```{r}
 # задание режимов расчета размеров набора
 mx <- make_comb_mat(ls)
 
@@ -317,517 +152,52 @@ m1 = make_comb_mat(ls, min_set_size = 4)
 m2 = make_comb_mat(ls, top_n_sets = 1) 
 ```
 
+Дальше с этой матрицей будем работать черех пакет ComplexHeatmap.
 
-### Строим первый график
 
+## Реализация графиков UpSet
 
-После того как матрица комбинаций готова построим график. По умолчанию наборы упорядочены по размеру, а наборы комбинаций упорядочены по степени (количеству выбранных наборов).
+Создать графики можно на различных языках программирования, мы рассмотрим R и Python в дальнейших статьях.
 
-```{r fig.align='center', fig.height=3}
-UpSet(mx)
-```
 
-Матрицу комбинаций, отфильтрованную по подмножествам, также можно визуализировать.
+Эти графики в языке R реализованы в трех пакетах:
 
-```{r echo=TRUE, fig.show='hold', out.width=c('50%', '50%')}
-UpSet(mx[comb_size(mx) >= 2])
-UpSet(mx[comb_degree(mx) == 1])
-```
+-   UpSetR
+-   ComplexHeatmap
+-   ComplexUpset
 
-Когда мы научились визуализировать матрицу комбинаций сравним различные режимы в `make_comb_mat()`.
-В зависимости от выбраного режима изменяется количество комбинаций наборов.
+Не нужно совместно инициализировать пакеты UpSetR и ComplexUpset, их методы пересекаются и привызове функции upset пакета UpSetR возникает ошибка: unused argument
 
-```{r echo=TRUE, fig.show='hold', out.width=c('33.3333%', '33.3333%', '33.3333%')}
-m1 = make_comb_mat(ls) # the default mode is `distinct`
-m2 = make_comb_mat(ls, mode = "intersect")
-m3 = make_comb_mat(ls, mode = "union")
-UpSet(m1, column_title = "distinct mode", row_title = "distinct mode") # добавить подписи к графикам
-UpSet(m2)
-UpSet(m3)
-```
 
+А в Python в двух библиотеках:
 
+- UpSetPlot
+- pyUpSet
 
 
 
-Матрица комбинаций может быть дополнена 
+### Примеры графиков UpSet
 
 
-Для чего её дополнять????
+::: {style="display: flex; align-items: center; justify-content: center;"}
+![](images/Examples_R_57_0.png){style="margin: 0 auto;" width="800"}
+:::
 
-Для графика, содержащего набор дополнений, есть один дополнительный столбец, показывающий, что этот набор дополнений не перекрывается ни с одним из наборов (все точки выделены серым цветом).
 
-```{r}
-m2 = make_comb_mat(ls, universal_set = letters)
-UpSet(m2)
-```
 
-Помните, что если вы уже знаете размер для набора дополнений, вы можете напрямую назначить его с помощью аргумента complement_size в make_comb_mat().
+::: {style="display: flex; align-items: center; justify-content: center;"}
+![](images/unnamed-chunk-77-1.png){style="margin: 0 auto;" width="800"}
+:::
 
-```{r}
-m2 = make_comb_mat(ls, complement_size = 10)
-UpSet(m2)
-```
 
-Для случая, когда универсальное множество меньше, чем объединение всех множеств:
 
-```{r}
-m2 = make_comb_mat(ls, universal_set = letters[1:10])
-UpSet(m2)
-```
+::: {style="display: flex; align-items: center; justify-content: center;"}
+![](images/Examples_R_40_0.png){style="margin: 0 auto;" width="800"}
+:::
 
-В некоторых случаях у вас может быть набор дополнений, но вы не хотите его показывать, особенно когда входные данные для make_comb_mat() представляют собой матрицу, которая уже содержит набор дополнений, вы можете фильтровать по степеням комбинации.
 
-```{r}
-x = list_to_matrix(ls, universal_set = letters)
-m2 = make_comb_mat(x)
-m2 = m2[comb_degree(m2) > 0]
-UpSet(m2)
-```
 
+## Используемые источники: 
 
-### Форматирование графика
-
-#### Сортировка
-
-За сортировку отвечают атрибуты set_order и comb_order
-
-Сортировку `Set size` можно задать несколькими способами:
-
-- `set_order = c("set1", "set2")`
-
-- задать вектор с порядком наборов
-
-- `set_order = order(set_size(mx))` - сортировать по абсолютным величинам
-
-
-Функции `set_size` и `comb_size` возвращают вектор с размерами наборов и комбинаций
-
-```{r}
-UpSet(mx, set_order = order(set_size(mx)), comb_order = order(comb_size(mx)))
-```
-
-#### Форматирование графика комбинаций
-
-Цвет точек, размер точек и ширина линий сегментов контролируются pt_size, comb_col и lwd.
-
-График можно форматировать следующим образом:
-
--   pt_size - размер точек комбинаций наборов
--   lwd - толщина линии соединяющей точки комбинаций
--   comb_col - цвет точек, представляющих наборы комбинаций
-    -   comb_degree - возвращает вектор целых чисел, мы просто используем его в качестве индекса для вектора цвета.
--   bg_col - цвет фона строки набора в комбинациях, можно задать только для нечетных или для нечетных и четных строк
-    -   `bg_col = "#F0F0FF"`
-    -   `bg_col = c("#F0F0FF", "#FFF0F0")`
--   bg_pt_col - цвет точек, представляющих наборы комбинаций, которые неактивны
-
-
-
-```{r echo=TRUE, fig.show='hold', out.width=c('33.3333%', '33.3333%', '33.3333%')}
-UpSet(mx, 
-      pt_size = unit(4, "mm"),
-      lwd = 2,
-      comb_col = c("red", "blue", "black")[comb_degree(mx)]
-      )
-UpSet(mx, comb_col = "#0000FF", bg_col = "#F0F0FF", bg_pt_col = "black")
-UpSet(mx, comb_col = "#0000FF", bg_col = c("#F0F0FF", "#FFF0F0"), bg_pt_col = "#CCCCFF")
-```
-
-Транспонирование матрицы комбинаций преобразует наборы в столбцы, а наборы комбинаций - в строки. Для лучшего представления так можно "перевернуть" график.
-
-```{r}
-UpSet(t(mx))
-```
-
-
-
-### Расширенное форматирование графиков UpSet
-
-Графики UpSet наследуют методы от класса Heatmap, поэтому для расширенного форматирования использум методы этого класса.
-
-Так как основой графика является матрица комбинаций, размеры которой отображены в виде гистограммы, то эти визуализации можно форматировать как тепловую карту с помощью HeatmapAnnotation и announce_barplot с некоторыми предварительно заданными параметрами.
-
-Есть три типа форматов:
-
-- top_annotation - по умолчанию представляет собой столбчатую диаграмму, показывающую размер каждого набора комбинаций
-- left_annotation/right_annotation - по умолчанию представляет собой столбчатую диаграмму, показывающую размер наборов
-
-`upset_top_annotation` - реализует методы anno_barplot для верхней части графика
-gp - задает графические параметры баров
-gp содержит объект класса gpar, который содержит параметры в виде ключ-значение
-
-Объект gpar имеет следующие параметры:
-
-```{r}
-UpSet(mx, 
-      top_annotation = upset_top_annotation(mx, 
-        gp = gpar(
-          col = comb_degree(mx), # цвет линий и границ бара
-          fill = "green",        # цвет бара
-          alpha = 0.9,           # прозрачность бара
-          lty = "solid",         # тип линии
-          lwd = 3,               # ширина линии
-          lex = 0.9,             # Множитель, применяемый к ширине линии
-          lineend = "round",     # Стиль окончания линии (круглый, торцевой, квадратный)
-          linejoin = "mitre",    # Стиль соединения линий (круглый, митра, скос)
-          fontsize = 16         # размер шрифта
-          #cex = 1,               # множитель размера шрифта
-          #fontfamily            # шрифт
-          #fontface = "bold",     # стиль шрифта
-          #lineheight            # Высота строки, кратная размеру текста
-          )
-    )
-    )
-```
-
-#### Управление диапозонами данных и осями
-
-```{r}
-UpSet(mx, top_annotation = upset_top_annotation(mx, 
-    ylim = c(0, 3), # масштаб оси
-    bar_width = 1,  # ширина баров
-    axis_param = list(side = "right", at = c(0, 1, 2, 3), # позиция и значения оси
-        labels = c("zero", "one", "two", "three")         # метки оси
-        )))
-```
-
-#### Управление названием оси и метками
-
-```{r}
-UpSet(mx, top_annotation = upset_top_annotation(mx, 
-    annotation_name_rot = 90, # Угол поворота имени оси
-    annotation_name_side = "right", # позиция имени оси
-    axis_param = list(side = "right") # позиция оси 
-    ))
-```
-
-#### Настройка правой анотации
-
-```{r}
-UpSet(mx, right_annotation = upset_right_annotation(mx, 
-    ylim = c(0, 5), # масштаб оси
-    gp = gpar(fill = "green"),
-    annotation_name_side = "top",
-    axis_param = list(side = "top")))
-```
-
-
-
-Если помимо стандартных анотаций графика нужно добавить дополнительные, то необходимо создать объект `HeatmapAnnotation` 
-
-```{r}
-UpSet(mx, top_annotation = HeatmapAnnotation(
-    degree = as.character(comb_degree(mx)),
-    "Intersection\nsize" = anno_barplot(comb_size(mx), 
-        border = FALSE, 
-        gp = gpar(fill = "black"), 
-        height = unit(2, "cm")
-    ), 
-    annotation_name_side = "left", 
-    annotation_name_rot = 0))
-```
-
-```{r}
-UpSet(mx, right_annotation = rowAnnotation(
-    "Set size" = anno_barplot(set_size(mx), 
-        border = FALSE, 
-        gp = gpar(fill = "black"), 
-        width = unit(2, "cm")
-    ),
-    group = c("group1", "group2")))
-```
-
-
-
-Чтобы переместить правую аннотацию влево от комбинированной матрицы, используйте upset_left_annotation()
-
-```{r}
-UpSet(mx, left_annotation = upset_left_annotation(mx))
-```
-
-
-
-#### Добавление меток данных
-
-```{r}
-UpSet(mx, top_annotation = upset_top_annotation(mx, add_numbers = TRUE),
-    right_annotation = upset_right_annotation(mx, add_numbers = TRUE))
-```
-
-### Добовление тепловых карт на график
-
-
-Объект возращаемый функцией UpSet() является объектом класса Heatmap, поэтому к нему можно добавлять тепловые карты и анотации.
-
-```{r}
-ht <- UpSet(mx)
-ht + Heatmap(1:2, name = "foo", width = unit(5, "mm")) + 
-    rowAnnotation(bar = anno_points(1:2))
-
-ht %v%
-  Heatmap(rbind(1:3), name = "foo", row_names_side = "left", height = unit(5, "mm")) %v% 
-      HeatmapAnnotation(bar = anno_points(1:3), annotation_name_side = "left")
-
-```
-
-### Вывод множества диаграмм на одном графике
-
-```{r}
-m1 = make_comb_mat(ls, mode = "distinct")
-m2 = make_comb_mat(ls, mode = "intersect")
-m3 = make_comb_mat(ls, mode = "union")
-UpSet(m1, row_title = "distinct mode") %v%
-    UpSet(m2, row_title = "intersect mode") %v%
-    UpSet(m3, row_title = "union mode")
-
-UpSet(t(m1), column_title = "distinct mode") +
-    UpSet(t(m2), column_title = "intersect mode") +
-    UpSet(t(m3), column_title = "union mode")
-```
-
-
-Три комбинированные матрицы на самом деле одинаковы, и их трехкратное построение является излишним. Благодаря функциональности пакета ComplexHeatmap мы можем напрямую добавлять три аннотации к столбчатой диаграмме.
-
-
-```{r }
-top_ha = HeatmapAnnotation(
-    "distict" = anno_barplot(comb_size(m1), 
-        gp = gpar(fill = "black"), height = unit(2, "cm")), 
-    "intersect" = anno_barplot(comb_size(m2), 
-        gp = gpar(fill = "black"), height = unit(2, "cm")), 
-    "union" = anno_barplot(comb_size(m3), 
-        gp = gpar(fill = "black"), height = unit(2, "cm")), 
-    gap = unit(2, "mm"), annotation_name_side = "left", annotation_name_rot = 0)
-# the same for using m2 or m3
-UpSet(m1, top_annotation = top_ha)
-
-
-right_ha = rowAnnotation(
-    "distict" = anno_barplot(comb_size(m1), 
-        gp = gpar(fill = "black"), width = unit(2, "cm")), 
-    "intersect" = anno_barplot(comb_size(m2), 
-        gp = gpar(fill = "black"), width = unit(2, "cm")), 
-    "union" = anno_barplot(comb_size(m3), 
-        gp = gpar(fill = "black"), width = unit(2, "cm")), 
-    gap = unit(2, "mm"), annotation_name_side = "bottom")
-# the same for using m2 or m3
-UpSet(t(m1), right_annotation = right_ha)
-```
-
-Разобрать этот кусок и функцию decorate_annotation
-
-
-```{r}
-ht = draw(UpSet(mx))
-od = column_order(ht)
-cs = comb_size(mx)
-decorate_annotation("intersection_size", {
-    grid.text(cs[od], x = seq_along(cs), y = unit(cs[od], "native") + unit(2, "pt"), 
-        default.units = "native", just = "bottom", gp = gpar(fontsize = 12))
-})
-```
-
-
-### Разбираем пример с набором данных о фильмах
-
-Пакет UpSetR содержит встроенный набор данных о фильмах сделаем пару примеров на его основе.
-
-Набор представляет из себя следующее:
-
-- Имя фильма
-- Год выпуска
-- Флаги принадлежности к жанру (17 столбцов)
-- Средний рейтинг 
-- Количество просмотров
-
-
-
-```{r}
-movies = read.csv(system.file("extdata", "movies.csv", package = "UpSetR"), 
-    header = TRUE, sep = ";")
-head(movies) # `make_comb_mat()` automatically ignores the first two columns
-```
-
-Составляем матрицу комбинаций из набора данных
-
-```{r}
-m = make_comb_mat(movies, top_n_sets = 6)
-m = m[comb_degree(m) > 0]
-m
-UpSet(m)
-```
-
-
-Форматируем этот график
-
-```{r}
-ss = set_size(m)
-cs = comb_size(m)
-ht = UpSet(m, 
-    set_order = order(ss),
-    comb_order = order(comb_degree(m), -cs),
-    top_annotation = HeatmapAnnotation(
-        "Genre Intersections" = anno_barplot(cs, 
-            ylim = c(0, max(cs)*1.1),
-            border = FALSE, 
-            gp = gpar(fill = "black"), 
-            height = unit(4, "cm")
-        ), 
-        annotation_name_side = "left", 
-        annotation_name_rot = 90),
-    left_annotation = rowAnnotation(
-        "Movies Per Genre" = anno_barplot(-ss, 
-            baseline = 0,
-            axis_param = list(
-                at = c(0, -500, -1000, -1500),
-                labels = c(0, 500, 1000, 1500),
-                labels_rot = 0),
-            border = FALSE, 
-            gp = gpar(fill = "black"), 
-            width = unit(4, "cm")
-        ),
-        set_name = anno_text(set_name(m), 
-            location = 0.5, 
-            just = "center",
-            width = max_text_width(set_name(m)) + unit(4, "mm"))
-    ), 
-    right_annotation = NULL,
-    show_row_names = FALSE)
-ht = draw(ht)
-od = column_order(ht)
-decorate_annotation("Genre Intersections", {
-    grid.text(cs[od], x = seq_along(cs), y = unit(cs[od], "native") + unit(2, "pt"), 
-        default.units = "native", just = c("left", "bottom"), 
-        gp = gpar(fontsize = 6, col = "#404040"), rot = 45)
-})
-```
-
-
-В наборе данных movies также есть один столбец AvgRating, который дает рейтинг каждого фильма, затем мы разделяем все фильмы на пять групп на основе оценок.
-
-
-```{r}
-genre = c("Action", "Romance", "Horror", "Children", "SciFi", "Documentary")
-rating = cut(movies$AvgRating, c(0, 1, 2, 3, 4, 5))
-m_list = tapply(seq_len(nrow(movies)), rating, function(ind) {
-    m = make_comb_mat(movies[ind, genre, drop = FALSE])
-    m[comb_degree(m) > 0]
-})
-```
-
-
-Чтобы сравнить несколько групп с UpSet графиками, нам нужно нормализовать все матрицы, чтобы они имели одинаковые наборы и одинаковые наборы комбинаций. normalize_comb_mat() в основном добавляет ноль к новым наборам комбинаций, которых раньше не было.
-
-
-```{r fig.height=26, fig.width=12}
-m_list = normalize_comb_mat(m_list)
-sapply(m_list, comb_size)
-
-# Мы вычисляем диапазон для двух гистограмм:
-max_set_size = max(sapply(m_list, set_size))
-max_comb_size = max(sapply(m_list, comb_size))
-
-ht_list = NULL
-for(i in seq_along(m_list)) {
-    ht_list = ht_list %v%
-        UpSet(m_list[[i]], row_title = paste0("rating in", names(m_list)[i]),
-            set_order = NULL, comb_order = NULL,
-            top_annotation = upset_top_annotation(m_list[[i]], ylim = c(0, max_comb_size)),
-            right_annotation = upset_right_annotation(m_list[[i]], ylim = c(0, max_set_size)))
-}
-ht_list
-```
-
-
-Сравнив пять UpSet сюжетов, мы видим, что большинство фильмов имеют рейтинг от 2 до 4. Фильмы ужасов, как правило, имеют более низкие рейтинги, а романтические фильмы, как правило, имеют более высокие рейтинги.
-
-Вместо прямого сравнения размера наборов комбинаций мы также можем сравнить относительную долю с полными наборами. В следующем коде мы удаляем группу c(0, 1], потому что там слишком мало фильмов.
-
-```{r}
-m_list = m_list[-1]
-max_set_size = max(sapply(m_list, set_size))
-rel_comb_size = sapply(m_list, function(m) {
-    s = comb_size(m)
-    # because the combination matrix is generated under "distinct" mode
-    # the sum of `s` is the size of the full set
-    s/sum(s)
-})
-ht_list = NULL
-for(i in seq_along(m_list)) {
-    ht_list = ht_list %v%
-        UpSet(m_list[[i]], row_title = paste0("rating in", names(m_list)[i]),
-            set_order = NULL, comb_order = NULL,
-            top_annotation = HeatmapAnnotation(
-                "Relative\nfraction" = anno_barplot(
-                    rel_comb_size[, i],
-                    ylim = c(0, 0.5),
-                    gp = gpar(fill = "black"),
-                    border = FALSE,
-                    height = unit(2, "cm"),
-                ), 
-                annotation_name_side = "left",
-                annotation_name_rot = 0),
-            right_annotation = upset_right_annotation(m_list[[i]], 
-                ylim = c(0, max_set_size))
-        )
-}
-ht_list
-```
-
-Затем мы разделим фильмы по годам:
-
-```{r  fig.height=16, fig.width=10}
-year = floor(movies$ReleaseDate/10)*10
-m_list = tapply(seq_len(nrow(movies)), year, function(ind) {
-    m = make_comb_mat(movies[ind, genre, drop = FALSE])
-    m[comb_degree(m) > 0]
-})
-m_list = normalize_comb_mat(m_list)
-max_set_size = max(sapply(m_list, set_size))
-max_comb_size = max(sapply(m_list, comb_size))
-ht_list1 = NULL
-for(i in 1:5) {
-    ht_list1 = ht_list1 %v%
-        UpSet(m_list[[i]], row_title = paste0(names(m_list)[i], "s"),
-            set_order = NULL, comb_order = NULL,
-            top_annotation = upset_top_annotation(m_list[[i]], ylim = c(0, max_comb_size),
-                height = unit(2, "cm")),
-            right_annotation = upset_right_annotation(m_list[[i]], ylim = c(0, max_set_size)))
-}
-
-ht_list2 = NULL
-for(i in 6:10) {
-    ht_list2 = ht_list2 %v%
-        UpSet(m_list[[i]], row_title = paste0(names(m_list)[i], "s"),
-            set_order = NULL, comb_order = NULL,
-            top_annotation = upset_top_annotation(m_list[[i]], ylim = c(0, max_comb_size),
-                height = unit(2, "cm")),
-            right_annotation = upset_right_annotation(m_list[[i]], ylim = c(0, max_set_size)))
-}
-grid.newpage()
-pushViewport(viewport(x = 0, width = 0.5, just = "left"))
-draw(ht_list1, newpage = FALSE)
-popViewport()
-pushViewport(viewport(x = 0.5, width = 0.5, just = "left"))
-draw(ht_list2, newpage = FALSE)
-popViewport()
-```
-
-
-Наконец, мы можем добавить статистику по годам, рейтингам и количеству часов для каждой комбинации, заданной в виде аннотаций boxplot справа от основного графика.
-
-```{r}
-m = make_comb_mat(movies[, genre])
-m = m[comb_degree(m) > 0]
-comb_elements = lapply(comb_name(m), function(nm) extract_comb(m, nm))
-years = lapply(comb_elements, function(ind) movies$ReleaseDate[ind])
-rating = lapply(comb_elements, function(ind) movies$AvgRating[ind])
-watches = lapply(comb_elements, function(ind) movies$Watches[ind])
-
-UpSet(t(m)) + rowAnnotation(years = anno_boxplot(years),
-    rating = anno_boxplot(rating),
-    watches = anno_boxplot(watches),
-    gap = unit(2, "mm"))
-```
-
+- https://upset.app/
+- https://jokergoo.github.io/ComplexHeatmap-reference/book/upset-plot.html
