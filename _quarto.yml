@@ -1,0 +1,80 @@
+project:
+  type: website
+
+website:
+  page-navigation: true # внизу страницы появляются стрелки с переходом на след\пред статью внутри секции
+  search: 
+    location: navbar # место панели поиска
+    type: textbox # тип
+    copy-button: true # кнопка копии адреса найденой статьи
+    
+  open-graph: true # подключение разметки Open Graph
+  
+  # настройка верхнего меню
+  navbar: 
+    left:
+      - text: "Home"
+        file: index.qmd
+      #- text: "Analytics"
+       # file: analytics/analytics_page.qmd
+      - text: "Data Engineering"
+        file: data_engineering/data_engineering_page.qmd
+      - text: " R "
+        file: r_language/r_language_page.qmd
+      - text: " Python "
+        file: python_language/python_language_page.qmd
+      - text: "Visualization"
+        file: visualization/visualization_page.qmd
+      
+# настройка бокового меню
+# чтобы боковое меню появлялось только на определенных страницах нужно связать заголовки в верхнем и боковом меню
+# а также чтобы файл в верхнем меню был такой же как первый файл после заголовка в боковом
+  sidebar:
+    #- title: "analytics"
+    #  contents: 
+    #    - analytics/analytics_page.qmd
+    #    - section: "analytics"
+    #      contents: analytics/* # в меню будут отображаться всё файлы из директории
+      
+    - title: "Data Engineering"
+      contents: 
+        - data_engineering/data_engineering_page.qmd
+        - section: "Data Base"
+        - text: "---"
+        - section: "PostgreSQL"
+          contents: data_engineering/data_base/*.qmd
+        
+    - title: "R"
+      contents:
+        - r_language/r_language_page.qmd
+        - section: "Tutorials"
+          contents: r_language/*_cheatsheet.qmd
+        
+    - title: "Python"
+      contents:
+        - python_language/python_language_page.qmd
+        
+    - title: "Visualization"
+      contents:
+        - visualization/visualization_page.qmd
+    
+  # настройка нижнего колонтитула         
+  page-footer:
+    left: "Copyright 2022, Best Practices IT" 
+    center: 
+      - icon: github
+        href: https://github.com/Azveg
+      - icon: telegram
+        href: https://t.me/best_practices_it
+
+
+format:
+  html:
+    theme: 
+      dark: Solar # если первой указать тему dark, то оно  будет по умолчанию
+      light: Journal
+    highlight-style: github # стиль блоков кода
+    code-link: true
+      
+    css: styles.css
+    toc: true # вывод содержания страницы (выводятся заголовки до 3го уровня)

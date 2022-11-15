@@ -1,0 +1,22 @@
+---
+title: "Best Practices IT"
+listing:
+  - id: list_post
+    contents: 
+      - "*.qmd"
+    type: default
+    sort-ui: [title, date]
+    categories: true
+    filter-ui: [title, categories]
+    page-size: 5
+    fields: [date, title, description, categories, reading-time]
+toc: false
+---
+
+Примеры практик, статьи и описание технологий IT
+
+
+::: {#list_post}
+:::
+
+

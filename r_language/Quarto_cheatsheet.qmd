@@ -1,0 +1,332 @@
+---
+title: "Quarto cheat sheet"
+date: 10-11-2022
+categories:
+  - R
+  - Quarto
+  - cheatsheet
+description: "Описание возможностей Quarto для создания web сайтов и их наполнения"
+toc-depth: 4
+smooth-scroll: true
+author: 
+  - "Best Practices IT"
+  - url: https://t.me/best_practices_it
+citation: true
+highlight-style: mokokai
+
+---
+
+### Отображение контента
+
+
+#### Содержание страницы
+
+
+-   `toc: true|false` - включение/отключение отображения содержания страницы
+-   `toc-depth: 2` - глубина отображаемых заголовков в содержании
+-   `toc-title: Contents` - заголовок содержания
+-   `toc-location: left` - положение содержания
+
+
+#### Блок кода
+
+
+В блоке кода опции можно задавать через комментарий вида: `#|`, вот некоторые опции:
+
+- `echo: true|false` - показать\\скрыть код 
+- `code-fold: true` - добавить опцию свернуть\\развернуть код
+- `code-summary: "Show the code"` - заголовок свернутого блока кода
+- `code-overflow: wrap|scroll` - добавляет скролл или перенос по словам для длинных строк кода
+
+
+#### Изображения и графики
+
+
+Описание вариантов размещения изображений и графиков приведено в статье[^2].
+
+
+[^2]: [Figures](https://quarto.org/docs/authoring/figures.html)
+
+### Настройка темы
+
+
+#### Тема блока кода
+
+Для блока кода можно задать тему, что примечательно если на сайте заданы светлая и темная темы, то для каждой из них можно установить свою тему блока кода.
+
+
+
+`highlight-style: github` - установить тему github для блока кода
+
+Установить для светлой и темной темы, темы блоков кода
+
+```
+highlight-style:
+  light: custom-light.theme
+  dark: custom-dark.theme
+```
+
+Список тем: [a11y, arrow, atom-one, ayu, breeze, github, gruvbox, pygments, tango, espresso, zenburn, kate, monochrome, breezedark, haddock, dracula, mokokai, nord, oblivion, printing, radical, solarized, vim-dark]
+
+
+
+### Уравнения
+
+
+Вывести математические уравнения можно внутри строки с тестом или отдельным блоком 
+
+Вывод формулы `$E = mc^{2}$` $E = mc^{2}$ в строке текста.
+
+Вывод формулы `$$E = mc^{2}$$` отдельным блоком $$E = mc^{2}$$
+
+
+### Диаграммы
+
+В Quarto можно выводить настраиваемые диаграммы [Mermaid](https://mermaid-js.github.io/mermaid/#/) and [Graphviz](https://graphviz.org/) 
+
+
+Рассмотрим примеры диаграмм выполненых в Mermaid
+
+
+#### Flowchart
+
+Подробная [инструкция](https://mermaid-js.github.io/mermaid/#/./flowchart?id=flowcharts-basic-syntax) по составлению диаграммы Flowchart.
+
+```{mermaid}
+%%| echo: true
+
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;
+```
+
+
+#### Sequence diagram 
+
+Подробная [инструкция](https://mermaid-js.github.io/mermaid/#/./sequenceDiagram) по составлению диаграммы Sequence diagram.
+
+
+```{mermaid}
+%%| echo: true
+
+sequenceDiagram
+    Alice->>John: Hello John, how are you?
+    John-->>Alice: Great!
+    Alice-)John: See you later!
+```
+
+
+#### Gantt diagram
+
+Подробная [инструкция](https://mermaid-js.github.io/mermaid/#/./gantt) по составлению диаграммы Gantt diagram.
+
+
+```{mermaid}
+%%| echo: true
+
+gantt
+    title A Gantt Diagram
+    dateFormat  YYYY-MM-DD
+    section Section
+    A task           :a1, 2014-01-01, 30d
+    Another task     :after a1  , 20d
+    section Another
+    Task in sec      :2014-01-12  , 12d
+    another task      : 24d
+```
+
+
+#### Class diagram
+
+Подробная [инструкция](https://mermaid-js.github.io/mermaid/#/./classDiagram) по составлению диаграммы Class diagram.
+
+
+```{mermaid}
+%%| echo: true
+
+classDiagram
+    Animal <|-- Duck
+    Animal <|-- Fish
+    Animal <|-- Zebra
+    Animal : +int age
+    Animal : +String gender
+    Animal: +isMammal()
+    Animal: +mate()
+    class Duck{
+        +String beakColor
+        +swim()
+        +quack()
+    }
+    class Fish{
+        -int sizeInFeet
+        -canEat()
+    }
+    class Zebra{
+        +bool is_wild
+        +run()
+    }
+```
+
+
+#### Git graph
+
+Подробная [инструкция](https://mermaid-js.github.io/mermaid/#/gitgraph) по составлению диаграммы Git graph.
+
+
+```{mermaid}
+%%| echo: true
+
+    gitGraph
+       commit
+       commit
+       branch develop
+       commit
+       commit
+       commit
+       checkout main
+       commit
+       commit
+```
+
+
+#### Entity Relationship Diagrams
+
+Подробная [инструкция](https://mermaid-js.github.io/mermaid/#/./entityRelationshipDiagram) по составлению диаграммы Entity Relationship Diagrams.
+
+
+```{mermaid}
+%%| echo: true
+
+erDiagram
+    CUSTOMER ||--o{ ORDER : places
+    ORDER ||--|{ LINE-ITEM : contains
+    CUSTOMER }|..|{ DELIVERY-ADDRESS : uses
+```
+
+
+#### User Journey Diagram
+
+Подробная [инструкция](https://mermaid-js.github.io/mermaid/#/./user-journey) по составлению диаграммы User Journey Diagram.
+
+
+```{mermaid}
+%%| echo: true
+
+journey
+    title My working day
+    section Go to work
+      Make tea: 5: Me
+      Go upstairs: 3: Me
+      Do work: 1: Me, Cat
+    section Go home
+      Go downstairs: 5: Me
+      Sit down: 5: Me
+```
+
+
+### Видео
+
+В документ можно вставлять фрейм с видео роликом, например 
+
+
+{{< video https://www.youtube.com/embed/wo9vZccmqwc >}}
+
+
+### Выноски
+
+Выноски нужны чтобы подсветить какую-либо информацию, может быть несколько таких типов:
+
+
+::: {.callout-note}
+Note that there are five types of callouts, including:
+`note`, `warning`, `important`, `tip`, and `caution`.
+
+```
+::: {.callout-note}
+Note that there are five types of callouts, including:
+`note`, `warning`, `important`, `tip`, and `caution`.
+:::
+```
+:::
+
+
+::: {.callout-important}
+## Tip With important
+
+This is an example of a callout with a caption.
+
+```
+::: {.callout-important}
+## Tip With Caption
+
+This is an example of a callout with a caption.
+:::
+```
+:::
+
+
+::: {.callout-tip}
+## Tip With tip
+
+This is an example of a callout with a tip.
+
+```
+::: {.callout-tip}
+## Tip With Caption
+
+This is an example of a callout with a caption.
+:::
+```
+:::
+
+
+::: {.callout-caution collapse="true"}
+## Expand To Learn About Collapse
+
+This is an example of a 'folded' caution callout that can be expanded by the user. You can use `collapse="true"` to collapse it by default or `collapse="false"` to make a collapsible callout that is expanded by default.
+
+```
+::: {.callout-caution collapse="true"}
+## Expand To Learn About Collapse
+
+This is an example of a 'folded' caution callout that can be expanded by the user. You can use `collapse="true"` to collapse it by default or `collapse="false"` to make a collapsible callout that is expanded by default.
+:::
+
+```
+:::
+
+
+::: {.callout-warning}
+## Tip With warning
+
+This is an example of a callout with a warning.
+
+```
+::: {.callout-warning}
+## Tip With Caption
+
+This is an example of a callout with a caption.
+:::
+```
+:::
+
+
+### Отступления
+
+
+Чтобы делать отступления и комментарии по ходу текста, можно вставить тег .aside в фигурных скобках. [This is a span that has the class aside which places it in the margin without a footnote number.]{.aside}
+
+```
+[This is a span that has the class aside which places it in the margin without a footnote number.]{.aside}
+```
+
+
+
+### Сноски
+
+Сноски можно добавить в текст использовав [^1] '[^ + цифра или слово]'
+
+
+[^1]: а чтобы описать сноску ставим '[^ + цифра или слово]:'

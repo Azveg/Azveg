@@ -1,0 +1,19 @@
+[
+  {
+    "listing": "/index.html",
+    "items": [
+      "/analytics/analytics_page.html",
+      "/data_engineering/data_engineering_page.html",
+      "/python_language/python_language_page.html",
+      "/r_language/Quarto_cheatsheet.html",
+      "/r_language/r_language_page.html",
+      "/visualization/visualization_page.html",
+      "/r_language/dplyr_cheatsheet.html",
+      "/data_engineering/data_base/data_base_page.html"
+    ]
+  },
+  {
+    "listing": "/analytics/analytics_page.html",
+    "items": []
+  }
+]

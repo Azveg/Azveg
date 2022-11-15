@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.258">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="dcterms.date" content="2022-03-06">
+<title>dplyr сheat sheet</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../r_language/Quarto_cheatsheet.html" rel="next">
+<link href="../r_language/r_language_page.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark.min.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": true,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script><link rel="stylesheet" href="../styles.css">
+<meta property="og:title" content="dplyr сheat sheet">
+<meta property="og:description" content="Выполним установку пакета dplyr и загрузим набор данных starwars">
+</head>
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg navbar-dark "><div class="navbar-container container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+<li class="nav-item">
+    <a class="nav-link" href="../index.html">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../data_engineering/data_engineering_page.html">
+ <span class="menu-text">Data Engineering</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../r_language/r_language_page.html" aria-current="page">
+ <span class="menu-text">R</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../python_language/python_language_page.html">
+ <span class="menu-text">Python</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../visualization/visualization_page.html">
+ <span class="menu-text">Visualization</span></a>
+  </li>  
+</ul>
+<div class="quarto-toggle-container">
+                  <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+              </div>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">dplyr сheat sheet</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto"><div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../r_language/r_language_page.html" class="sidebar-item-text sidebar-link">r_language_page.html</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Tutorials</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../r_language/dplyr_cheatsheet.html" class="sidebar-item-text sidebar-link active">dplyr сheat sheet</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../r_language/Quarto_cheatsheet.html" class="sidebar-item-text sidebar-link">Quarto cheat sheet</a>
+  </div>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li>
+<a href="#%D0%B2%D1%8B%D0%B1%D0%BE%D1%80%D0%BA%D0%B0-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85" id="toc-выборка-данных" class="nav-link active" data-scroll-target="#%D0%B2%D1%8B%D0%B1%D0%BE%D1%80%D0%BA%D0%B0-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85">Выборка данных</a>
+  <ul class="collapse">
+<li><a href="#%D0%BF%D0%B5%D1%80%D0%B5%D1%87%D0%B8%D1%81%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5" id="toc-перечисление" class="nav-link" data-scroll-target="#%D0%BF%D0%B5%D1%80%D0%B5%D1%87%D0%B8%D1%81%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5">Перечисление</a></li>
+  <li><a href="#%D0%BE%D1%82%D1%80%D0%B8%D1%86%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5-%D0%BF%D0%B5%D1%80%D0%B5%D1%87%D0%B8%D1%81%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5" id="toc-отрицательное-перечисление" class="nav-link" data-scroll-target="#%D0%BE%D1%82%D1%80%D0%B8%D1%86%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D0%BD%D0%BE%D0%B5-%D0%BF%D0%B5%D1%80%D0%B5%D1%87%D0%B8%D1%81%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5">Отрицательное перечисление</a></li>
+  <li><a href="#%D0%BF%D0%BE-%D0%BD%D0%BE%D0%BC%D0%B5%D1%80%D0%B0%D0%BC" id="toc-по-номерам" class="nav-link" data-scroll-target="#%D0%BF%D0%BE-%D0%BD%D0%BE%D0%BC%D0%B5%D1%80%D0%B0%D0%BC">По номерам</a></li>
+  <li><a href="#%D0%BF%D0%BE-%D1%83%D1%81%D0%BB%D0%BE%D0%B2%D0%B8%D1%8E" id="toc-по-условию" class="nav-link" data-scroll-target="#%D0%BF%D0%BE-%D1%83%D1%81%D0%BB%D0%BE%D0%B2%D0%B8%D1%8E">По условию</a></li>
+  <li><a href="#%D0%B2%D0%B5%D1%80%D0%BD%D1%83%D1%82%D1%8C-%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80" id="toc-вернуть-вектор" class="nav-link" data-scroll-target="#%D0%B2%D0%B5%D1%80%D0%BD%D1%83%D1%82%D1%8C-%D0%B2%D0%B5%D0%BA%D1%82%D0%BE%D1%80">Вернуть вектор</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#%D1%84%D0%B8%D0%BB%D1%8C%D1%82%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D1%81%D1%82%D1%80%D0%BE%D0%BA" id="toc-фильтрация-строк" class="nav-link" data-scroll-target="#%D1%84%D0%B8%D0%BB%D1%8C%D1%82%D1%80%D0%B0%D1%86%D0%B8%D1%8F-%D1%81%D1%82%D1%80%D0%BE%D0%BA">Фильтрация строк</a>
+  <ul class="collapse">
+<li><a href="#%D0%BF%D0%BE-%D0%BB%D0%BE%D0%B3%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%BC%D1%83-%D1%83%D1%81%D0%BB%D0%BE%D0%B2%D0%B8%D1%8E" id="toc-по-логическому-условию" class="nav-link" data-scroll-target="#%D0%BF%D0%BE-%D0%BB%D0%BE%D0%B3%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%BE%D0%BC%D1%83-%D1%83%D1%81%D0%BB%D0%BE%D0%B2%D0%B8%D1%8E">По логическому условию</a></li>
+  <li><a href="#%D1%83%D0%BD%D0%B8%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D1%8F" id="toc-уникальные-значения" class="nav-link" data-scroll-target="#%D1%83%D0%BD%D0%B8%D0%BA%D0%B0%D0%BB%D1%8C%D0%BD%D1%8B%D0%B5-%D0%B7%D0%BD%D0%B0%D1%87%D0%B5%D0%BD%D0%B8%D1%8F">Уникальные значения</a></li>
+  <li><a href="#%D0%BF%D0%BE-%D0%B8%D0%BD%D0%B4%D0%B5%D0%BA%D1%81%D1%83" id="toc-по-индексу" class="nav-link" data-scroll-target="#%D0%BF%D0%BE-%D0%B8%D0%BD%D0%B4%D0%B5%D0%BA%D1%81%D1%83">По индексу</a></li>
+  <li><a href="#%D1%81%D0%BB%D1%83%D1%87%D0%B0%D0%B9%D0%BD%D1%8B%D0%B5-%D1%81%D1%82%D1%80%D0%BE%D0%BA%D0%B8" id="toc-случайные-строки" class="nav-link" data-scroll-target="#%D1%81%D0%BB%D1%83%D1%87%D0%B0%D0%B9%D0%BD%D1%8B%D0%B5-%D1%81%D1%82%D1%80%D0%BE%D0%BA%D0%B8">Случайные строки</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#%D1%81%D0%BE%D1%80%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-%D1%81%D1%82%D1%80%D0%BE%D0%BA" id="toc-сортировка-строк" class="nav-link" data-scroll-target="#%D1%81%D0%BE%D1%80%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-%D1%81%D1%82%D1%80%D0%BE%D0%BA">Сортировка строк</a>
+  <ul class="collapse">
+<li><a href="#%D0%BF%D0%BE-%D0%B2%D0%BE%D0%B7%D1%80%D0%B0%D1%81%D1%82%D0%B0%D0%BD%D0%B8%D1%8E" id="toc-по-возрастанию" class="nav-link" data-scroll-target="#%D0%BF%D0%BE-%D0%B2%D0%BE%D0%B7%D1%80%D0%B0%D1%81%D1%82%D0%B0%D0%BD%D0%B8%D1%8E">По возрастанию</a></li>
+  <li><a href="#%D0%BF%D0%BE-%D1%83%D0%B1%D1%8B%D0%B2%D0%B0%D0%BD%D0%B8%D1%8E" id="toc-по-убыванию" class="nav-link" data-scroll-target="#%D0%BF%D0%BE-%D1%83%D0%B1%D1%8B%D0%B2%D0%B0%D0%BD%D0%B8%D1%8E">По убыванию</a></li>
+  <li><a href="#%D0%BF%D0%BE-%D0%BD%D0%B5%D1%81%D0%BA%D0%BE%D0%BB%D1%8C%D0%BA%D0%B8%D0%BC-%D1%81%D1%82%D0%BE%D0%BB%D0%B1%D1%86%D0%B0%D0%BC" id="toc-по-нескольким-столбцам" class="nav-link" data-scroll-target="#%D0%BF%D0%BE-%D0%BD%D0%B5%D1%81%D0%BA%D0%BE%D0%BB%D1%8C%D0%BA%D0%B8%D0%BC-%D1%81%D1%82%D0%BE%D0%BB%D0%B1%D1%86%D0%B0%D0%BC">По нескольким столбцам</a></li>
+  <li><a href="#%D1%80%D0%B0%D1%81%D1%88%D0%B8%D1%80%D0%B5%D0%BD%D0%BD%D0%B0%D1%8F-%D1%81%D0%BE%D1%80%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0" id="toc-расширенная-сортировка" class="nav-link" data-scroll-target="#%D1%80%D0%B0%D1%81%D1%88%D0%B8%D1%80%D0%B5%D0%BD%D0%BD%D0%B0%D1%8F-%D1%81%D0%BE%D1%80%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0">Расширенная сортировка</a></li>
+  </ul>
+</li>
+  <li><a href="#%D0%B3%D1%80%D1%83%D0%BF%D0%BF%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%B0%D0%B3%D1%80%D0%B5%D0%B3%D0%B0%D1%82%D0%BD%D1%8B%D0%B5-%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%B8" id="toc-группировка-и-агрегатные-функции" class="nav-link" data-scroll-target="#%D0%B3%D1%80%D1%83%D0%BF%D0%BF%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-%D0%B8-%D0%B0%D0%B3%D1%80%D0%B5%D0%B3%D0%B0%D1%82%D0%BD%D1%8B%D0%B5-%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%B8">Группировка и агрегатные функции</a></li>
+  <li>
+<a href="#%D0%B2%D1%8B%D1%87%D0%B8%D1%81%D0%BB%D1%8F%D0%B5%D0%BC%D1%8B%D0%B5-%D1%81%D1%82%D0%BE%D0%BB%D0%B1%D1%86%D1%8B" id="toc-вычисляемые-столбцы" class="nav-link" data-scroll-target="#%D0%B2%D1%8B%D1%87%D0%B8%D1%81%D0%BB%D1%8F%D0%B5%D0%BC%D1%8B%D0%B5-%D1%81%D1%82%D0%BE%D0%BB%D0%B1%D1%86%D1%8B">Вычисляемые столбцы</a>
+  <ul class="collapse">
+<li><a href="#%D0%BD%D0%BE%D0%B2%D1%8B%D0%B9-%D1%81%D1%82%D0%BE%D0%BB%D0%B1%D0%B5%D1%86" id="toc-новый-столбец" class="nav-link" data-scroll-target="#%D0%BD%D0%BE%D0%B2%D1%8B%D0%B9-%D1%81%D1%82%D0%BE%D0%BB%D0%B1%D0%B5%D1%86">Новый столбец</a></li>
+  <li><a href="#%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B8%D1%82%D1%8C-%D0%BD%D0%B5%D1%81%D0%BA%D0%BE%D0%BB%D1%8C%D0%BA%D0%BE-%D1%81%D1%82%D0%BE%D0%BB%D0%B1%D1%86%D0%BE%D0%B2" id="toc-изменить-несколько-столбцов" class="nav-link" data-scroll-target="#%D0%B8%D0%B7%D0%BC%D0%B5%D0%BD%D0%B8%D1%82%D1%8C-%D0%BD%D0%B5%D1%81%D0%BA%D0%BE%D0%BB%D1%8C%D0%BA%D0%BE-%D1%81%D1%82%D0%BE%D0%BB%D0%B1%D1%86%D0%BE%D0%B2">Изменить несколько столбцов</a></li>
+  <li><a href="#%D0%BE%D0%BA%D0%BE%D0%BD%D0%BD%D1%8B%D0%B5-%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%B8" id="toc-оконные-функции" class="nav-link" data-scroll-target="#%D0%BE%D0%BA%D0%BE%D0%BD%D0%BD%D1%8B%D0%B5-%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%B8">Оконные функции</a></li>
+  <li><a href="#%D0%B2%D1%8B%D1%87%D0%B8%D1%81%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-%D1%83%D1%81%D0%BB%D0%BE%D0%B2%D0%B8%D0%B5%D0%BC" id="toc-вычисление-с-условием" class="nav-link" data-scroll-target="#%D0%B2%D1%8B%D1%87%D0%B8%D1%81%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D1%81-%D1%83%D1%81%D0%BB%D0%BE%D0%B2%D0%B8%D0%B5%D0%BC">Вычисление с условием</a></li>
+  <li><a href="#%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B0-%D0%BD%D1%83%D0%BB%D0%BB%D0%BE%D0%B2" id="toc-обработка-нуллов" class="nav-link" data-scroll-target="#%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B0-%D0%BD%D1%83%D0%BB%D0%BB%D0%BE%D0%B2">Обработка нуллов</a></li>
+  </ul>
+</li>
+  <li><a href="#%D0%BE%D0%B1%D1%8A%D0%B5%D0%B4%D0%B8%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86" id="toc-объединение-таблиц" class="nav-link" data-scroll-target="#%D0%BE%D0%B1%D1%8A%D0%B5%D0%B4%D0%B8%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D1%82%D0%B0%D0%B1%D0%BB%D0%B8%D1%86">Объединение таблиц</a></li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title d-none d-lg-block">dplyr сheat sheet</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 6, 2022</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header><div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: пакет 'dplyr' был собран под R версии 4.2.1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Присоединяю пакет: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Следующие объекты скрыты от 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Следующие объекты скрыты от 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">starwars</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="va"><a href="https://dplyr.tidyverse.org/reference/starwars.html">starwars</a></span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Выполним установку пакета dplyr и загрузим набор данных starwars</p>
+<div class="code">
+<p>library(dplyr) <br> starwars &lt;- dplyr::starwars</p>
+</div>
+<section id="выборка-данных" class="level2"><h2 class="anchored" data-anchor-id="выборка-данных">Выборка данных</h2>
+<p>В R возможно делать выборку столбцов разными стособами. Просто перечислить названия столбцов или их номера, перечислить какие столбцы не нужно выводить или выводить столбцы с именем соответствующим определенному условию. <br></p>
+<section id="перечисление" class="level3"><h3 class="anchored" data-anchor-id="перечисление">Перечисление</h3>
+<div class="cell">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">name</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 87 × 1
+   name              
+   &lt;chr&gt;             
+ 1 Luke Skywalker    
+ 2 C-3PO             
+ 3 R2-D2             
+ 4 Darth Vader       
+ 5 Leia Organa       
+ 6 Owen Lars         
+ 7 Beru Whitesun lars
+ 8 R5-D4             
+ 9 Biggs Darklighter 
+10 Obi-Wan Kenobi    
+# … with 77 more rows</code></pre>
+</div>
+</div>
+</section><section id="отрицательное-перечисление" class="level3"><h3 class="anchored" data-anchor-id="отрицательное-перечисление">Отрицательное перечисление</h3>
+<p>Если нужно указать какой столбец не включать в выборку то ставится знак минус:<br></p>
+<div class="cell">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">name</span>, <span class="va">mass</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 87 × 12
+   height hair_color  skin_…¹ eye_c…² birth…³ sex   gender homew…⁴ species films
+    &lt;int&gt; &lt;chr&gt;       &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;   &lt;chr&gt;   &lt;lis&gt;
+ 1    172 blond       fair    blue       19   male  mascu… Tatooi… Human   &lt;chr&gt;
+ 2    167 &lt;NA&gt;        gold    yellow    112   none  mascu… Tatooi… Droid   &lt;chr&gt;
+ 3     96 &lt;NA&gt;        white,… red        33   none  mascu… Naboo   Droid   &lt;chr&gt;
+ 4    202 none        white   yellow     41.9 male  mascu… Tatooi… Human   &lt;chr&gt;
+ 5    150 brown       light   brown      19   fema… femin… Aldera… Human   &lt;chr&gt;
+ 6    178 brown, grey light   blue       52   male  mascu… Tatooi… Human   &lt;chr&gt;
+ 7    165 brown       light   blue       47   fema… femin… Tatooi… Human   &lt;chr&gt;
+ 8     97 &lt;NA&gt;        white,… red        NA   none  mascu… Tatooi… Droid   &lt;chr&gt;
+ 9    183 black       light   brown      24   male  mascu… Tatooi… Human   &lt;chr&gt;
+10    182 auburn, wh… fair    blue-g…    57   male  mascu… Stewjon Human   &lt;chr&gt;
+# … with 77 more rows, 2 more variables: vehicles &lt;list&gt;, starships &lt;list&gt;, and
+#   abbreviated variable names ¹​skin_color, ²​eye_color, ³​birth_year, ⁴​homeworld</code></pre>
+</div>
+</div>
+</section><section id="по-номерам" class="level3"><h3 class="anchored" data-anchor-id="по-номерам">По номерам</h3>
+<p>Или можно указать номера столбцов<br></p>
+<div class="cell">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 87 × 2
+   name               height
+   &lt;chr&gt;               &lt;int&gt;
+ 1 Luke Skywalker        172
+ 2 C-3PO                 167
+ 3 R2-D2                  96
+ 4 Darth Vader           202
+ 5 Leia Organa           150
+ 6 Owen Lars             178
+ 7 Beru Whitesun lars    165
+ 8 R5-D4                  97
+ 9 Biggs Darklighter     183
+10 Obi-Wan Kenobi        182
+# … with 77 more rows</code></pre>
+</div>
+</div>
+</section><section id="по-условию" class="level3 tabset tabset-fade tabset-pills"><h3 class="tabset tabset-fade tabset-pills anchored" data-anchor-id="по-условию">По условию</h3>
+<ul>
+<li><p><code>contains</code><em>: название столбца содержит символ</em></p></li>
+<li><p><code>ends_with</code><em>: название столбца заканчивается на</em></p></li>
+<li><p><code>matches</code><em>: название столбца соответствует регулярному выражению</em></p></li>
+<li><p><code>num_range</code><em>: поиск занумерованных столбцов, например, «V1, V2, V3…»</em></p></li>
+<li><p><code>one_of</code><em>: название столбца соответствует одному из вариантов</em></p></li>
+<li><p><code>starts_with</code><em>: название столбца начинается с</em></p></li>
+</ul>
+<p>подробнее в <code><a href="https://dplyr.tidyverse.org/reference/select.html">?select</a></code></p>
+<p>Примеры:</p>
+<section id="contains" class="level4"><h4 class="anchored" data-anchor-id="contains">contains</h4>
+<div class="cell">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># отберем столбцы, название которых содержит букву «а».</span></span>
+<span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">contains</a></span><span class="op">(</span><span class="st">'a'</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 87 × 5
+   name                mass hair_color    birth_year starships
+   &lt;chr&gt;              &lt;dbl&gt; &lt;chr&gt;              &lt;dbl&gt; &lt;list&gt;   
+ 1 Luke Skywalker        77 blond               19   &lt;chr [2]&gt;
+ 2 C-3PO                 75 &lt;NA&gt;               112   &lt;chr [0]&gt;
+ 3 R2-D2                 32 &lt;NA&gt;                33   &lt;chr [0]&gt;
+ 4 Darth Vader          136 none                41.9 &lt;chr [1]&gt;
+ 5 Leia Organa           49 brown               19   &lt;chr [0]&gt;
+ 6 Owen Lars            120 brown, grey         52   &lt;chr [0]&gt;
+ 7 Beru Whitesun lars    75 brown               47   &lt;chr [0]&gt;
+ 8 R5-D4                 32 &lt;NA&gt;                NA   &lt;chr [0]&gt;
+ 9 Biggs Darklighter     84 black               24   &lt;chr [1]&gt;
+10 Obi-Wan Kenobi        77 auburn, white       57   &lt;chr [5]&gt;
+# … with 77 more rows</code></pre>
+</div>
+</div>
+</section><section id="one_of" class="level4"><h4 class="anchored" data-anchor-id="one_of">one_of</h4>
+<div class="cell">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># отберем столбцы, название которых является одним из указанных</span></span>
+<span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/one_of.html">one_of</a></span><span class="op">(</span><span class="st">'mass'</span>, <span class="st">'height'</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 87 × 2
+    mass height
+   &lt;dbl&gt;  &lt;int&gt;
+ 1    77    172
+ 2    75    167
+ 3    32     96
+ 4   136    202
+ 5    49    150
+ 6   120    178
+ 7    75    165
+ 8    32     97
+ 9    84    183
+10    77    182
+# … with 77 more rows</code></pre>
+</div>
+</div>
+</section><section id="matches" class="level4"><h4 class="anchored" data-anchor-id="matches">matches</h4>
+<div class="cell">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># поиск по регулярному выражению</span></span>
+<span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">matches</a></span><span class="op">(</span><span class="st">'.*t+.+'</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 87 × 2
+   birth_year starships
+        &lt;dbl&gt; &lt;list&gt;   
+ 1       19   &lt;chr [2]&gt;
+ 2      112   &lt;chr [0]&gt;
+ 3       33   &lt;chr [0]&gt;
+ 4       41.9 &lt;chr [1]&gt;
+ 5       19   &lt;chr [0]&gt;
+ 6       52   &lt;chr [0]&gt;
+ 7       47   &lt;chr [0]&gt;
+ 8       NA   &lt;chr [0]&gt;
+ 9       24   &lt;chr [1]&gt;
+10       57   &lt;chr [5]&gt;
+# … with 77 more rows</code></pre>
+</div>
+</div>
+</section></section><section id="вернуть-вектор" class="level3"><h3 class="anchored" data-anchor-id="вернуть-вектор">Вернуть вектор</h3>
+<p>Если нужно вернуть столбец не как таблицу, а вектор, то делаем через <code>pull</code><br></p>
+<div class="cell">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="st">'name'</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "Luke Skywalker"        "C-3PO"                 "R2-D2"                
+ [4] "Darth Vader"           "Leia Organa"           "Owen Lars"            
+ [7] "Beru Whitesun lars"    "R5-D4"                 "Biggs Darklighter"    
+[10] "Obi-Wan Kenobi"        "Anakin Skywalker"      "Wilhuff Tarkin"       
+[13] "Chewbacca"             "Han Solo"              "Greedo"               
+[16] "Jabba Desilijic Tiure" "Wedge Antilles"        "Jek Tono Porkins"     
+[19] "Yoda"                  "Palpatine"             "Boba Fett"            
+[22] "IG-88"                 "Bossk"                 "Lando Calrissian"     
+[25] "Lobot"                 "Ackbar"                "Mon Mothma"           
+[28] "Arvel Crynyd"          "Wicket Systri Warrick" "Nien Nunb"            
+[31] "Qui-Gon Jinn"          "Nute Gunray"           "Finis Valorum"        
+[34] "Jar Jar Binks"         "Roos Tarpals"          "Rugor Nass"           
+[37] "Ric Olié"              "Watto"                 "Sebulba"              
+[40] "Quarsh Panaka"         "Shmi Skywalker"        "Darth Maul"           
+[43] "Bib Fortuna"           "Ayla Secura"           "Dud Bolt"             
+[46] "Gasgano"               "Ben Quadinaros"        "Mace Windu"           
+[49] "Ki-Adi-Mundi"          "Kit Fisto"             "Eeth Koth"            
+[52] "Adi Gallia"            "Saesee Tiin"           "Yarael Poof"          
+[55] "Plo Koon"              "Mas Amedda"            "Gregar Typho"         
+[58] "Cordé"                 "Cliegg Lars"           "Poggle the Lesser"    
+[61] "Luminara Unduli"       "Barriss Offee"         "Dormé"                
+[64] "Dooku"                 "Bail Prestor Organa"   "Jango Fett"           
+[67] "Zam Wesell"            "Dexter Jettster"       "Lama Su"              
+[70] "Taun We"               "Jocasta Nu"            "Ratts Tyerell"        
+[73] "R4-P17"                "Wat Tambor"            "San Hill"             
+[76] "Shaak Ti"              "Grievous"              "Tarfful"              
+[79] "Raymus Antilles"       "Sly Moore"             "Tion Medon"           
+[82] "Finn"                  "Rey"                   "Poe Dameron"          
+[85] "BB8"                   "Captain Phasma"        "Padmé Amidala"        </code></pre>
+</div>
+</div>
+<p><br></p>
+</section></section><section id="фильтрация-строк" class="level2 tabset tabset-fade tabset-pills"><h2 class="tabset tabset-fade tabset-pills anchored" data-anchor-id="фильтрация-строк">Фильтрация строк</h2>
+<section id="по-логическому-условию" class="level3"><h3 class="anchored" data-anchor-id="по-логическому-условию">По логическому условию</h3>
+<div class="cell">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">mass</span> <span class="op">&gt;</span> <span class="fl">50</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 46 × 14
+   name        height  mass hair_…¹ skin_…² eye_c…³ birth…⁴ sex   gender homew…⁵
+   &lt;chr&gt;        &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  
+ 1 Luke Skywa…    172    77 blond   fair    blue       19   male  mascu… Tatooi…
+ 2 C-3PO          167    75 &lt;NA&gt;    gold    yellow    112   none  mascu… Tatooi…
+ 3 Darth Vader    202   136 none    white   yellow     41.9 male  mascu… Tatooi…
+ 4 Owen Lars      178   120 brown,… light   blue       52   male  mascu… Tatooi…
+ 5 Beru White…    165    75 brown   light   blue       47   fema… femin… Tatooi…
+ 6 Biggs Dark…    183    84 black   light   brown      24   male  mascu… Tatooi…
+ 7 Obi-Wan Ke…    182    77 auburn… fair    blue-g…    57   male  mascu… Stewjon
+ 8 Anakin Sky…    188    84 blond   fair    blue       41.9 male  mascu… Tatooi…
+ 9 Chewbacca      228   112 brown   unknown blue      200   male  mascu… Kashyy…
+10 Han Solo       180    80 brown   fair    brown      29   male  mascu… Corell…
+# … with 36 more rows, 4 more variables: species &lt;chr&gt;, films &lt;list&gt;,
+#   vehicles &lt;list&gt;, starships &lt;list&gt;, and abbreviated variable names
+#   ¹​hair_color, ²​skin_color, ³​eye_color, ⁴​birth_year, ⁵​homeworld</code></pre>
+</div>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">#комбинировать несколько условий можно с помощью &amp; и |:</span></span>
+<span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">mass</span> <span class="op">&gt;</span> <span class="fl">50</span> <span class="op">&amp;</span> <span class="va">height</span> <span class="op">&gt;</span> <span class="fl">170</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 38 × 14
+   name        height  mass hair_…¹ skin_…² eye_c…³ birth…⁴ sex   gender homew…⁵
+   &lt;chr&gt;        &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  
+ 1 Luke Skywa…    172    77 blond   fair    blue       19   male  mascu… Tatooi…
+ 2 Darth Vader    202   136 none    white   yellow     41.9 male  mascu… Tatooi…
+ 3 Owen Lars      178   120 brown,… light   blue       52   male  mascu… Tatooi…
+ 4 Biggs Dark…    183    84 black   light   brown      24   male  mascu… Tatooi…
+ 5 Obi-Wan Ke…    182    77 auburn… fair    blue-g…    57   male  mascu… Stewjon
+ 6 Anakin Sky…    188    84 blond   fair    blue       41.9 male  mascu… Tatooi…
+ 7 Chewbacca      228   112 brown   unknown blue      200   male  mascu… Kashyy…
+ 8 Han Solo       180    80 brown   fair    brown      29   male  mascu… Corell…
+ 9 Greedo         173    74 &lt;NA&gt;    green   black      44   male  mascu… Rodia  
+10 Jabba Desi…    175  1358 &lt;NA&gt;    green-… orange    600   herm… mascu… Nal Hu…
+# … with 28 more rows, 4 more variables: species &lt;chr&gt;, films &lt;list&gt;,
+#   vehicles &lt;list&gt;, starships &lt;list&gt;, and abbreviated variable names
+#   ¹​hair_color, ²​skin_color, ³​eye_color, ⁴​birth_year, ⁵​homeworld</code></pre>
+</div>
+</div>
+<p>Конструировать логические условия можно и другими операторами</p>
+<ul>
+<li><p><code>&gt;=</code></p></li>
+<li><p><code>&lt;=</code></p></li>
+<li><p><code>is.na</code></p></li>
+<li><p><code>!is.na</code></p></li>
+<li><p><code>%in%</code></p></li>
+<li><p><code>!</code></p></li>
+<li><p><code>between</code></p></li>
+<li><p><code>near</code></p></li>
+<li><p><code>xor</code></p></li>
+</ul>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">skin_color</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'fair'</span>, <span class="st">'green'</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 23 × 14
+   name        height  mass hair_…¹ skin_…² eye_c…³ birth…⁴ sex   gender homew…⁵
+   &lt;chr&gt;        &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  
+ 1 Luke Skywa…    172  77   blond   fair    blue       19   male  mascu… Tatooi…
+ 2 Obi-Wan Ke…    182  77   auburn… fair    blue-g…    57   male  mascu… Stewjon
+ 3 Anakin Sky…    188  84   blond   fair    blue       41.9 male  mascu… Tatooi…
+ 4 Wilhuff Ta…    180  NA   auburn… fair    blue       64   male  mascu… Eriadu 
+ 5 Han Solo       180  80   brown   fair    brown      29   male  mascu… Corell…
+ 6 Greedo         173  74   &lt;NA&gt;    green   black      44   male  mascu… Rodia  
+ 7 Wedge Anti…    170  77   brown   fair    hazel      21   male  mascu… Corell…
+ 8 Jek Tono P…    180 110   brown   fair    blue       NA   male  mascu… Bestin…
+ 9 Yoda            66  17   white   green   brown     896   male  mascu… &lt;NA&gt;   
+10 Boba Fett      183  78.2 black   fair    brown      31.5 male  mascu… Kamino 
+# … with 13 more rows, 4 more variables: species &lt;chr&gt;, films &lt;list&gt;,
+#   vehicles &lt;list&gt;, starships &lt;list&gt;, and abbreviated variable names
+#   ¹​hair_color, ²​skin_color, ³​eye_color, ⁴​birth_year, ⁵​homeworld</code></pre>
+</div>
+</div>
+</section><section id="уникальные-значения" class="level3"><h3 class="anchored" data-anchor-id="уникальные-значения">Уникальные значения</h3>
+<div class="cell">
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span><span class="op">(</span><span class="va">sex</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 1
+  sex           
+  &lt;chr&gt;         
+1 male          
+2 none          
+3 female        
+4 hermaphroditic
+5 &lt;NA&gt;          </code></pre>
+</div>
+</div>
+</section><section id="по-индексу" class="level3"><h3 class="anchored" data-anchor-id="по-индексу">По индексу</h3>
+<div class="cell">
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="fl">5</span><span class="op">:</span><span class="fl">15</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 11 × 14
+   name        height  mass hair_…¹ skin_…² eye_c…³ birth…⁴ sex   gender homew…⁵
+   &lt;chr&gt;        &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  
+ 1 Leia Organa    150    49 brown   light   brown      19   fema… femin… Aldera…
+ 2 Owen Lars      178   120 brown,… light   blue       52   male  mascu… Tatooi…
+ 3 Beru White…    165    75 brown   light   blue       47   fema… femin… Tatooi…
+ 4 R5-D4           97    32 &lt;NA&gt;    white,… red        NA   none  mascu… Tatooi…
+ 5 Biggs Dark…    183    84 black   light   brown      24   male  mascu… Tatooi…
+ 6 Obi-Wan Ke…    182    77 auburn… fair    blue-g…    57   male  mascu… Stewjon
+ 7 Anakin Sky…    188    84 blond   fair    blue       41.9 male  mascu… Tatooi…
+ 8 Wilhuff Ta…    180    NA auburn… fair    blue       64   male  mascu… Eriadu 
+ 9 Chewbacca      228   112 brown   unknown blue      200   male  mascu… Kashyy…
+10 Han Solo       180    80 brown   fair    brown      29   male  mascu… Corell…
+11 Greedo         173    74 &lt;NA&gt;    green   black      44   male  mascu… Rodia  
+# … with 4 more variables: species &lt;chr&gt;, films &lt;list&gt;, vehicles &lt;list&gt;,
+#   starships &lt;list&gt;, and abbreviated variable names ¹​hair_color, ²​skin_color,
+#   ³​eye_color, ⁴​birth_year, ⁵​homeworld</code></pre>
+</div>
+</div>
+</section><section id="случайные-строки" class="level3"><h3 class="anchored" data-anchor-id="случайные-строки">Случайные строки</h3>
+<div class="cell">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># возвращает n - случайных строк</span></span>
+<span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/sample_n.html">sample_n</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 14
+  name       height  mass hair_co…¹ skin_…² eye_c…³ birth…⁴ sex   gender homew…⁵
+  &lt;chr&gt;       &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  
+1 BB8            NA    NA none      none    black        NA none  mascu… &lt;NA&gt;   
+2 Rey            NA    NA brown     light   hazel        NA fema… femin… &lt;NA&gt;   
+3 Mas Amedda    196    NA none      blue    blue         NA male  mascu… Champa…
+4 Jango Fett    183    79 black     tan     brown        66 male  mascu… Concor…
+5 Kit Fisto     196    87 none      green   black        NA male  mascu… Glee A…
+# … with 4 more variables: species &lt;chr&gt;, films &lt;list&gt;, vehicles &lt;list&gt;,
+#   starships &lt;list&gt;, and abbreviated variable names ¹​hair_color, ²​skin_color,
+#   ³​eye_color, ⁴​birth_year, ⁵​homeworld</code></pre>
+</div>
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Нужно указать долю строк из общего числа, которые должны быть в итоговой таблице. </span></span>
+<span><span class="co"># Например, при параметре 0.5 вернется половина строк из таблицы, выбранные случайным образом.</span></span>
+<span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/sample_n.html">sample_frac</a></span><span class="op">(</span><span class="fl">0.1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 14
+  name         height  mass hair_…¹ skin_…² eye_c…³ birth…⁴ sex   gender homew…⁵
+  &lt;chr&gt;         &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  
+1 Zam Wesell      168    55 blonde  fair, … yellow       NA fema… femin… Zolan  
+2 Leia Organa     150    49 brown   light   brown        19 fema… femin… Aldera…
+3 Grievous        216   159 none    brown,… green,…      NA male  mascu… Kalee  
+4 Wilhuff Tar…    180    NA auburn… fair    blue         64 male  mascu… Eriadu 
+5 Raymus Anti…    188    79 brown   light   brown        NA male  mascu… Aldera…
+6 Ratts Tyere…     79    15 none    grey, … unknown      NA male  mascu… Aleen …
+7 C-3PO           167    75 &lt;NA&gt;    gold    yellow      112 none  mascu… Tatooi…
+8 Sebulba         112    40 none    grey, … orange       NA male  mascu… Malast…
+9 Bossk           190   113 none    green   red          53 male  mascu… Trando…
+# … with 4 more variables: species &lt;chr&gt;, films &lt;list&gt;, vehicles &lt;list&gt;,
+#   starships &lt;list&gt;, and abbreviated variable names ¹​hair_color, ²​skin_color,
+#   ³​eye_color, ⁴​birth_year, ⁵​homeworld</code></pre>
+</div>
+</div>
+<p><br></p>
+</section></section><section id="сортировка-строк" class="level2 tabset tabset-fade tabset-pills"><h2 class="tabset tabset-fade tabset-pills anchored" data-anchor-id="сортировка-строк">Сортировка строк</h2>
+<p><br></p>
+<p>Для сортировки в языке есть достаточно широкие возможности. Вот самые основные виды сортировки:</p>
+<section id="по-возрастанию" class="level3"><h3 class="anchored" data-anchor-id="по-возрастанию">По возрастанию</h3>
+<div class="cell">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">mass</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 87 × 14
+   name        height  mass hair_…¹ skin_…² eye_c…³ birth…⁴ sex   gender homew…⁵
+   &lt;chr&gt;        &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  
+ 1 Ratts Tyer…     79    15 none    grey, … unknown      NA male  mascu… Aleen …
+ 2 Yoda            66    17 white   green   brown       896 male  mascu… &lt;NA&gt;   
+ 3 Wicket Sys…     88    20 brown   brown   brown         8 male  mascu… Endor  
+ 4 R2-D2           96    32 &lt;NA&gt;    white,… red          33 none  mascu… Naboo  
+ 5 R5-D4           97    32 &lt;NA&gt;    white,… red          NA none  mascu… Tatooi…
+ 6 Sebulba        112    40 none    grey, … orange       NA male  mascu… Malast…
+ 7 Dud Bolt        94    45 none    blue, … yellow       NA male  mascu… Vulpter
+ 8 Padmé Amid…    165    45 brown   light   brown        46 fema… femin… Naboo  
+ 9 Wat Tambor     193    48 none    green,… unknown      NA male  mascu… Skako  
+10 Sly Moore      178    48 none    pale    white        NA &lt;NA&gt;  &lt;NA&gt;   Umbara 
+# … with 77 more rows, 4 more variables: species &lt;chr&gt;, films &lt;list&gt;,
+#   vehicles &lt;list&gt;, starships &lt;list&gt;, and abbreviated variable names
+#   ¹​hair_color, ²​skin_color, ³​eye_color, ⁴​birth_year, ⁵​homeworld</code></pre>
+</div>
+</div>
+</section><section id="по-убыванию" class="level3"><h3 class="anchored" data-anchor-id="по-убыванию">По убыванию</h3>
+<div class="cell">
+<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># сортировка по убыванию</span></span>
+<span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span><span class="op">(</span><span class="va">mass</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 87 × 14
+   name        height  mass hair_…¹ skin_…² eye_c…³ birth…⁴ sex   gender homew…⁵
+   &lt;chr&gt;        &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  
+ 1 Jabba Desi…    175  1358 &lt;NA&gt;    green-… orange    600   herm… mascu… Nal Hu…
+ 2 Grievous       216   159 none    brown,… green,…    NA   male  mascu… Kalee  
+ 3 IG-88          200   140 none    metal   red        15   none  mascu… &lt;NA&gt;   
+ 4 Darth Vader    202   136 none    white   yellow     41.9 male  mascu… Tatooi…
+ 5 Tarfful        234   136 brown   brown   blue       NA   male  mascu… Kashyy…
+ 6 Owen Lars      178   120 brown,… light   blue       52   male  mascu… Tatooi…
+ 7 Bossk          190   113 none    green   red        53   male  mascu… Trando…
+ 8 Chewbacca      228   112 brown   unknown blue      200   male  mascu… Kashyy…
+ 9 Jek Tono P…    180   110 brown   fair    blue       NA   male  mascu… Bestin…
+10 Dexter Jet…    198   102 none    brown   yellow     NA   male  mascu… Ojom   
+# … with 77 more rows, 4 more variables: species &lt;chr&gt;, films &lt;list&gt;,
+#   vehicles &lt;list&gt;, starships &lt;list&gt;, and abbreviated variable names
+#   ¹​hair_color, ²​skin_color, ³​eye_color, ⁴​birth_year, ⁵​homeworld</code></pre>
+</div>
+</div>
+</section><section id="по-нескольким-столбцам" class="level3"><h3 class="anchored" data-anchor-id="по-нескольким-столбцам">По нескольким столбцам</h3>
+<div class="cell">
+<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># сортировка по нескольким столбцам</span></span>
+<span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">height</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span><span class="op">(</span><span class="va">mass</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 87 × 14
+   name        height  mass hair_…¹ skin_…² eye_c…³ birth…⁴ sex   gender homew…⁵
+   &lt;chr&gt;        &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  
+ 1 Yoda            66    17 white   green   brown       896 male  mascu… &lt;NA&gt;   
+ 2 Ratts Tyer…     79    15 none    grey, … unknown      NA male  mascu… Aleen …
+ 3 Wicket Sys…     88    20 brown   brown   brown         8 male  mascu… Endor  
+ 4 Dud Bolt        94    45 none    blue, … yellow       NA male  mascu… Vulpter
+ 5 R2-D2           96    32 &lt;NA&gt;    white,… red          33 none  mascu… Naboo  
+ 6 R4-P17          96    NA none    silver… red, b…      NA none  femin… &lt;NA&gt;   
+ 7 R5-D4           97    32 &lt;NA&gt;    white,… red          NA none  mascu… Tatooi…
+ 8 Sebulba        112    40 none    grey, … orange       NA male  mascu… Malast…
+ 9 Gasgano        122    NA none    white,… black        NA male  mascu… Troiken
+10 Watto          137    NA black   blue, … yellow       NA male  mascu… Toydar…
+# … with 77 more rows, 4 more variables: species &lt;chr&gt;, films &lt;list&gt;,
+#   vehicles &lt;list&gt;, starships &lt;list&gt;, and abbreviated variable names
+#   ¹​hair_color, ²​skin_color, ³​eye_color, ⁴​birth_year, ⁵​homeworld</code></pre>
+</div>
+</div>
+</section><section id="расширенная-сортировка" class="level3"><h3 class="anchored" data-anchor-id="расширенная-сортировка">Расширенная сортировка</h3>
+<p>При сортировке можно использовать вспомогательные функции для <code>select</code>, только внутри функции <code>across</code></p>
+<div class="cell">
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">ends_with</a></span><span class="op">(</span><span class="st">'_color'</span><span class="op">)</span>, <span class="va">desc</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 87 × 14
+   name        height  mass hair_…¹ skin_…² eye_c…³ birth…⁴ sex   gender homew…⁵
+   &lt;chr&gt;        &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  
+ 1 Ki-Adi-Mun…    198    82 white   pale    yellow     92   male  mascu… Cerea  
+ 2 Yoda            66    17 white   green   brown     896   male  mascu… &lt;NA&gt;   
+ 3 Dooku          193    80 white   fair    brown     102   male  mascu… Serenno
+ 4 Jocasta Nu     167    NA white   fair    blue       NA   fema… femin… Corusc…
+ 5 Captain Ph…     NA    NA unknown unknown unknown    NA   &lt;NA&gt;  &lt;NA&gt;   &lt;NA&gt;   
+ 6 Gasgano        122    NA none    white,… black      NA   male  mascu… Troiken
+ 7 Darth Vader    202   136 none    white   yellow     41.9 male  mascu… Tatooi…
+ 8 Yarael Poof    264    NA none    white   yellow     NA   male  mascu… Quermia
+ 9 R4-P17          96    NA none    silver… red, b…    NA   none  femin… &lt;NA&gt;   
+10 Shaak Ti       178    57 none    red, b… black      NA   fema… femin… Shili  
+# … with 77 more rows, 4 more variables: species &lt;chr&gt;, films &lt;list&gt;,
+#   vehicles &lt;list&gt;, starships &lt;list&gt;, and abbreviated variable names
+#   ¹​hair_color, ²​skin_color, ³​eye_color, ⁴​birth_year, ⁵​homeworld</code></pre>
+</div>
+</div>
+<p><br></p>
+</section></section><section id="группировка-и-агрегатные-функции" class="level2"><h2 class="anchored" data-anchor-id="группировка-и-агрегатные-функции">Группировка и агрегатные функции</h2>
+<div class="cell">
+<div class="sourceCode" id="cb43"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># сама по себе группировка не несет смысла, только в сочетании с агрегирующими функциями</span></span>
+<span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">eye_color</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 87 × 14
+# Groups:   eye_color [15]
+   name        height  mass hair_…¹ skin_…² eye_c…³ birth…⁴ sex   gender homew…⁵
+   &lt;chr&gt;        &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  
+ 1 Luke Skywa…    172    77 blond   fair    blue       19   male  mascu… Tatooi…
+ 2 C-3PO          167    75 &lt;NA&gt;    gold    yellow    112   none  mascu… Tatooi…
+ 3 R2-D2           96    32 &lt;NA&gt;    white,… red        33   none  mascu… Naboo  
+ 4 Darth Vader    202   136 none    white   yellow     41.9 male  mascu… Tatooi…
+ 5 Leia Organa    150    49 brown   light   brown      19   fema… femin… Aldera…
+ 6 Owen Lars      178   120 brown,… light   blue       52   male  mascu… Tatooi…
+ 7 Beru White…    165    75 brown   light   blue       47   fema… femin… Tatooi…
+ 8 R5-D4           97    32 &lt;NA&gt;    white,… red        NA   none  mascu… Tatooi…
+ 9 Biggs Dark…    183    84 black   light   brown      24   male  mascu… Tatooi…
+10 Obi-Wan Ke…    182    77 auburn… fair    blue-g…    57   male  mascu… Stewjon
+# … with 77 more rows, 4 more variables: species &lt;chr&gt;, films &lt;list&gt;,
+#   vehicles &lt;list&gt;, starships &lt;list&gt;, and abbreviated variable names
+#   ¹​hair_color, ²​skin_color, ³​eye_color, ⁴​birth_year, ⁵​homeworld</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">eye_color</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> <span class="co"># группируем по полю</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span></span>
+<span>    <span class="st">'mean mass'</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">mass</span><span class="op">)</span>, <span class="co"># задаем имя столбцу и применяем функцию</span></span>
+<span>    <span class="st">'max mass'</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op">(</span><span class="va">mass</span><span class="op">)</span>,</span>
+<span>    <span class="st">'min mass'</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">min</a></span><span class="op">(</span><span class="va">mass</span><span class="op">)</span>,</span>
+<span>    <span class="st">'first mass'</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/nth.html">first</a></span><span class="op">(</span><span class="va">mass</span><span class="op">)</span>,</span>
+<span>    <span class="st">'median mass'</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/median.html">median</a></span><span class="op">(</span><span class="va">mass</span><span class="op">)</span>,</span>
+<span>    <span class="st">'quantity'</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 15 × 7
+   eye_color     `mean mass` `max mass` `min mass` `first mass` median…¹ quant…²
+   &lt;chr&gt;               &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;    &lt;dbl&gt;   &lt;int&gt;
+ 1 black                NA           NA         NA           74       NA      10
+ 2 blue                 NA           NA         NA           77       NA      19
+ 3 blue-gray            77           77         77           77       77       1
+ 4 brown                NA           NA         NA           49       NA      21
+ 5 dark                 NA           NA         NA           NA       NA       1
+ 6 gold                 NA           NA         NA           NA       NA       1
+ 7 green, yellow       159          159        159          159      159       1
+ 8 hazel                NA           NA         NA           77       NA       3
+ 9 orange               NA           NA         NA         1358       NA       8
+10 pink                 NA           NA         NA           NA       NA       1
+11 red                  81.4        140         32           32       90       5
+12 red, blue            NA           NA         NA           NA       NA       1
+13 unknown              NA           NA         NA           15       NA       3
+14 white                48           48         48           48       48       1
+15 yellow               NA           NA         NA           75       NA      11
+# … with abbreviated variable names ¹​`median mass`, ²​quantity</code></pre>
+</div>
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># про другие функции summarise в ?summarise</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Рассчитать показатели только для нескольких столбцов сразу</p>
+<div class="cell">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">eye_color</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span></span>
+<span>      .cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">mass</span>, <span class="va">height</span><span class="op">)</span>, <span class="co"># столбцы к котторым применятся функции</span></span>
+<span>      .fns <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>mean <span class="op">=</span> <span class="va">mean</span>, max <span class="op">=</span> <span class="va">max</span>, min <span class="op">=</span> <span class="va">min</span>, first <span class="op">=</span> <span class="va">first</span>, median <span class="op">=</span> <span class="va">median</span><span class="op">)</span>, <span class="co"># набор функций</span></span>
+<span>      .names <span class="op">=</span> <span class="st">"{.col}.fn_{.fn}"</span>  <span class="co"># шаблон имени столбца</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 15 × 11
+   eye_color     mass.…¹ mass.…² mass.…³ mass.…⁴ mass.…⁵ heigh…⁶ heigh…⁷ heigh…⁸
+   &lt;chr&gt;           &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;int&gt;   &lt;int&gt;
+ 1 black            NA        NA      NA      74      NA     NA       NA      NA
+ 2 blue             NA        NA      NA      77      NA    182.     234     150
+ 3 blue-gray        77        77      77      77      77    182      182     182
+ 4 brown            NA        NA      NA      49      NA     NA       NA      NA
+ 5 dark             NA        NA      NA      NA      NA     NA       NA      NA
+ 6 gold             NA        NA      NA      NA      NA    191      191     191
+ 7 green, yellow   159       159     159     159     159    216      216     216
+ 8 hazel            NA        NA      NA      77      NA     NA       NA      NA
+ 9 orange           NA        NA      NA    1358      NA    180.     224     112
+10 pink             NA        NA      NA      NA      NA    180      180     180
+11 red              81.4     140      32      32      90    155.     200      96
+12 red, blue        NA        NA      NA      NA      NA     96       96      96
+13 unknown          NA        NA      NA      15      NA     NA       NA      NA
+14 white            48        48      48      48      48    178      178     178
+15 yellow           NA        NA      NA      75      NA    178.     264      94
+# … with 2 more variables: height.fn_first &lt;int&gt;, height.fn_median &lt;dbl&gt;, and
+#   abbreviated variable names ¹​mass.fn_mean, ²​mass.fn_max, ³​mass.fn_min,
+#   ⁴​mass.fn_first, ⁵​mass.fn_median, ⁶​height.fn_mean, ⁷​height.fn_max,
+#   ⁸​height.fn_min</code></pre>
+</div>
+</div>
+<p><br></p>
+</section><section id="вычисляемые-столбцы" class="level2 tabset tabset-fade tabset-pills"><h2 class="tabset tabset-fade tabset-pills anchored" data-anchor-id="вычисляемые-столбцы">Вычисляемые столбцы</h2>
+<section id="новый-столбец" class="level3"><h3 class="anchored" data-anchor-id="новый-столбец">Новый столбец</h3>
+<div class="cell">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">name</span>, <span class="va">height</span>, <span class="va">mass</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="st">'coef'</span> <span class="op">=</span> <span class="va">mass</span><span class="op">/</span><span class="va">height</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 87 × 4
+   name               height  mass  coef
+   &lt;chr&gt;               &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+ 1 Luke Skywalker        172    77 0.448
+ 2 C-3PO                 167    75 0.449
+ 3 R2-D2                  96    32 0.333
+ 4 Darth Vader           202   136 0.673
+ 5 Leia Organa           150    49 0.327
+ 6 Owen Lars             178   120 0.674
+ 7 Beru Whitesun lars    165    75 0.455
+ 8 R5-D4                  97    32 0.330
+ 9 Biggs Darklighter     183    84 0.459
+10 Obi-Wan Kenobi        182    77 0.423
+# … with 77 more rows</code></pre>
+</div>
+</div>
+</section><section id="изменить-несколько-столбцов" class="level3"><h3 class="anchored" data-anchor-id="изменить-несколько-столбцов">Изменить несколько столбцов</h3>
+<p>Применить функцию ко всем столбцам по условию</p>
+<div class="cell">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span></span>
+<span>      .cols <span class="op">=</span> <span class="fu">where</span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, <span class="co"># применить функцию ко всем числовым столбцам</span></span>
+<span>      .fns <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">*</span><span class="fl">10</span> <span class="co"># x в function это стоблцы по условию в cols</span></span>
+<span>    <span class="op">)</span></span>
+<span>  <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 87 × 14
+   name        height  mass hair_…¹ skin_…² eye_c…³ birth…⁴ sex   gender homew…⁵
+   &lt;chr&gt;        &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  
+ 1 Luke Skywa…   1720   770 blond   fair    blue        190 male  mascu… Tatooi…
+ 2 C-3PO         1670   750 &lt;NA&gt;    gold    yellow     1120 none  mascu… Tatooi…
+ 3 R2-D2          960   320 &lt;NA&gt;    white,… red         330 none  mascu… Naboo  
+ 4 Darth Vader   2020  1360 none    white   yellow      419 male  mascu… Tatooi…
+ 5 Leia Organa   1500   490 brown   light   brown       190 fema… femin… Aldera…
+ 6 Owen Lars     1780  1200 brown,… light   blue        520 male  mascu… Tatooi…
+ 7 Beru White…   1650   750 brown   light   blue        470 fema… femin… Tatooi…
+ 8 R5-D4          970   320 &lt;NA&gt;    white,… red          NA none  mascu… Tatooi…
+ 9 Biggs Dark…   1830   840 black   light   brown       240 male  mascu… Tatooi…
+10 Obi-Wan Ke…   1820   770 auburn… fair    blue-g…     570 male  mascu… Stewjon
+# … with 77 more rows, 4 more variables: species &lt;chr&gt;, films &lt;list&gt;,
+#   vehicles &lt;list&gt;, starships &lt;list&gt;, and abbreviated variable names
+#   ¹​hair_color, ²​skin_color, ³​eye_color, ⁴​birth_year, ⁵​homeworld</code></pre>
+</div>
+</div>
+</section><section id="оконные-функции" class="level3"><h3 class="anchored" data-anchor-id="оконные-функции">Оконные функции</h3>
+<div class="cell">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">name</span>, <span class="va">height</span>, <span class="va">mass</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="st">'rnk'</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/ranking.html">dense_rank</a></span><span class="op">(</span><span class="va">mass</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="st">'r_num'</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/ranking.html">row_number</a></span><span class="op">(</span><span class="va">mass</span><span class="op">)</span><span class="op">)</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 87 × 5
+   name               height  mass   rnk r_num
+   &lt;chr&gt;               &lt;int&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt;
+ 1 Luke Skywalker        172    77    18    25
+ 2 C-3PO                 167    75    17    22
+ 3 R2-D2                  96    32     4     4
+ 4 Darth Vader           202   136    35    55
+ 5 Leia Organa           150    49     8    11
+ 6 Owen Lars             178   120    34    54
+ 7 Beru Whitesun lars    165    75    17    23
+ 8 R5-D4                  97    32     4     5
+ 9 Biggs Darklighter     183    84    24    42
+10 Obi-Wan Kenobi        182    77    18    26
+# … with 77 more rows</code></pre>
+</div>
+</div>
+</section><section id="вычисление-с-условием" class="level3"><h3 class="anchored" data-anchor-id="вычисление-с-условием">Вычисление с условием</h3>
+<div class="cell">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">name</span>, <span class="va">height</span>, <span class="va">mass</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="co"># логические условия в вычислении</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="st">'case_col'</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span></span>
+<span>    <span class="va">name</span> <span class="op">==</span> <span class="st">'Luke Skywalker'</span> <span class="op">|</span> <span class="va">name</span> <span class="op">==</span> <span class="st">'Leia Organa'</span>  <span class="op">~</span> <span class="st">'Главный герой'</span>,</span>
+<span>    <span class="va">name</span> <span class="op">==</span> <span class="st">'Darth Vader'</span> <span class="op">~</span> <span class="st">'Главный злодей'</span>,</span>
+<span>    <span class="cn">TRUE</span> <span class="op">~</span> <span class="st">'Другой персонаж'</span></span>
+<span>    <span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 87 × 4
+   name               height  mass case_col       
+   &lt;chr&gt;               &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;          
+ 1 Luke Skywalker        172    77 Главный герой  
+ 2 C-3PO                 167    75 Другой персонаж
+ 3 R2-D2                  96    32 Другой персонаж
+ 4 Darth Vader           202   136 Главный злодей 
+ 5 Leia Organa           150    49 Главный герой  
+ 6 Owen Lars             178   120 Другой персонаж
+ 7 Beru Whitesun lars    165    75 Другой персонаж
+ 8 R5-D4                  97    32 Другой персонаж
+ 9 Biggs Darklighter     183    84 Другой персонаж
+10 Obi-Wan Kenobi        182    77 Другой персонаж
+# … with 77 more rows</code></pre>
+</div>
+</div>
+</section><section id="обработка-нуллов" class="level3"><h3 class="anchored" data-anchor-id="обработка-нуллов">Обработка нуллов</h3>
+<div class="cell">
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">name</span>, <span class="va">height</span>, <span class="va">mass</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="co"># логические условия в вычислении</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="st">'case_col'</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span></span>
+<span>    <span class="va">name</span> <span class="op">==</span> <span class="st">'Luke Skywalker'</span> <span class="op">|</span> <span class="va">name</span> <span class="op">==</span> <span class="st">'Leia Organa'</span>  <span class="op">~</span> <span class="st">'Главный герой'</span>,</span>
+<span>    <span class="va">name</span> <span class="op">==</span> <span class="st">'Darth Vader'</span> <span class="op">~</span> <span class="st">'Главный злодей'</span></span>
+<span>    <span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="st">'coalesce_col'</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/coalesce.html">coalesce</a></span><span class="op">(</span><span class="va">case_col</span>, <span class="st">'другой персонаж'</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 87 × 5
+   name               height  mass case_col       coalesce_col   
+   &lt;chr&gt;               &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;          &lt;chr&gt;          
+ 1 Luke Skywalker        172    77 Главный герой  Главный герой  
+ 2 C-3PO                 167    75 &lt;NA&gt;           другой персонаж
+ 3 R2-D2                  96    32 &lt;NA&gt;           другой персонаж
+ 4 Darth Vader           202   136 Главный злодей Главный злодей 
+ 5 Leia Organa           150    49 Главный герой  Главный герой  
+ 6 Owen Lars             178   120 &lt;NA&gt;           другой персонаж
+ 7 Beru Whitesun lars    165    75 &lt;NA&gt;           другой персонаж
+ 8 R5-D4                  97    32 &lt;NA&gt;           другой персонаж
+ 9 Biggs Darklighter     183    84 &lt;NA&gt;           другой персонаж
+10 Obi-Wan Kenobi        182    77 &lt;NA&gt;           другой персонаж
+# … with 77 more rows</code></pre>
+</div>
+</div>
+<p><br></p>
+</section></section><section id="объединение-таблиц" class="level2"><h2 class="anchored" data-anchor-id="объединение-таблиц">Объединение таблиц</h2>
+<p><br></p>
+<div class="cell">
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># подготовим датафрейм</span></span>
+<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">species</span> <span class="op">==</span> <span class="st">'Human'</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span><span class="st">'new_name'</span> <span class="op">=</span> <span class="st">'name'</span><span class="op">)</span></span>
+<span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join</a></span><span class="op">(</span><span class="va">df</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'name'</span> <span class="op">=</span> <span class="st">'new_name'</span><span class="op">)</span><span class="op">)</span> <span class="co"># by аналог ON в SQL</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 35 × 27
+   name     heigh…¹ mass.x hair_…² skin_…³ eye_c…⁴ birth…⁵ sex.x gende…⁶ homew…⁷
+   &lt;chr&gt;      &lt;int&gt;  &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;  
+ 1 Luke Sk…     172     77 blond   fair    blue       19   male  mascul… Tatooi…
+ 2 Darth V…     202    136 none    white   yellow     41.9 male  mascul… Tatooi…
+ 3 Leia Or…     150     49 brown   light   brown      19   fema… femini… Aldera…
+ 4 Owen La…     178    120 brown,… light   blue       52   male  mascul… Tatooi…
+ 5 Beru Wh…     165     75 brown   light   blue       47   fema… femini… Tatooi…
+ 6 Biggs D…     183     84 black   light   brown      24   male  mascul… Tatooi…
+ 7 Obi-Wan…     182     77 auburn… fair    blue-g…    57   male  mascul… Stewjon
+ 8 Anakin …     188     84 blond   fair    blue       41.9 male  mascul… Tatooi…
+ 9 Wilhuff…     180     NA auburn… fair    blue       64   male  mascul… Eriadu 
+10 Han Solo     180     80 brown   fair    brown      29   male  mascul… Corell…
+# … with 25 more rows, 17 more variables: species.x &lt;chr&gt;, films.x &lt;list&gt;,
+#   vehicles.x &lt;list&gt;, starships.x &lt;list&gt;, height.y &lt;int&gt;, mass.y &lt;dbl&gt;,
+#   hair_color.y &lt;chr&gt;, skin_color.y &lt;chr&gt;, eye_color.y &lt;chr&gt;,
+#   birth_year.y &lt;dbl&gt;, sex.y &lt;chr&gt;, gender.y &lt;chr&gt;, homeworld.y &lt;chr&gt;,
+#   species.y &lt;chr&gt;, films.y &lt;list&gt;, vehicles.y &lt;list&gt;, starships.y &lt;list&gt;, and
+#   abbreviated variable names ¹​height.x, ²​hair_color.x, ³​skin_color.x,
+#   ⁴​eye_color.x, ⁵​birth_year.x, ⁶​gender.x, ⁷​homeworld.x</code></pre>
+</div>
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># чтобы не было суффиксов в именах столбцов можно</span></span>
+<span><span class="co"># соединять по всем столбцам у которых совпадают имена</span></span>
+<span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining, by = c("height", "mass", "hair_color", "skin_color", "eye_color",
+"birth_year", "sex", "gender", "homeworld", "species", "films", "vehicles",
+"starships")</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 35 × 15
+   name        height  mass hair_…¹ skin_…² eye_c…³ birth…⁴ sex   gender homew…⁵
+   &lt;chr&gt;        &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  
+ 1 Luke Skywa…    172    77 blond   fair    blue       19   male  mascu… Tatooi…
+ 2 Darth Vader    202   136 none    white   yellow     41.9 male  mascu… Tatooi…
+ 3 Leia Organa    150    49 brown   light   brown      19   fema… femin… Aldera…
+ 4 Owen Lars      178   120 brown,… light   blue       52   male  mascu… Tatooi…
+ 5 Beru White…    165    75 brown   light   blue       47   fema… femin… Tatooi…
+ 6 Biggs Dark…    183    84 black   light   brown      24   male  mascu… Tatooi…
+ 7 Obi-Wan Ke…    182    77 auburn… fair    blue-g…    57   male  mascu… Stewjon
+ 8 Anakin Sky…    188    84 blond   fair    blue       41.9 male  mascu… Tatooi…
+ 9 Wilhuff Ta…    180    NA auburn… fair    blue       64   male  mascu… Eriadu 
+10 Han Solo       180    80 brown   fair    brown      29   male  mascu… Corell…
+# … with 25 more rows, 5 more variables: species &lt;chr&gt;, films &lt;list&gt;,
+#   vehicles &lt;list&gt;, starships &lt;list&gt;, new_name &lt;chr&gt;, and abbreviated variable
+#   names ¹​hair_color, ²​skin_color, ³​eye_color, ⁴​birth_year, ⁵​homeworld</code></pre>
+</div>
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># для соединения брать не всю таблицу, а только нужные столбцы</span></span>
+<span><span class="va">starwars</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">df</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'new_name'</span>, <span class="st">'mass'</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'name'</span> <span class="op">=</span> <span class="st">'new_name'</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 35 × 15
+   name       height mass.x hair_…¹ skin_…² eye_c…³ birth…⁴ sex   gender homew…⁵
+   &lt;chr&gt;       &lt;int&gt;  &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  
+ 1 Luke Skyw…    172     77 blond   fair    blue       19   male  mascu… Tatooi…
+ 2 Darth Vad…    202    136 none    white   yellow     41.9 male  mascu… Tatooi…
+ 3 Leia Orga…    150     49 brown   light   brown      19   fema… femin… Aldera…
+ 4 Owen Lars     178    120 brown,… light   blue       52   male  mascu… Tatooi…
+ 5 Beru Whit…    165     75 brown   light   blue       47   fema… femin… Tatooi…
+ 6 Biggs Dar…    183     84 black   light   brown      24   male  mascu… Tatooi…
+ 7 Obi-Wan K…    182     77 auburn… fair    blue-g…    57   male  mascu… Stewjon
+ 8 Anakin Sk…    188     84 blond   fair    blue       41.9 male  mascu… Tatooi…
+ 9 Wilhuff T…    180     NA auburn… fair    blue       64   male  mascu… Eriadu 
+10 Han Solo      180     80 brown   fair    brown      29   male  mascu… Corell…
+# … with 25 more rows, 5 more variables: species &lt;chr&gt;, films &lt;list&gt;,
+#   vehicles &lt;list&gt;, starships &lt;list&gt;, mass.y &lt;dbl&gt;, and abbreviated variable
+#   names ¹​hair_color, ²​skin_color, ³​eye_color, ⁴​birth_year, ⁵​homeworld</code></pre>
+</div>
+</div>
+
+
+</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'alternate';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+      <a href="../r_language/r_language_page.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">r_language_page.html</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../r_language/Quarto_cheatsheet.html" class="pagination-link">
+        <span class="nav-page-text">Quarto cheat sheet</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">Copyright 2022, AntZv</div>   
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+<li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/">
+      <i class="bi bi-twitter" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://t.me/best_practices_it">
+      <i class="bi bi-telegram" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+</div>
+  </div>
+</footer>
+
+
+</body></html>

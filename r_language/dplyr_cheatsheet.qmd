@@ -1,0 +1,339 @@
+---
+title: "dplyr сheat sheet"
+date: 03-06-2022
+categories:
+  - R
+---
+
+
+```{r}
+library(dplyr)
+starwars <- dplyr::starwars
+```
+
+
+
+Выполним установку пакета dplyr и загрузим набор данных starwars
+
+::: code
+library(dplyr) <br>
+starwars <- dplyr::starwars
+:::
+
+
+
+
+## Выборка данных {}
+
+В R возможно делать выборку столбцов разными стособами. Просто перечислить названия столбцов или их номера, перечислить какие столбцы не нужно выводить или выводить столбцы с именем соответствующим определенному условию. <br>
+
+### Перечисление
+
+
+```{r}
+starwars %>% 
+  select(name)
+```
+
+### Отрицательное перечисление
+
+Если нужно указать какой столбец не включать в выборку то ставится знак минус:<br>
+
+```{r}
+starwars %>% 
+  select(-c(name, mass))
+```
+
+### По номерам
+
+Или можно указать номера столбцов<br>
+
+```{r}
+starwars %>% 
+  select(1, 2)
+```
+
+### По условию {.tabset .tabset-fade .tabset-pills}
+
+-   `contains`*: название столбца содержит символ*
+
+-   `ends_with`*: название столбца заканчивается на*
+
+-   `matches`*: название столбца соответствует регулярному выражению*
+
+-   `num_range`*: поиск занумерованных столбцов, например, «V1, V2, V3...»*
+
+-   `one_of`*: название столбца соответствует одному из вариантов*
+
+-   `starts_with`*: название столбца начинается с*
+
+подробнее в `?select`
+
+Примеры: 
+
+#### contains
+
+```{r}
+# отберем столбцы, название которых содержит букву «а».
+starwars %>% 
+  select(contains('a'))
+```
+
+#### one_of
+
+```{r}
+# отберем столбцы, название которых является одним из указанных
+starwars %>% 
+  select(one_of('mass', 'height'))
+```
+
+#### matches
+
+```{r}
+# поиск по регулярному выражению
+starwars %>% 
+  select(matches('.*t+.+'))
+```
+
+### Вернуть вектор
+
+Если нужно вернуть столбец не как таблицу, а вектор, то делаем через `pull`\
+
+```{r}
+starwars %>% 
+  pull('name')
+```
+
+<br>
+
+## Фильтрация строк {.tabset .tabset-fade .tabset-pills}
+
+
+### По логическому условию
+
+```{r}
+starwars %>% 
+  filter(mass > 50)
+#комбинировать несколько условий можно с помощью & и |:
+starwars %>% 
+  filter(mass > 50 & height > 170)
+```
+
+Конструировать логические условия можно и другими операторами
+
+-   `>=`
+
+-   `<=`
+
+-   `is.na`
+
+-   `!is.na`
+
+-   `%in%`
+
+-   `!`
+
+-   `between`
+
+-   `near`
+
+-   `xor`
+
+<br>
+
+```{r}
+starwars %>% 
+  filter(skin_color %in% c('fair', 'green'))
+```
+
+### Уникальные значения
+
+```{r}
+starwars %>% 
+  distinct(sex)
+```
+
+### По индексу
+
+```{r}
+starwars %>% 
+  slice(5:15)
+```
+
+### Случайные строки
+
+```{r}
+# возвращает n - случайных строк
+starwars %>% 
+  sample_n(5)
+# Нужно указать долю строк из общего числа, которые должны быть в итоговой таблице. 
+# Например, при параметре 0.5 вернется половина строк из таблицы, выбранные случайным образом.
+starwars %>% 
+  sample_frac(0.1)
+```
+
+<br>
+
+## Сортировка строк {.tabset .tabset-fade .tabset-pills}
+
+<br>
+
+Для сортировки в языке есть достаточно широкие возможности. Вот самые основные виды сортировки:
+
+### По возрастанию
+
+```{r}
+starwars %>% 
+  arrange(mass)
+```
+
+### По убыванию
+
+```{r}
+# сортировка по убыванию
+starwars %>% 
+  arrange(desc(mass))
+```
+
+### По нескольким столбцам
+
+```{r}
+# сортировка по нескольким столбцам
+starwars %>% 
+  arrange(height, desc(mass))
+```
+
+### Расширенная сортировка
+
+При сортировке можно использовать вспомогательные функции для `select`, только внутри функции `across`
+
+```{r}
+starwars %>% 
+  arrange(across(ends_with('_color'), desc))
+```
+
+<br>
+
+## Группировка и агрегатные функции
+
+
+```{r}
+# сама по себе группировка не несет смысла, только в сочетании с агрегирующими функциями
+starwars %>% 
+  group_by(eye_color)
+```
+
+```{r}
+starwars %>% 
+  group_by(eye_color) %>% # группируем по полю
+  summarise(
+    'mean mass' = mean(mass), # задаем имя столбцу и применяем функцию
+    'max mass' = max(mass),
+    'min mass' = min(mass),
+    'first mass' = first(mass),
+    'median mass' = median(mass),
+    'quantity' = n()
+  )
+# про другие функции summarise в ?summarise
+```
+
+Рассчитать показатели только для нескольких столбцов сразу
+
+```{r}
+starwars %>% 
+  group_by(eye_color) %>% 
+  summarise(
+    across(
+      .cols = c(mass, height), # столбцы к котторым применятся функции
+      .fns = list(mean = mean, max = max, min = min, first = first, median = median), # набор функций
+      .names = "{.col}.fn_{.fn}"  # шаблон имени столбца
+    )
+  )
+```
+
+<br>
+
+## Вычисляемые столбцы {.tabset .tabset-fade .tabset-pills}
+
+
+### Новый столбец
+
+```{r}
+starwars %>% 
+  select(name, height, mass) %>% 
+  mutate('coef' = mass/height)
+```
+
+### Изменить несколько столбцов
+
+Применить функцию ко всем столбцам по условию
+
+```{r}
+starwars %>% 
+  mutate(
+    across(
+      .cols = where(is.numeric), # применить функцию ко всем числовым столбцам
+      .fns = function(x) x*10 # x в function это стоблцы по условию в cols
+    )
+  )
+```
+
+### Оконные функции
+
+```{r}
+starwars %>% 
+  select(name, height, mass) %>% 
+  mutate('rnk' = dense_rank(mass)) %>% 
+  mutate('r_num' = row_number(mass)) 
+```
+
+### Вычисление с условием
+
+```{r}
+starwars %>% 
+  select(name, height, mass) %>% 
+  # логические условия в вычислении
+  mutate('case_col' = case_when(
+    name == 'Luke Skywalker' | name == 'Leia Organa'  ~ 'Главный герой',
+    name == 'Darth Vader' ~ 'Главный злодей',
+    TRUE ~ 'Другой персонаж'
+    ))
+```
+
+### Обработка нуллов
+
+```{r}
+starwars %>% 
+  select(name, height, mass) %>% 
+  # логические условия в вычислении
+  mutate('case_col' = case_when(
+    name == 'Luke Skywalker' | name == 'Leia Organa'  ~ 'Главный герой',
+    name == 'Darth Vader' ~ 'Главный злодей'
+    )) %>% 
+  mutate('coalesce_col' = coalesce(case_col, 'другой персонаж'))
+```
+
+<br>
+
+## Объединение таблиц
+
+<br>
+
+```{r}
+# подготовим датафрейм
+df <- starwars %>% 
+  filter(species == 'Human') %>% 
+  rename('new_name' = 'name')
+starwars %>% 
+  inner_join(df, by = c('name' = 'new_name')) # by аналог ON в SQL
+# чтобы не было суффиксов в именах столбцов можно
+# соединять по всем столбцам у которых совпадают имена
+starwars %>% 
+  inner_join(df)
+# для соединения брать не всю таблицу, а только нужные столбцы
+starwars %>% 
+  inner_join(
+    select(df, c('new_name', 'mass')),
+    by = c('name' = 'new_name')
+    )
+```
