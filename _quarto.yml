@@ -15,14 +15,10 @@ website:
     left:
       - text: "Home"
         file: index.qmd
-      #- text: "Analytics"
-       # file: analytics/analytics_page.qmd
-      - text: "Data Engineering"
-        file: data_engineering/data_engineering_page.qmd
+ 
       - text: " R "
         file: r_language/r_language_page.qmd
-      - text: " Python "
-        file: python_language/python_language_page.qmd
+
       - text: "Visualization"
         file: visualization/visualization_page.qmd
       
@@ -30,29 +26,17 @@ website:
 # чтобы боковое меню появлялось только на определенных страницах нужно связать заголовки в верхнем и боковом меню
 # а также чтобы файл в верхнем меню был такой же как первый файл после заголовка в боковом
   sidebar:
-    #- title: "analytics"
-    #  contents: 
-    #    - analytics/analytics_page.qmd
-    #    - section: "analytics"
-    #      contents: analytics/* # в меню будут отображаться всё файлы из директории
       
-    - title: "Data Engineering"
-      contents: 
-        - data_engineering/data_engineering_page.qmd
-        - section: "Data Base"
-        - text: "---"
-        - section: "PostgreSQL"
-          contents: data_engineering/data_base/*.qmd
-        
     - title: "R"
       contents:
         - r_language/r_language_page.qmd
-        - section: "Tutorials"
-          contents: r_language/*_cheatsheet.qmd
-        
-    - title: "Python"
-      contents:
-        - python_language/python_language_page.qmd
+        - section: "Tidyverse"
+          contents: r_language/Tidyverse/*_tidyverse.qmd
+        - text: "---"
+        - section: "Tutorial"
+          contents: 
+            - r_language/Tutorial/Quarto_cheatsheet.qmd
+
         
     - title: "Visualization"
       contents:
