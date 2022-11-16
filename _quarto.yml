@@ -59,6 +59,7 @@ format:
       light: Journal
     highlight-style: github # стиль блоков кода
     code-link: true
+    df-print: paged
       
     css: styles.css
     toc: true # вывод содержания страницы (выводятся заголовки до 3го уровня)
