@@ -1,5 +1,5 @@
 ---
-title: "Dplyr cheatsheet"  
+title: "Dplyr cheat sheet"  
 date: 11-16-2022  
 categories: 
   - R
@@ -344,7 +344,7 @@ starwars %>%
 ```
 
 
-## Обработка нуллов
+## Обработка null
 
 
 ```{r}

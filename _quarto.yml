@@ -2,6 +2,7 @@ project:
   type: website
 
 website:
+  favicon: Robot_face_amico.png
   page-navigation: true # внизу страницы появляются стрелки с переходом на след\пред статью внутри секции
   search: 
     location: navbar # место панели поиска
@@ -41,6 +42,11 @@ website:
     - title: "Visualization"
       contents:
         - visualization/visualization_page.qmd
+        - text: "---"
+        - section: "Diagramms"
+          contents:
+            - section: "UpSet"
+              contents: visualization/Diagramms/Upset/*.qmd
     
   # настройка нижнего колонтитула         
   page-footer:
@@ -55,7 +61,7 @@ website:
 format:
   html:
     theme: 
-      dark: Solar # если первой указать тему dark, то оно  будет по умолчанию
+      #dark: Cyborg # если первой указать тему dark, то оно  будет по умолчанию
       light: Journal
     highlight-style: github # стиль блоков кода
     code-link: true
