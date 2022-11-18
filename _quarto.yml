@@ -66,6 +66,7 @@ format:
     highlight-style: github # стиль блоков кода
     code-link: true
     df-print: paged
+    fig-cap-location: bottom
       
     css: styles.css
     toc: true # вывод содержания страницы (выводятся заголовки до 3го уровня)

@@ -12,8 +12,6 @@ author:
   - "Best Practices IT"
   - url: https://t.me/best_practices_it
 citation: true
-highlight-style: mokokai
-
 ---
 
 ### Отображение контента
@@ -34,6 +32,7 @@ highlight-style: mokokai
 В блоке кода опции можно задавать через комментарий вида: `#|`, вот некоторые опции:
 
 - `echo: true|false` - показать\\скрыть код 
+- `include: false` - показать\\скрыть результат работы кода
 - `code-fold: true` - добавить опцию свернуть\\развернуть код
 - `code-summary: "Show the code"` - заголовок свернутого блока кода
 - `code-overflow: wrap|scroll` - добавляет скролл или перенос по словам для длинных строк кода

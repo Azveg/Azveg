@@ -5,8 +5,8 @@
 <meta name="generator" content="quarto-1.2.258">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Best Practices IT">
-<meta name="dcterms.date" content="2022-07-01">
-<meta name="keywords" content="UpSet, Heatmap, R, visualization">
+<meta name="dcterms.date" content="2022-10-18">
+<meta name="description" content="Построение диаграмм пересечения множеств с помощью UpSet графиков развитие диаграмм Вена на большом количестве анализируемых атрибутов">
 <title>UpSet диаграммы - введение</title>
 <style>
 code{white-space: pre-wrap;}
@@ -119,10 +119,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit"
   }
-}</script><link href="../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+}</script><style>html{ scroll-behavior: smooth; }</style>
+<link href="../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
 <script src="../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><link rel="stylesheet" href="../../../styles.css">
 <meta property="og:title" content="UpSet диаграммы - введение">
-<meta property="og:description" content="Понимание взаимосвязей между атрибутами изучаемого набора данных является важной задачей анализа.">
+<meta property="og:description" content="Построение диаграмм пересечения множеств с помощью UpSet графиков развитие диаграмм Вена на большом количестве анализируемых атрибутов">
 </head>
 <body class="nav-sidebar floating nav-fixed">
 
@@ -198,7 +199,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul>
 <li>
 <a href="#%D0%BF%D1%80%D0%BE-%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%BA%D0%B8-upset" id="toc-про-графики-upset" class="nav-link active" data-scroll-target="#%D0%BF%D1%80%D0%BE-%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%BA%D0%B8-upset">Про графики UpSet</a>
-  <ul class="collapse">
+  <ul>
 <li><a href="#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C-upset" id="toc-когда-использовать-upset" class="nav-link" data-scroll-target="#%D0%BA%D0%BE%D0%B3%D0%B4%D0%B0-%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D1%8C-upset">Когда использовать UpSet</a></li>
   <li><a href="#%D0%BE%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5-%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%BA%D0%BE%D0%B2-upset" id="toc-описание-графиков-upset" class="nav-link" data-scroll-target="#%D0%BE%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5-%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%BA%D0%BE%D0%B2-upset">Описание графиков UpSet</a></li>
   </ul>
@@ -206,7 +207,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#%D0%BA%D0%BE%D0%BC%D0%B1%D0%B8%D0%BD%D0%B0%D1%86%D0%B8%D0%BE%D0%BD%D0%BD%D0%B0%D1%8F-%D0%BC%D0%B0%D1%82%D1%80%D0%B8%D1%86%D0%B0" id="toc-комбинационная-матрица" class="nav-link" data-scroll-target="#%D0%BA%D0%BE%D0%BC%D0%B1%D0%B8%D0%BD%D0%B0%D1%86%D0%B8%D0%BE%D0%BD%D0%BD%D0%B0%D1%8F-%D0%BC%D0%B0%D1%82%D1%80%D0%B8%D1%86%D0%B0">Комбинационная матрица</a></li>
   <li>
 <a href="#%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%BA%D0%BE%D0%B2-upset" id="toc-реализация-графиков-upset" class="nav-link" data-scroll-target="#%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D1%8F-%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%BA%D0%BE%D0%B2-upset">Реализация графиков UpSet</a>
-  <ul class="collapse">
+  <ul>
 <li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B-%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%BA%D0%BE%D0%B2-upset" id="toc-примеры-графиков-upset" class="nav-link" data-scroll-target="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D1%80%D1%8B-%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%BA%D0%BE%D0%B2-upset">Примеры графиков UpSet</a></li>
   </ul>
 </li>
@@ -214,28 +215,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </ul></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <h1 class="title d-none d-lg-block">UpSet диаграммы - введение</h1>
   <div class="quarto-categories">
     <div class="quarto-category">R</div>
+    <div class="quarto-category">UpSet</div>
+    <div class="quarto-category">Heatmap</div>
+    <div class="quarto-category">visualization</div>
   </div>
   </div>
 
+<div>
+  <div class="description">
+    Построение диаграмм пересечения множеств с помощью UpSet графиков развитие диаграмм Вена на большом количестве анализируемых атрибутов
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Best Practices IT </p>
-          </div>
-  </div>
     
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">2022-07-01</p>
+      <p class="date">October 18, 2022</p>
     </div>
   </div>
   
@@ -253,8 +256,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>когда вы хотите посмотреть на все комбинации пересечений множеств. Если вы хотите посмотреть на попарные пересечения между наборами, лучшим выбором может быть какая-то матрица комбинаций.</li>
 </ul></section><section id="описание-графиков-upset" class="level3"><h3 class="anchored" data-anchor-id="описание-графиков-upset">Описание графиков UpSet</h3>
 <p>UpSet отображает пересечения множества в виде матрицы, как показано на следующем рисунке. Каждый столбец соответствует набору, а столбчатые диаграммы сверху показывают размер набора. Каждая строка соответствует возможному пересечению: заполненные ячейки показывают, какой набор является частью пересечения. Также обратите внимание на линии, соединяющие заполненные ячейки: они показывают, в каком направлении вы должны читать график:</p>
-<div style="display: flex; align-items: center; justify-content: center;">
-<p><img src="images/concept-1-matrix.svg" class="img-fluid" style="margin: 0 auto;" width="341"></p>
+<div id="fig-upset" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="images/concept-1-matrix.svg" class="img-fluid figure-img" style="margin: 0 auto;" width="400"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;1: Чтение графика</figcaption><p></p>
+</figure>
 </div>
 <p>Рассмотрим как эти пересечения соответствуют сегментам на диаграмме Венна.</p>
 <ul>
@@ -263,21 +268,29 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Оранжевая (пятая) строка представляет элементы, которые являются общими для наборов A и B, но не для C.</li>
 <li>Наконец, последняя (фиолетовая) строка представляет элементы, общие для всех наборов.</li>
 </ul>
-<div style="display: flex; align-items: center; justify-content: center;">
-<p><img src="images/concept_2_intersections.svg" class="img-fluid" style="margin: 0 auto;" width="400"></p>
+<div id="fig-upset" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="images/concept_2_intersections.svg" class="img-fluid figure-img" style="margin: 0 auto;" width="400"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2: Сопоставление с диаграммой Венна</figcaption><p></p>
+</figure>
 </div>
 <p>Этот график хорош тем, что мы можем отобразить размер пересечений (“мощность”) в виде гистограмм прямо рядом с матрицей, как вы можете видеть в следующем примере:</p>
-<div style="display: flex; align-items: center; justify-content: center;">
-<p><img src="images/concept_3_cardinality.svg" class="img-fluid" style="margin: 0 auto;" width="400"></p>
+<div id="fig-upset" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="images/concept_3_cardinality.svg" class="img-fluid figure-img" style="margin: 0 auto;" width="400"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3: Гистограмма мощности на графике UpSet</figcaption><p></p>
+</figure>
 </div>
 <p>Такое представление мощнойстей делает более понятным сравнение размеров пересечений.</p>
 <p>Матрица также очень полезна, потому что ее можно сортировать различными способами. Обычным способом является сортировка по мощности (размеру), как показано на следующем рисунке, но также возможны и другие виды сортировки.</p>
-<div style="display: flex; align-items: center; justify-content: center;">
-<p><img src="images/concept_4_sorting.svg" class="img-fluid" style="margin: 0 auto;" width="400"></p>
+<div id="fig-upset" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="images/concept_4_sorting.svg" class="img-fluid figure-img" style="margin: 0 auto;" width="300"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4: Пример сортировки по мощности</figcaption><p></p>
+</figure>
 </div>
 <p>Наконец, UpSet одинаково хорошо работает как по горизонтали, так и по вертикали. Вертикальные графики лучше подходят для интерактивных графиков, которые можно прокручивать, в то время как горизонтальные графики лучше всего подходят для статичного представления.</p>
-<div style="display: flex; align-items: center; justify-content: center;">
-<p><img src="images/concept_5_horizontal.svg" class="img-fluid" style="margin: 0 auto;" width="400"></p>
+<div id="fig-upset" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="images/concept_5_horizontal.svg" class="img-fluid figure-img" style="margin: 0 auto;" width="400"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5: Горизонтальный график UpSet</figcaption><p></p>
+</figure>
 </div>
 <p>Мы уже частично коснулись матрицы в которая содержит комбинации атрибутов, теперь рассмотрим её подробнее.</p>
 </section></section><section id="комбинационная-матрица" class="level2"><h2 class="anchored" data-anchor-id="комбинационная-матрица">Комбинационная матрица</h2>
@@ -323,8 +336,9 @@ e    0    1</code></pre>
 <p>На графике это количество комбинаций или пересечений отображается как <strong><em>Intersection size</em></strong>, а длины векторов или наборы в матрице как <strong><em>Set size</em></strong>.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><img src="diagramm_upsetr_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></p>
+<div id="fig-upset" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="diagramm_upsetr_files/figure-html/fig-upset-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;6: Сопоставление комбинационной матрицы с графиком</figcaption><p></p>
 </figure>
 </div>
 </div>
@@ -332,17 +346,16 @@ e    0    1</code></pre>
 <p>Теперь создадим матрицу комбинаций функцией make_comb_mat.</p>
 <p>У функции <code>make_comb_mat</code> есть три режима работы:</p>
 <ul>
-<li><p><em>distinct</em> (по умолчанию)</p></li>
-<li><p><em>intersect</em></p></li>
-<li><p><em>union mode</em></p></li>
+<li>
+<em>distinct</em> (по умолчанию)</li>
+<li><em>intersect</em></li>
+<li><em>union mode</em></li>
 </ul>
 <p>Как режимы влияют на пересечение наборов показано на рисунке ниже, а влияние на графиках разберем ниже.</p>
-<div style="display: flex; align-items: center; justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><a href="https://jokergoo.github.io/ComplexHeatmap-reference/book/upset-plot.html#upset-mode"><img src="unnamed-chunk-7-1.png" class="img-fluid figure-img" style="margin: 0 auto;" width="341"></a></p>
-<p></p><figcaption class="figure-caption">Режимы функции</figcaption><p></p>
+<div id="fig-upset" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="images/unnamed-chunk-7-1.png" class="img-fluid figure-img" style="margin: 0 auto;" width="400"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;7: Режимы комбинационной матрицы</figcaption><p></p>
 </figure>
-</div>
 </div>
 <p>Создадим матрицу комбинаций</p>
 <div class="cell">
@@ -360,7 +373,7 @@ e    0    1</code></pre>
 <span><span class="va">m2</span> <span class="op">=</span> <span class="fu">make_comb_mat</span><span class="op">(</span><span class="va">ls</span>, top_n_sets <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Дальше с этой матрицей будем работать черех пакет ComplexHeatmap.</p>
-</section><section id="реализация-графиков-upset" class="level2"><h2 class="anchored" data-anchor-id="реализация-графиков-upset">Реализация графиков UpSet</h2>
+</section><section id="реализация-графиков-upset" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="реализация-графиков-upset">Реализация графиков UpSet</h2>
 <p>Создать графики можно на различных языках программирования, мы рассмотрим R и Python в дальнейших статьях.</p>
 <p>Эти графики в языке R реализованы в трех пакетах:</p>
 <ul>
@@ -374,15 +387,37 @@ e    0    1</code></pre>
 <li>UpSetPlot</li>
 <li>pyUpSet</li>
 </ul>
-<section id="примеры-графиков-upset" class="level3"><h3 class="anchored" data-anchor-id="примеры-графиков-upset">Примеры графиков UpSet</h3>
-<div style="display: flex; align-items: center; justify-content: center;">
-<p><img src="images/Examples_R_57_0.png" class="img-fluid" style="margin: 0 auto;" width="800"></p>
+<section id="примеры-графиков-upset" class="level3 page-columns page-full"><h3 class="anchored" data-anchor-id="примеры-графиков-upset">Примеры графиков UpSet</h3>
+<div class="column-page">
+<div id="fig-upset" class="quarto-layout-panel">
+<figure class="figure"><div class="quarto-layout-row quarto-layout-valign-bottom">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="images/Examples_R_57_0.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Горизонтальный график с метками данных</figcaption><p></p>
+</figure>
 </div>
-<div style="display: flex; align-items: center; justify-content: center;">
-<p><img src="images/unnamed-chunk-77-1.png" class="img-fluid" style="margin: 0 auto;" width="800"></p>
 </div>
-<div style="display: flex; align-items: center; justify-content: center;">
-<p><img src="images/Examples_R_40_0.png" class="img-fluid" style="margin: 0 auto;" width="800"></p>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="images/unnamed-chunk-77-1.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Горизонтальный график с дополнительными диаграммами</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-bottom">
+<div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure"><p><img src="images/Examples_R_40_0.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Горизонтальный график с несколькими дополнительными вертикальными диаграммами</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;8: Примеры UpSet графиков</figcaption><p></p>
+</figure>
+</div>
 </div>
 </section></section><section id="используемые-источники" class="level2"><h2 class="anchored" data-anchor-id="используемые-источники">Используемые источники:</h2>
 <ul>
@@ -391,7 +426,16 @@ e    0    1</code></pre>
 </ul>
 
 
-</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{practicesit2022,
+  author = {Best Practices IT},
+  title = {UpSet Диаграммы - Введение},
+  date = {2022-10-18},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-practicesit2022" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
+Best Practices IT. 2022. <span>“UpSet Диаграммы - Введение.”</span>
+October 18, 2022.
+</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -547,4 +591,5 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </footer>
 
 
+<script src="../../../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
