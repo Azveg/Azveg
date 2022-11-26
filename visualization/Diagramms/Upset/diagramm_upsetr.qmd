@@ -223,7 +223,10 @@ m2 = make_comb_mat(ls, top_n_sets = 1)
 ::::
 
 
+### References
 
+::: {#refs}
+:::
 
 
 ## Используемые источники: 

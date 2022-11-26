@@ -72,7 +72,8 @@ ul.task-list li input[type="checkbox"] {
 
     const options = {
       valueNames: ['listing-date','listing-title','listing-description','listing-categories','listing-reading-time',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] }],
-      
+      page: 5,
+    pagination: { item: "<li class='page-item'><a class='page page-link' href='#'></a></li>" },
       searchColumns: ["listing-title","listing-categories"],
     };
 
@@ -132,7 +133,7 @@ ul.task-list li input[type="checkbox"] {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(5)</span></div><div class="category" data-category="Heatmap">Heatmap <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Quarto">Quarto <span class="quarto-category-count">(1)</span></div><div class="category" data-category="R">R <span class="quarto-category-count">(3)</span></div><div class="category" data-category="UpSet">UpSet <span class="quarto-category-count">(1)</span></div><div class="category" data-category="cheatsheet">cheatsheet <span class="quarto-category-count">(1)</span></div><div class="category" data-category="dplyr">dplyr <span class="quarto-category-count">(1)</span></div><div class="category" data-category="tidyverse">tidyverse <span class="quarto-category-count">(1)</span></div><div class="category" data-category="visualization">visualization <span class="quarto-category-count">(1)</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(6)</span></div><div class="category" data-category="Heatmap">Heatmap <span class="quarto-category-count">(1)</span></div><div class="category" data-category="Quarto">Quarto <span class="quarto-category-count">(1)</span></div><div class="category" data-category="R">R <span class="quarto-category-count">(4)</span></div><div class="category" data-category="UpSet">UpSet <span class="quarto-category-count">(2)</span></div><div class="category" data-category="cheatsheet">cheatsheet <span class="quarto-category-count">(1)</span></div><div class="category" data-category="dplyr">dplyr <span class="quarto-category-count">(1)</span></div><div class="category" data-category="tidyverse">tidyverse <span class="quarto-category-count">(1)</span></div><div class="category" data-category="visualization">visualization <span class="quarto-category-count">(2)</span></div></div></div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
@@ -216,7 +217,7 @@ Nov 16, 2022
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="R,Quarto,cheatsheet" data-listing-date-sort="1665435600000" data-listing-file-modified-sort="1668795917157" data-listing-reading-time-sort="4.985">
+<div class="quarto-post image-right" data-index="1" data-categories="R,Quarto,cheatsheet" data-listing-date-sort="1665435600000" data-listing-file-modified-sort="1669285461379" data-listing-reading-time-sort="5.045">
 <div class="body">
 <a href="./r_language/Tutorial/Quarto_cheatsheet.html">
 <h3 class="no-anchor listing-title">
@@ -249,7 +250,7 @@ cheatsheet
 Oct 11, 2022
 </div>
 <div class="listing-reading-time">
-4 min
+5 min
 </div>
 </a>
 </div>
@@ -276,7 +277,7 @@ R language
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="3" data-categories="R,UpSet,Heatmap,visualization" data-listing-date-sort="1666040400000" data-listing-file-modified-sort="1668799918918" data-listing-reading-time-sort="4.315">
+<div class="quarto-post image-right" data-index="3" data-categories="R,UpSet,Heatmap,visualization" data-listing-date-sort="1666040400000" data-listing-file-modified-sort="1669282264331" data-listing-reading-time-sort="4.325">
 <div class="body">
 <a href="./visualization/Diagramms/Upset/diagramm_upsetr.html">
 <h3 class="no-anchor listing-title">
@@ -339,10 +340,51 @@ Visualization
 </a>
 </div>
 </div>
+<div class="quarto-post image-right" data-index="5" data-categories="R,UpSet,visualization" data-listing-date-sort="1669237200000" data-listing-file-modified-sort="1669382953786" data-listing-reading-time-sort="23.555">
+<div class="body">
+<a href="./visualization/Diagramms/Upset/packege_upsetr.html">
+<h3 class="no-anchor listing-title">
+Создание графиков в пакете UpSetR
+</h3>
+<div class="listing-subtitle">
+
+</div>
+</a>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('R'); return false;">
+R
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('UpSet'); return false;">
+UpSet
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('visualization'); return false;">
+visualization
+</div>
+</div>
+<a href="./visualization/Diagramms/Upset/packege_upsetr.html">
+<div class="listing-description">
+<p>Рассмотрим пакет UpSetR, разберем примеры построения качественных и красивых графиков</p>
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./visualization/Diagramms/Upset/packege_upsetr.html">
+<div class="listing-date">
+Nov 24, 2022
+</div>
+<div class="listing-reading-time">
+23 min
+</div>
+</a>
+</div>
+</div>
 </div>
 <div class="listing-no-matching d-none">
 No matching items
 </div>
+<nav id="list_post-pagination" class="listing-pagination" aria-label="Page Navigation">
+  <ul class="pagination"></ul>
+</nav>
 </div>
 
 

@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.258">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="author" content="Best Practices IT">
+<meta name="dcterms.date" content="2022-11-24">
+<meta name="description" content="Рассмотрим пакет UpSetR, разберем примеры построения качественных и красивых графиков">
+<title>Создание графиков в пакете UpSetR</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../visualization/Diagramms/Upset/diagramm_upsetr.html" rel="next">
+<link href="../../../Robot_face_amico.png" rel="icon" type="image/png">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": true,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script><style>html{ scroll-behavior: smooth; }</style>
+<link href="../../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../../../site_libs/pagedtable-1.1/js/pagedtable.js"></script><link rel="stylesheet" href="../../../styles.css">
+<meta property="og:title" content="Создание графиков в пакете UpSetR">
+<meta property="og:description" content="Рассмотрим пакет UpSetR, разберем примеры построения качественных и красивых графиков">
+</head>
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top"><nav class="navbar navbar-expand-lg navbar-dark "><div class="navbar-container container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+<li class="nav-item">
+    <a class="nav-link" href="../../../index.html">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../r_language/r_language_page.html">
+ <span class="menu-text">R</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../../../visualization/visualization_page.html" aria-current="page">
+ <span class="menu-text">Visualization</span></a>
+  </li>  
+</ul>
+<div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Создание графиков в пакете UpSetR</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto"><div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../visualization/visualization_page.html" class="sidebar-item-text sidebar-link">Visualization</a>
+  </div>
+</li>
+        <li class="px-0"><hr class="sidebar-divider hi "></li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Diagramms</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
+<li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">UpSet</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 show">
+<li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../visualization/Diagramms/Upset/packege_upsetr.html" class="sidebar-item-text sidebar-link active">Создание графиков в пакете UpSetR</a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../../visualization/Diagramms/Upset/diagramm_upsetr.html" class="sidebar-item-text sidebar-link">UpSet диаграммы - введение</a>
+  </div>
+</li>
+      </ul>
+</li>
+      </ul>
+</li>
+    </ul>
+</div>
+</nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
+   
+  <ul>
+<li>
+<a href="#%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%BA%D0%B8-upset-%D0%B2-%D0%BF%D0%B0%D0%BA%D0%B5%D1%82%D0%B5-upsetr" id="toc-графики-upset-в-пакете-upsetr" class="nav-link active" data-scroll-target="#%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%BA%D0%B8-upset-%D0%B2-%D0%BF%D0%B0%D0%BA%D0%B5%D1%82%D0%B5-upsetr">Графики UpSet в пакете UpSetR</a>
+  <ul>
+<li>
+<a href="#%D0%BF%D0%BE%D1%81%D1%82%D1%80%D0%BE%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BF%D1%80%D0%BE%D1%81%D1%82%D0%BE%D0%B3%D0%BE-%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%BA%D0%B0" id="toc-построение-простого-графика" class="nav-link" data-scroll-target="#%D0%BF%D0%BE%D1%81%D1%82%D1%80%D0%BE%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BF%D1%80%D0%BE%D1%81%D1%82%D0%BE%D0%B3%D0%BE-%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%BA%D0%B0">Построение простого графика</a>
+  <ul class="collapse">
+<li><a href="#%D0%B2%D1%8B%D0%B1%D1%80%D0%B0%D1%82%D1%8C-%D0%BA%D0%BE%D0%BD%D0%BA%D1%80%D0%B5%D1%82%D0%BD%D1%8B%D0%B5-%D0%BD%D0%B0%D0%B1%D0%BE%D1%80%D1%8B-%D0%B8-%D0%B7%D0%B0%D0%B4%D0%B0%D1%82%D1%8C-%D0%BF%D0%B0%D1%80%D0%B0%D0%BC%D0%B5%D1%82%D1%80%D1%8B-%D0%B3%D1%80%D1%83%D0%BF%D0%BF%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B8" id="toc-выбрать-конкретные-наборы-и-задать-параметры-группировки" class="nav-link" data-scroll-target="#%D0%B2%D1%8B%D0%B1%D1%80%D0%B0%D1%82%D1%8C-%D0%BA%D0%BE%D0%BD%D0%BA%D1%80%D0%B5%D1%82%D0%BD%D1%8B%D0%B5-%D0%BD%D0%B0%D0%B1%D0%BE%D1%80%D1%8B-%D0%B8-%D0%B7%D0%B0%D0%B4%D0%B0%D1%82%D1%8C-%D0%BF%D0%B0%D1%80%D0%B0%D0%BC%D0%B5%D1%82%D1%80%D1%8B-%D0%B3%D1%80%D1%83%D0%BF%D0%BF%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B8">Выбрать конкретные наборы и задать параметры группировки</a></li>
+  <li><a href="#%D0%B7%D0%B0%D0%B4%D0%B0%D1%82%D1%8C-%D0%BF%D0%BE%D1%80%D1%8F%D0%B4%D0%BE%D0%BA-%D0%BD%D0%B0%D0%B1%D0%BE%D1%80%D0%BE%D0%B2-%D0%BF%D1%80%D0%B8-%D1%81%D0%BE%D1%80%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B5" id="toc-задать-порядок-наборов-при-сортировке" class="nav-link" data-scroll-target="#%D0%B7%D0%B0%D0%B4%D0%B0%D1%82%D1%8C-%D0%BF%D0%BE%D1%80%D1%8F%D0%B4%D0%BE%D0%BA-%D0%BD%D0%B0%D0%B1%D0%BE%D1%80%D0%BE%D0%B2-%D0%BF%D1%80%D0%B8-%D1%81%D0%BE%D1%80%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B5">Задать порядок наборов при сортировке</a></li>
+  <li><a href="#%D0%B3%D1%80%D1%83%D0%BF%D0%BF%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-%D0%BF%D0%BE-%D0%BD%D0%B0%D0%B1%D0%BE%D1%80%D0%B0%D0%BC" id="toc-группировка-по-наборам" class="nav-link" data-scroll-target="#%D0%B3%D1%80%D1%83%D0%BF%D0%BF%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0-%D0%BF%D0%BE-%D0%BD%D0%B0%D0%B1%D0%BE%D1%80%D0%B0%D0%BC">Группировка по наборам</a></li>
+  <li><a href="#%D0%BE%D1%82%D0%BE%D0%B1%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BF%D1%83%D1%81%D1%82%D1%8B%D1%85-%D0%BF%D0%B5%D1%80%D0%B5%D1%81%D0%B5%D1%87%D0%B5%D0%BD%D0%B8%D0%B9" id="toc-отображение-пустых-пересечений" class="nav-link" data-scroll-target="#%D0%BE%D1%82%D0%BE%D0%B1%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BF%D1%83%D1%81%D1%82%D1%8B%D1%85-%D0%BF%D0%B5%D1%80%D0%B5%D1%81%D0%B5%D1%87%D0%B5%D0%BD%D0%B8%D0%B9">Отображение пустых пересечений</a></li>
+  </ul>
+</li>
+  <li>
+<a href="#%D0%B0%D1%82%D1%80%D0%B8%D0%B1%D1%83%D1%82%D1%8B-%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%BA%D0%BE%D0%B2" id="toc-атрибуты-графиков" class="nav-link" data-scroll-target="#%D0%B0%D1%82%D1%80%D0%B8%D0%B1%D1%83%D1%82%D1%8B-%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%BA%D0%BE%D0%B2">Атрибуты графиков</a>
+  <ul class="collapse">
+<li><a href="#%D0%B2%D1%81%D1%82%D1%80%D0%BE%D0%B5%D0%BD%D0%BD%D0%B0%D1%8F-%D0%B3%D0%B8%D1%81%D1%82%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B0-%D0%B0%D1%82%D1%80%D0%B8%D0%B1%D1%83%D1%82%D0%BE%D0%B2" id="toc-встроенная-гистограмма-атрибутов" class="nav-link" data-scroll-target="#%D0%B2%D1%81%D1%82%D1%80%D0%BE%D0%B5%D0%BD%D0%BD%D0%B0%D1%8F-%D0%B3%D0%B8%D1%81%D1%82%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B0-%D0%B0%D1%82%D1%80%D0%B8%D0%B1%D1%83%D1%82%D0%BE%D0%B2">Встроенная гистограмма атрибутов</a></li>
+  <li><a href="#%D0%B2%D1%81%D1%82%D1%80%D0%BE%D0%B5%D0%BD%D0%BD%D0%B0%D1%8F-%D1%82%D0%BE%D1%87%D0%B5%D1%87%D0%BD%D0%B0%D1%8F-%D0%B4%D0%B8%D0%B0%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B0" id="toc-встроенная-точечная-диаграмма" class="nav-link" data-scroll-target="#%D0%B2%D1%81%D1%82%D1%80%D0%BE%D0%B5%D0%BD%D0%BD%D0%B0%D1%8F-%D1%82%D0%BE%D1%87%D0%B5%D1%87%D0%BD%D0%B0%D1%8F-%D0%B4%D0%B8%D0%B0%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B0">Встроенная точечная диаграмма</a></li>
+  <li><a href="#%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D1%81%D0%BA%D0%B8%D1%85-%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%BA%D0%BE%D0%B2" id="toc-создание-пользовательских-графиков" class="nav-link" data-scroll-target="#%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D1%81%D0%BA%D0%B8%D1%85-%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%BA%D0%BE%D0%B2">Создание пользовательских графиков</a></li>
+  <li><a href="#%D0%B2%D1%81%D1%82%D1%80%D0%BE%D0%B5%D0%BD%D0%BD%D0%B0%D1%8F-%D0%B4%D0%B8%D0%B0%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B0-boxplot" id="toc-встроенная-диаграмма-boxplot" class="nav-link" data-scroll-target="#%D0%B2%D1%81%D1%82%D1%80%D0%BE%D0%B5%D0%BD%D0%BD%D0%B0%D1%8F-%D0%B4%D0%B8%D0%B0%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B0-boxplot">Встроенная диаграмма boxplot</a></li>
+  </ul>
+</li>
+  <li><a href="#%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D1%8B-%D0%BA-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D0%BC" id="toc-запросы-к-данным" class="nav-link" data-scroll-target="#%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D1%8B-%D0%BA-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D0%BC">Запросы к данным</a></li>
+  <li><a href="#%D0%B2%D1%81%D1%82%D1%80%D0%BE%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5-%D1%8D%D0%BB%D0%B5%D0%BC%D0%B5%D0%BD%D1%82%D1%8B" id="toc-встроенные-элементы" class="nav-link" data-scroll-target="#%D0%B2%D1%81%D1%82%D1%80%D0%BE%D0%B5%D0%BD%D0%BD%D1%8B%D0%B5-%D1%8D%D0%BB%D0%B5%D0%BC%D0%B5%D0%BD%D1%82%D1%8B">Встроенные элементы</a></li>
+  <li><a href="#%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BF%D0%B0%D1%80%D0%B0%D0%BC%D0%B5%D1%82%D1%80%D0%B0-%D0%B2%D1%8B%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F-%D0%B4%D0%BB%D1%8F-%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2-%D0%BA-%D0%BF%D0%B5%D1%80%D0%B5%D1%81%D0%B5%D1%87%D0%B5%D0%BD%D0%B8%D1%8F%D0%BC-%D0%BF%D0%BE%D0%B4%D0%BC%D0%BD%D0%BE%D0%B6%D0%B5%D1%81%D1%82%D0%B2-%D0%B8-%D1%8D%D0%BB%D0%B5%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%D0%BC" id="toc-использование-параметра-выражения-для-запросов-к-пересечениям-подмножеств-и-элементам" class="nav-link" data-scroll-target="#%D0%B8%D1%81%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BF%D0%B0%D1%80%D0%B0%D0%BC%D0%B5%D1%82%D1%80%D0%B0-%D0%B2%D1%8B%D1%80%D0%B0%D0%B6%D0%B5%D0%BD%D0%B8%D1%8F-%D0%B4%D0%BB%D1%8F-%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2-%D0%BA-%D0%BF%D0%B5%D1%80%D0%B5%D1%81%D0%B5%D1%87%D0%B5%D0%BD%D0%B8%D1%8F%D0%BC-%D0%BF%D0%BE%D0%B4%D0%BC%D0%BD%D0%BE%D0%B6%D0%B5%D1%81%D1%82%D0%B2-%D0%B8-%D1%8D%D0%BB%D0%B5%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%D0%BC">Использование параметра выражения для запросов к пересечениям подмножеств и элементам</a></li>
+  <li><a href="#%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D1%81%D0%BA%D0%B8%D1%85-%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2-%D0%BA-%D1%8D%D0%BB%D0%B5%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%D0%BC-%D0%B8-%D0%B0%D1%82%D1%80%D0%B8%D0%B1%D1%83%D1%82%D0%B0%D0%BC-%D0%BD%D0%B0%D0%B1%D0%BE%D1%80%D0%B0" id="toc-создание-пользовательских-запросов-к-элементам-и-атрибутам-набора" class="nav-link" data-scroll-target="#%D1%81%D0%BE%D0%B7%D0%B4%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8C%D1%81%D0%BA%D0%B8%D1%85-%D0%B7%D0%B0%D0%BF%D1%80%D0%BE%D1%81%D0%BE%D0%B2-%D0%BA-%D1%8D%D0%BB%D0%B5%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%D0%BC-%D0%B8-%D0%B0%D1%82%D1%80%D0%B8%D0%B1%D1%83%D1%82%D0%B0%D0%BC-%D0%BD%D0%B0%D0%B1%D0%BE%D1%80%D0%B0">Создание пользовательских запросов к элементам и атрибутам набора</a></li>
+  <li><a href="#%D0%B4%D0%BE%D0%B1%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BB%D0%B5%D0%B3%D0%B5%D0%BD%D0%B4%D1%8B" id="toc-добавление-легенды" class="nav-link" data-scroll-target="#%D0%B4%D0%BE%D0%B1%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BB%D0%B5%D0%B3%D0%B5%D0%BD%D0%B4%D1%8B">Добавление легенды</a></li>
+  <li><a href="#%D0%B4%D0%BE%D0%B1%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BC%D0%B5%D1%82%D0%B0%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85-%D0%BD%D0%B0%D0%B1%D0%BE%D1%80%D0%B0-%D0%BD%D0%B0-%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%BA" id="toc-добавление-метаданных-набора-на-график" class="nav-link" data-scroll-target="#%D0%B4%D0%BE%D0%B1%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BC%D0%B5%D1%82%D0%B0%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85-%D0%BD%D0%B0%D0%B1%D0%BE%D1%80%D0%B0-%D0%BD%D0%B0-%D0%B3%D1%80%D0%B0%D1%84%D0%B8%D0%BA">Добавление метаданных набора на график</a></li>
+  <li><a href="#%D0%B4%D0%BE%D0%B1%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D1%82%D0%B5%D0%BF%D0%BB%D0%BE%D0%B2%D0%BE%D0%B9-%D0%BA%D0%B0%D1%80%D1%82%D1%8B" id="toc-добавление-тепловой-карты" class="nav-link" data-scroll-target="#%D0%B4%D0%BE%D0%B1%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D1%82%D0%B5%D0%BF%D0%BB%D0%BE%D0%B2%D0%BE%D0%B9-%D0%BA%D0%B0%D1%80%D1%82%D1%8B">Добавление тепловой карты</a></li>
+  <li><a href="#%D0%BB%D0%BE%D0%B3%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F-%D1%82%D0%B5%D0%BF%D0%BB%D0%BE%D0%B2%D0%B0%D1%8F-%D0%BA%D0%B0%D1%80%D1%82%D0%B0" id="toc-логическая-тепловая-карта" class="nav-link" data-scroll-target="#%D0%BB%D0%BE%D0%B3%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F-%D1%82%D0%B5%D0%BF%D0%BB%D0%BE%D0%B2%D0%B0%D1%8F-%D0%BA%D0%B0%D1%80%D1%82%D0%B0">Логическая тепловая карта</a></li>
+  <li><a href="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BC%D0%B5%D1%82%D0%B0%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85-%D0%BA-%D0%BC%D0%B0%D1%82%D1%80%D0%B8%D1%86%D0%B5" id="toc-применение-метаданных-к-матрице" class="nav-link" data-scroll-target="#%D0%BF%D1%80%D0%B8%D0%BC%D0%B5%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BC%D0%B5%D1%82%D0%B0%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85-%D0%BA-%D0%BC%D0%B0%D1%82%D1%80%D0%B8%D1%86%D0%B5">Применение метаданных к матрице</a></li>
+  </ul>
+</li>
+  </ul></nav>
+    </div>
+<!-- main -->
+<main class="content page-columns page-full" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
+<h1 class="title d-none d-lg-block">Создание графиков в пакете UpSetR</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">UpSet</div>
+    <div class="quarto-category">visualization</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Рассмотрим пакет UpSetR, разберем примеры построения качественных и красивых графиков
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 24, 2022</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header><section id="графики-upset-в-пакете-upsetr" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="графики-upset-в-пакете-upsetr">Графики UpSet в пакете UpSetR</h2>
+<p>Создание графиков UpSet в пакете UpSetR процесс достаточно простой и интуитивно понятный, пакет поможет создавать качественные и красивые визуализации для полного и глубокого анализа данных. </p>
+<section id="построение-простого-графика" class="level3 page-columns page-full"><h3 class="anchored" data-anchor-id="построение-простого-графика">Построение простого графика</h3>
+<p>Загрузим набор данных предоставляемый этим пакетом. Для построения графика будем использовать функцию upset, подробнее об этой функции в <code>?upset</code></p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">movies</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"movies.csv"</span>, package <span class="op">=</span> <span class="st">"UpSetR"</span><span class="op">)</span>, </span>
+<span>    header <span class="op">=</span> <span class="cn">T</span>, sep <span class="op">=</span> <span class="st">";"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Выберем 6 наибольших наборов.</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">upset</span><span class="op">(</span><span class="va">movies</span>, nsets <span class="op">=</span> <span class="fl">6</span>, number.angles <span class="op">=</span> <span class="fl">0</span>, point.size <span class="op">=</span> <span class="fl">3.5</span>, line.size <span class="op">=</span> <span class="fl">2</span>, </span>
+<span>    mainbar.y.label <span class="op">=</span> <span class="st">"Genre Intersections"</span>, sets.x.label <span class="op">=</span> <span class="st">"Movies Per Genre"</span>, </span>
+<span>    text.scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1.3</span>, <span class="fl">1.3</span>, <span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">0.75</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page-inset-left">
+<div id="fig-upset" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;1: На оси Movies Per Genre показано количество фильмов каждого жанра. На оси Genre Intersections количество фильмов в разрезе пересечений с другими жанрами. Видно, что наибольшее количество набирается когда пересечений с другими жанрами нет либо оно минимальное, а самые популярные жанры: Драма, Комедия и Ужасы</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="выбрать-конкретные-наборы-и-задать-параметры-группировки" class="level4 page-columns page-full"><h4 class="anchored" data-anchor-id="выбрать-конкретные-наборы-и-задать-параметры-группировки">Выбрать конкретные наборы и задать параметры группировки</h4>
+<blockquote class="blockquote">
+<p>mb.ratio = c(0.75, 0.25) - через этот параметр задаем соотношение между столбчатой диаграммой и диаграммой пересечений. Сумма коэффициентов должна равняться единице.</p>
+</blockquote>
+<div class="sourceCode" id="cb3"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">upset</span>(movies, <span class="at">sets =</span> <span class="fu">c</span>(<span class="st">"Action"</span>, <span class="st">"Adventure"</span>, <span class="st">"Comedy"</span>, <span class="st">"Drama"</span>, <span class="st">"Mystery"</span>, </span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Thriller"</span>, <span class="st">"Romance"</span>, <span class="st">"War"</span>, <span class="st">"Western"</span>), <span class="at">mb.ratio =</span> <span class="fu">c</span>(<span class="fl">0.75</span>, <span class="fl">0.25</span>), <span class="at">order.by =</span> <span class="st">"degree"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">upset</span>(movies, <span class="at">sets =</span> <span class="fu">c</span>(<span class="st">"Action"</span>, <span class="st">"Adventure"</span>, <span class="st">"Comedy"</span>, <span class="st">"Drama"</span>, <span class="st">"Mystery"</span>, </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Thriller"</span>, <span class="st">"Romance"</span>, <span class="st">"War"</span>, <span class="st">"Western"</span>), <span class="at">mb.ratio =</span> <span class="fu">c</span>(<span class="fl">0.55</span>, <span class="fl">0.45</span>), <span class="at">order.by =</span> <span class="fu">c</span>(<span class="st">"degree"</span>, <span class="st">"freq"</span>))</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="fig-upset-2" class="cell column-page-inset-left quarto-layout-panel">
+<figure class="figure"><div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-upset-2-1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-2-1.png" class="img-fluid figure-img" data-ref-parent="fig-upset-2" width="672"></p>
+<p></p><figcaption class="figure-caption">(a) First</figcaption><p></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell quarto-layout-cell-subref" style="flex-basis: 50.0%;justify-content: center;">
+<div id="fig-upset-2-2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-2-2.png" class="img-fluid figure-img" data-ref-parent="fig-upset-2" width="672"></p>
+<p></p><figcaption class="figure-caption">(b) Second</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2: В обоих графиках задаем список наборов, соотношения между столбчатой диаграммой и диаграммой пересечений поставили разные. В первом графике сортировка задана по возрастанию наборов, а во втором графике по частоте</figcaption><p></p>
+</figure>
+</div>
+</section><section id="задать-порядок-наборов-при-сортировке" class="level4 page-columns page-full"><h4 class="anchored" data-anchor-id="задать-порядок-наборов-при-сортировке">Задать порядок наборов при сортировке</h4>
+<blockquote class="blockquote">
+<p>keep.order - при значении TRUE упорядочивает наборы в том порядке в котором они записаны в sets при значении FALSE по их размеру</p>
+</blockquote>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">upset</span><span class="op">(</span><span class="va">movies</span>, sets <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Action"</span>, <span class="st">"Adventure"</span>, <span class="st">"Comedy"</span>, <span class="st">"Drama"</span>, <span class="st">"Mystery"</span>, </span>
+<span>    <span class="st">"Thriller"</span>, <span class="st">"Romance"</span>, <span class="st">"War"</span>, <span class="st">"Western"</span><span class="op">)</span>, mb.ratio <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.55</span>, <span class="fl">0.45</span><span class="op">)</span>, order.by <span class="op">=</span> <span class="st">"freq"</span>, </span>
+<span>    keep.order <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page-inset-left">
+<div id="fig-upset-3" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-3-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3: Наборы на графике отсортированны согласно заданному нами списку, а размеры пересечений по убыванию.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="группировка-по-наборам" class="level4 page-columns page-full"><h4 class="anchored" data-anchor-id="группировка-по-наборам">Группировка по наборам</h4>
+<blockquote class="blockquote">
+<p>nintersects - количество пересечений выведенных на график, по умолчанию выводятся все пересечения group.by - способ группировки по наборам или по количеству пересечений наборов cutoff - Количество пересечений из каждого набора (для отсечения) при агрегировании по наборам</p>
+</blockquote>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">upset</span><span class="op">(</span><span class="va">movies</span>, nintersects <span class="op">=</span> <span class="fl">70</span>, group.by <span class="op">=</span> <span class="st">"sets"</span>, cutoff <span class="op">=</span> <span class="fl">7</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page-inset-left">
+<div id="fig-upset-4" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-4-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;4: На графике видим размер пересечений сгруппированые по жанрам, в каждой группе не более 7 значений. Так пересекающихся жанров несколько , то значения в нескольких пересекающихся друг с другом жанрах будут повторяться.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="отображение-пустых-пересечений" class="level4 page-columns page-full"><h4 class="anchored" data-anchor-id="отображение-пустых-пересечений">Отображение пустых пересечений</h4>
+<blockquote class="blockquote">
+<p>empty.intersections = “on” - свойство позволяет дополнительно отображать пустые пересечения</p>
+</blockquote>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">upset</span><span class="op">(</span><span class="va">movies</span>, empty.intersections <span class="op">=</span> <span class="st">"on"</span>, order.by <span class="op">=</span> <span class="st">"freq"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page-inset-left">
+<div id="fig-upset-5" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-5-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;5: Видно, что на графике появились пустые пересечения т.е. размер которых равен нулю.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section></section><section id="атрибуты-графиков" class="level3 page-columns page-full"><h3 class="anchored" data-anchor-id="атрибуты-графиков">Атрибуты графиков</h3>
+<div class="cell">
+
+</div>
+<p>С помощью атрибутов можно выводить дополнительные диаграммы на график.</p>
+<p>Параметр attribute.plots содержит три поля: gridrows, plots, and ncols</p>
+<ul>
+<li>
+<code>gridrows</code> указывает на сколько нужно увеличить высоту окна графика чтобы добавить место под диаграммы атрибутов. График UpSetR отрисовывается на сетка размером 100 х 100. Например если установить парамерт <code>gridrows = 50</code>, то размер новой сетки окна будет 150 х 100.</li>
+<li>
+<code>plots</code> также содержит список параметров, в нем задаются <code>plot</code>, <code>x</code>, <code>y</code> и <code>queries</code>.</li>
+<li>
+<code>plot</code> функция возвращающая ggplot</li>
+<li>
+<code>x</code> задает параметр к оси X</li>
+<li>
+<code>y</code> задает параметр к оси Y</li>
+<li>
+<code>queries</code>: указывает необходимо ли применять к графиком атрибутов результаты параметра <code>queries</code> функции <code>upset</code>. Если значение True, то к графику будет применен параметр <code>queries</code>, если False, то нет. Сам же параметр <code>queries</code> имеет атрибут <code>query</code> который определяет какая функция будет применена к графику, например intersects или самописная функция.</li>
+<li>
+<code>ncols</code> указывает, как должны быть расположены графики в пространстве строк сетки. Если введены два графика атрибутов и значение ncols равно 1, то графики будут отображаться один над другим. В качестве альтернативы, если введены два графика атрибутов и значение ncols равно 2, графики атрибутов будут отображаться рядом. </li>
+</ul>
+<section id="встроенная-гистограмма-атрибутов" class="level4 page-columns page-full"><h4 class="anchored" data-anchor-id="встроенная-гистограмма-атрибутов">Встроенная гистограмма атрибутов</h4>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">upset</span><span class="op">(</span><span class="va">movies</span>, main.bar.color <span class="op">=</span> <span class="st">"black"</span>, queries <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">intersects</span>, </span>
+<span>    params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"Drama"</span><span class="op">)</span>, active <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>    attribute.plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>gridrows <span class="op">=</span> <span class="fl">50</span>, </span>
+<span>                           plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>                             <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>plot <span class="op">=</span> <span class="va">histogram</span>, x <span class="op">=</span> <span class="st">"ReleaseDate"</span>, queries <span class="op">=</span> <span class="cn">F</span><span class="op">)</span>, </span>
+<span>                             <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>plot <span class="op">=</span> <span class="va">histogram</span>, x <span class="op">=</span> <span class="st">"AvgRating"</span>, queries <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>                           ncols <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page-inset-left">
+<div id="fig-upset-6" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-6-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;6: На графике выделенно синим цветом пересечение по жанру драма. В дополнительной диаграмме среднего рейтинга фильмов выделена доля фильмов жанра драма. И на левом дополнительном графике показана частота выхода фильмов в зависимости от года</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="встроенная-точечная-диаграмма" class="level4 page-columns page-full"><h4 class="anchored" data-anchor-id="встроенная-точечная-диаграмма">Встроенная точечная диаграмма</h4>
+<p>В этом коде задаем форматирование для пересечений нужным цветом. Потом в дополнительных диаграммах атрибутов определяем использовать это форматирование или нет.</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">upset</span><span class="op">(</span><span class="va">movies</span>, main.bar.color <span class="op">=</span> <span class="st">"black"</span>, </span>
+<span>      queries <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">intersects</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"Drama"</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span>, active <span class="op">=</span> <span class="cn">F</span><span class="op">)</span>, </span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">intersects</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"Action"</span>, <span class="st">"Drama"</span><span class="op">)</span>, active <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, </span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">intersects</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"Drama"</span>, <span class="st">"Comedy"</span>, <span class="st">"Action"</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"orange"</span>, active <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span>        <span class="op">)</span>,</span>
+<span>      attribute.plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>gridrows <span class="op">=</span> <span class="fl">45</span>, </span>
+<span>                             plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>plot <span class="op">=</span> <span class="va">scatter_plot</span>, x <span class="op">=</span> <span class="st">"ReleaseDate"</span>, y <span class="op">=</span> <span class="st">"AvgRating"</span>, queries <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
+<span>                                          <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>plot <span class="op">=</span> <span class="va">scatter_plot</span>, x <span class="op">=</span> <span class="st">"AvgRating"</span>, y <span class="op">=</span> <span class="st">"Watches"</span>, queries <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
+<span>                                          <span class="op">)</span>, </span>
+<span>                             ncols <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, query.legend <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page-inset-left">
+<div id="fig-upset-7" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-7-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;7: На графике выделили три типа пересечений и спроецировали их на одну дополнительную диаграмму. На первой доп диаграмме показана зависимость среднего рейтинга от даты выхода фильма, а также какую часть в нем занимают интересующие нас пересечения. На второй доп диаграмме зависимость просмотров от среднего рейтинга, логично, что чем выше рейтинг тем выше количество просмотров</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="создание-пользовательских-графиков" class="level4 page-columns page-full"><h4 class="anchored" data-anchor-id="создание-пользовательских-графиков">Создание пользовательских графиков</h4>
+<p>Здесь вместо одной из точечных диаграмм, добавляем диаграмму постороенную по пользовательской функцие.</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">myplot</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">mydata</span>, <span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">plot</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu">ggplot</span><span class="op">(</span>data <span class="op">=</span> <span class="va">mydata</span>, <span class="fu">aes_string</span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span>, y <span class="op">=</span> <span class="va">y</span>, colour <span class="op">=</span> <span class="st">"color"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>        <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu">scale_color_identity</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu">theme</span><span class="op">(</span>plot.margin <span class="op">=</span> <span class="fu">unit</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="st">"cm"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">another.plot</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">x</span>, <span class="va">y</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">data</span><span class="op">$</span><span class="va">decades</span> <span class="op">&lt;-</span> <span class="fu">round_any</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/integer.html">as.integer</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="va">data</span><span class="op">[</span><span class="va">y</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, <span class="fl">10</span>, <span class="va">ceiling</span><span class="op">)</span></span>
+<span>    <span class="va">data</span> <span class="op">&lt;-</span> <span class="va">data</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html">which</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">decades</span> <span class="op">&gt;=</span> <span class="fl">1970</span><span class="op">)</span>, <span class="op">]</span></span>
+<span>    <span class="va">myplot</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu">ggplot</span><span class="op">(</span><span class="va">data</span>, <span class="fu">aes_string</span><span class="op">(</span>x <span class="op">=</span> <span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> <span class="fu">geom_density</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>fill <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">decades</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>        alpha <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span> <span class="op">+</span> <span class="fu">theme</span><span class="op">(</span>plot.margin <span class="op">=</span> <span class="fu">unit</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="st">"cm"</span><span class="op">)</span>, legend.key.size <span class="op">=</span> <span class="fu">unit</span><span class="op">(</span><span class="fl">0.4</span>, </span>
+<span>        <span class="st">"cm"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu">upset</span><span class="op">(</span><span class="va">movies</span>, main.bar.color <span class="op">=</span> <span class="st">"black"</span>, </span>
+<span>      queries <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">intersects</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"Drama"</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span>, active <span class="op">=</span> <span class="cn">F</span><span class="op">)</span>, </span>
+<span>                     <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">intersects</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"Action"</span>, <span class="st">"Drama"</span><span class="op">)</span>, active <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, </span>
+<span>                     <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">intersects</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"Drama"</span>, <span class="st">"Comedy"</span>, <span class="st">"Action"</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"orange"</span>, active <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>                attribute.plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>gridrows <span class="op">=</span> <span class="fl">45</span>, </span>
+<span>                                       plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>                                         <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>plot <span class="op">=</span> <span class="va">myplot</span>, x <span class="op">=</span> <span class="st">"ReleaseDate"</span>, y <span class="op">=</span> <span class="st">"AvgRating"</span>, queries <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, </span>
+<span>                                         <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>plot <span class="op">=</span> <span class="va">another.plot</span>, x <span class="op">=</span> <span class="st">"AvgRating"</span>, y <span class="op">=</span> <span class="st">"ReleaseDate"</span>, queries <span class="op">=</span> <span class="cn">F</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>                                       ncols <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page-inset-left">
+<div id="fig-upset-8" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-8-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;8: На график добавили диаграмму постороенную по своей функции. Она отображает средний рейтинг фильмов в зависимости от даты выхода в разрезе десятилетий</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Объединение встроенного точечного графика и графика гистограммы с пользовательским графиком myplot, определенным в приведенном выше примере.</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">upset</span><span class="op">(</span><span class="va">movies</span>, main.bar.color <span class="op">=</span> <span class="st">"black"</span>, mb.ratio <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span><span class="op">)</span>, </span>
+<span>      queries <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">intersects</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"Drama"</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span>, active <span class="op">=</span> <span class="cn">F</span><span class="op">)</span>, </span>
+<span>                     <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">intersects</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"Action"</span>, <span class="st">"Drama"</span><span class="op">)</span>, active <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, </span>
+<span>                     <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">intersects</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"Drama"</span>, <span class="st">"Comedy"</span>, <span class="st">"Action"</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"orange"</span>, active <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>    attribute.plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>gridrows <span class="op">=</span> <span class="fl">50</span>, </span>
+<span>                           plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>                             <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>plot <span class="op">=</span> <span class="va">histogram</span>,x <span class="op">=</span> <span class="st">"ReleaseDate"</span>, queries <span class="op">=</span> <span class="cn">F</span><span class="op">)</span>, </span>
+<span>                             <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>plot <span class="op">=</span> <span class="va">scatter_plot</span>, x <span class="op">=</span> <span class="st">"ReleaseDate"</span>, y <span class="op">=</span> <span class="st">"AvgRating"</span>, queries <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, </span>
+<span>                             <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>plot <span class="op">=</span> <span class="va">myplot</span>, x <span class="op">=</span> <span class="st">"AvgRating"</span>, y <span class="op">=</span> <span class="st">"Watches"</span>, queries <span class="op">=</span> <span class="cn">F</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>                           ncols <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page-inset-left">
+<div id="fig-upset-9" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-9-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;9: На этом графике добавлены дополнительные диаграммы. Теперь можно анализировать данные с нескольких сторон: частоты выхода фильмов и среднего рейтинга в зависимости от даты выхода, а также количество просмотров от серднего рейтинга фильмов</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="встроенная-диаграмма-boxplot" class="level4 page-columns page-full"><h4 class="anchored" data-anchor-id="встроенная-диаграмма-boxplot">Встроенная диаграмма boxplot</h4>
+<p>boxplot, показывает распределение атрибута по всем пересечениям. Может отображать одновременно не более двух сводок графиков. Параметр boxplot.summary принимает вектор из одного или двух имен атрибутов.</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">upset</span><span class="op">(</span><span class="va">movies</span>, boxplot.summary <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"AvgRating"</span>, <span class="st">"ReleaseDate"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page-inset-left">
+<div id="fig-upset-10" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-10-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;10: Под каждым столбцом с пересечениями находится свой элемент диаграммы ящик с усами, он показывает распределение значений по диапозону. Например для фильмо с жанров драма видим, что медиана среднего рейтинга находится между 3 и 4, а медиана даты выхода ближе к 2000 году</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section></section><section id="запросы-к-данным" class="level3 page-columns page-full"><h3 class="anchored" data-anchor-id="запросы-к-данным">Запросы к данным</h3>
+<p>Разберем параметр <code>query</code>, он часто использовался на предыдущих диаграммах, пора его подробно описать.</p>
+<ul>
+<li>
+<code>query</code> указывает, какой запрос будет выполняться</li>
+<li>
+<code>params</code> это список параметров, с которыми будет работать запрос</li>
+<li>
+<code>color</code> это цвет, который будет представлять запрос на графике. Если цвет не указан, будет выбран цвет из палитры цветов по умолчанию.</li>
+<li>
+<code>active</code> определяет, как запрос будет представлен на графике. Если значение active равно TRUE, строка размера пересечения будет перекрыта строкой, представляющей запрос. Если значение active равно FALSE, на панели размера пересечения будет размещена точка дрожания.</li>
+</ul>
+<p>В этом примере показано, как использовать встроенный запрос пересечений intersects для поиска или отображения элементов в определенных пересечениях. В этом примере цвет, выбранный для активного запроса, выбран из цветовой палитры по умолчанию.</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">upset</span><span class="op">(</span><span class="va">movies</span>, </span>
+<span>      queries <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">intersects</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"Drama"</span>,<span class="st">"Comedy"</span>, <span class="st">"Action"</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"orange"</span>, active <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, </span>
+<span>                     <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">intersects</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"Drama"</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span>, active <span class="op">=</span> <span class="cn">F</span><span class="op">)</span>, </span>
+<span>                     <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">intersects</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"Action"</span>, <span class="st">"Drama"</span><span class="op">)</span>, active <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page-inset-left">
+<div id="fig-upset-11" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-11-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;11: с помощью запросов подсветили интересующие нас пересечения, где они активированы там цветом выделены столбец гистограммы и столбец на графике пересечений наборов, а где запрос не активирован, то там галочкой показана величина пересечения.</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="встроенные-элементы" class="level3 page-columns page-full"><h3 class="anchored" data-anchor-id="встроенные-элементы">Встроенные элементы</h3>
+<p>Если необходимо визуализировать как конкретные значения атрибутов распределяются между пересечениями, то тогда можно использовать запрос элемента elements.</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">upset</span><span class="op">(</span><span class="va">movies</span>, </span>
+<span>      queries <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">elements</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"AvgRating"</span>, <span class="fl">3.5</span>, <span class="fl">4.1</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"blue"</span>, active <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, </span>
+<span>                     <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">elements</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"ReleaseDate"</span>, <span class="fl">1980</span>, <span class="fl">1990</span>, <span class="fl">2000</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span>, active <span class="op">=</span> <span class="cn">F</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page-inset-left">
+<div id="fig-upset-12" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-12-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;12: в гистограме пересечений подсветили интересующие нас конкретные значения среднего рейтинга синим цветом и даты выхода фильмов красным цветом</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="использование-параметра-выражения-для-запросов-к-пересечениям-подмножеств-и-элементам" class="level3 page-columns page-full"><h3 class="anchored" data-anchor-id="использование-параметра-выражения-для-запросов-к-пересечениям-подмножеств-и-элементам">Использование параметра выражения для запросов к пересечениям подмножеств и элементам</h3>
+<p>В этом примере показано, как использовать параметр expression для фильтрации подмножества результатов запросов элементов и пересечений.</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">upset</span><span class="op">(</span><span class="va">movies</span>, </span>
+<span>      queries <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">intersects</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"Action"</span>, <span class="st">"Drama"</span><span class="op">)</span>, active <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, </span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">elements</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"ReleaseDate"</span>, <span class="fl">1980</span>, <span class="fl">1990</span>, <span class="fl">2000</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span>, active <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
+<span>        <span class="op">)</span>, </span>
+<span>      expression <span class="op">=</span> <span class="st">"AvgRating &gt; 3 &amp; Watches &gt; 100"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page-inset-left">
+<div id="fig-upset-13" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-13-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;13: Отфильтровали график по условиям средний рейтинг &gt; 3 и количество просмотров &gt; 100. Далее выделили пересечение жанров экшен и драмы. А также красным цветом показали содержащееся в пересечениях количество фильмов с датами выхода 1980, 1990 и 2000</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="создание-пользовательских-запросов-к-элементам-и-атрибутам-набора" class="level3 page-columns page-full"><h3 class="anchored" data-anchor-id="создание-пользовательских-запросов-к-элементам-и-атрибутам-набора">Создание пользовательских запросов к элементам и атрибутам набора</h3>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">Myfunc</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">row</span>, <span class="va">release</span>, <span class="va">rating</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">data</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="va">row</span><span class="op">[</span><span class="st">"ReleaseDate"</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va">release</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">(</span><span class="va">row</span><span class="op">[</span><span class="st">"AvgRating"</span><span class="op">]</span> <span class="op">&gt;</span> <span class="va">rating</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu">upset</span><span class="op">(</span><span class="va">movies</span>, </span>
+<span>      queries <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">Myfunc</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1970</span>, <span class="fl">1980</span>, <span class="fl">1990</span>, <span class="fl">1999</span>, <span class="fl">2000</span><span class="op">)</span>, <span class="fl">2.5</span><span class="op">)</span>, </span>
+<span>                          color <span class="op">=</span> <span class="st">"blue"</span>, active <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span></span>
+<span>      <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page-inset-left">
+<div id="fig-upset-14" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-14-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;14: На графике подсвечиваем с помощью написанной функции количество фильмов с заданой датой выхода и выше нужного нам рейтинга</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="добавление-легенды" class="level3 page-columns page-full"><h3 class="anchored" data-anchor-id="добавление-легенды">Добавление легенды</h3>
+<p>Чтобы добавить условные обозначения для примененных запросов, можно использовать параметр <code>query.legend</code>. Параметр <code>query.legend</code> задает положение, в котором должна отображаться легенда, либо сверху, либо снизу. Чтобы применить определенное имя к каждому запросу, параметр <code>query.name</code> может использоваться при определении запроса в параметре запросов. Если <code>query.name</code> не задан, то будет использоваться общее название. В приведенном ниже примере показано, как это сделать.</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">upset</span><span class="op">(</span><span class="va">movies</span>, </span>
+<span>      query.legend <span class="op">=</span> <span class="st">"top"</span>, </span>
+<span>      queries <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">intersects</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"Drama"</span>, <span class="st">"Comedy"</span>, <span class="st">"Action"</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"orange"</span>, active <span class="op">=</span> <span class="cn">T</span>,</span>
+<span>             query.name <span class="op">=</span> <span class="st">"Funny action"</span><span class="op">)</span>, </span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">intersects</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"Drama"</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span>, active <span class="op">=</span> <span class="cn">F</span><span class="op">)</span>, </span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">intersects</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"Action"</span>, <span class="st">"Drama"</span><span class="op">)</span>, active <span class="op">=</span> <span class="cn">T</span>, </span>
+<span>             query.name <span class="op">=</span> <span class="st">"Emotional action"</span><span class="op">)</span><span class="op">)</span></span>
+<span>      <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page-inset-left">
+<div id="fig-upset-15" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-15-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;15: График с легендой</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Объединим примененные выше методы</strong></p>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">upset</span><span class="op">(</span><span class="va">movies</span>, </span>
+<span>      query.legend <span class="op">=</span> <span class="st">"bottom"</span>, </span>
+<span>      queries <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">Myfunc</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1970</span>, <span class="fl">1980</span>, <span class="fl">1990</span>, <span class="fl">1999</span>, <span class="fl">2000</span><span class="op">)</span>, <span class="fl">2.5</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"orange"</span>, active <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, </span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">intersects</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"Action"</span>, <span class="st">"Drama"</span><span class="op">)</span>, active <span class="op">=</span> <span class="cn">F</span><span class="op">)</span>, </span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">elements</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"ReleaseDate"</span>, <span class="fl">1980</span>, <span class="fl">1990</span>, <span class="fl">2000</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span>, active <span class="op">=</span> <span class="cn">F</span>,</span>
+<span>             query.name <span class="op">=</span> <span class="st">"Decades"</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>      expression <span class="op">=</span> <span class="st">"AvgRating &gt; 3 &amp; Watches &gt; 100"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page-inset-left">
+<div id="fig-upset-16" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-16-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;16: График с пользовательскими наборами</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="добавление-метаданных-набора-на-график" class="level3 page-columns page-full"><h3 class="anchored" data-anchor-id="добавление-метаданных-набора-на-график">Добавление метаданных набора на график</h3>
+<p>Добавление метаданных задается параметром: <code>set.metadata</code></p>
+<p>Разберем атрибуты этого параметра:</p>
+<ul>
+<li><p><code>data</code>: принимает фрейм данных, где первый столбец - это имена наборов, а следующие столбцы - атрибуты наборов.</p></li>
+<li><p><code>plots</code>: это список, который принимает список параметров, используемых для создания графиков. Эти параметры включают столбец, тип, назначение и цвета.</p></li>
+<li><p><code>column</code>: столбец используемого набора данныхЮ по которому будет строиться график</p></li>
+<li><p><code>type</code>: это то, какой тип графика следует использовать для отображения данных из указанного столбца. Если данные в столбце числовые, то тип графика может быть либо гистограммой (“hist”), либо тепловой картой (“heat”). Если данные в столбце являются логическими, то типом графика может быть тепловая карта “bool”. Если данные в столбце являются категориальными (символьными), то тип графика может быть либо тепловой картой (“тепло”), либо текстом (“текст”). Кроме того, если данные в столбце порядковые (коэффициентные), то тип графика может быть либо тепловой картой, либо текстом. Существует также тип под названием “matrix_rows”, который позволяет нам использовать применение цветов к фону матрицы с использованием категориальных данных. Этот тип полезен для определения характеристик наборов с использованием матрицы.</p></li>
+<li><p><code>assign</code>: это количество столбцов, которые должны быть назначены конкретному графику. Например, если вы строите 2 набора графиков метаданных, то вы можете выбрать один график, который будет занимать 20 столбцов, а другой - 10 столбцов. Поскольку график смещения обычно наносится на сетку размером 100 на 100, сетка теперь будет иметь размер 100 на 130, где примерно 1/4 участка отводится графикам метаданных.</p></li>
+<li>
+<p><code>colors</code>: используется для указания цветов, используемых в графиках метаданных. Если тип графика - линейчатый график, то параметр принимает только один цвет для всего графика. Если тип графика “heat” или “bool”, то может быть предоставлен вектор цветов, в котором для каждой уникальной категории (символа) есть один цвет. Однако, если тип данных порядковый (фактор), ввод цветов отсутствует, и тепловая карта работает с цветовым градиентом, а не применяет разные цвета к каждому уровню. Наконец, если тип графика - “текст”, то может быть предоставлен вектор цветов, где для каждой уникальной строки есть один цвет. Если цвета не указаны, вам будет предоставлена цветовая палитра.</p>
+<p>В этом примере в качестве метаданных набора будут использоваться средние рейтинги фильмов Rotten Tomatoes для каждого набора. Это может помочь нам сделать больше выводов из визуализации, зная, как профессиональные рецензенты обычно оценивают фильмы в этих категориях.</p>
+</li>
+</ul>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sets</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">movies</span><span class="op">[</span><span class="fl">3</span><span class="op">:</span><span class="fl">19</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="va">avgRottenTomatoesScore</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">17</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">90</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">sets</span>, <span class="va">avgRottenTomatoesScore</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">metadata</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"sets"</span>, <span class="st">"avgRottenTomatoesScore"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># При создании гистограммы с использованием информации метаданных набора важно убедиться, что указанный столбец является числовым.</span></span>
+<span><span class="co"># is.numeric(metadata$avgRottenTomatoesScore)</span></span>
+<span></span>
+<span><span class="co"># Столбец не является числовым! На самом деле это фактор, поэтому мы должны преобразовать его в символы, а затем в целые числа.</span></span>
+<span><span class="va">metadata</span><span class="op">$</span><span class="va">avgRottenTomatoesScore</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">metadata</span><span class="op">$</span><span class="va">avgRottenTomatoesScore</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">upset</span><span class="op">(</span><span class="va">movies</span>, </span>
+<span>      set.metadata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">metadata</span>, plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"hist"</span>, column <span class="op">=</span> <span class="st">"avgRottenTomatoesScore"</span>, assign <span class="op">=</span> <span class="fl">20</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>      <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page-inset-left">
+<div id="fig-upset-17" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-17-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;17: График с добавлением метаданных</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="добавление-тепловой-карты" class="level3 page-columns page-full"><h3 class="anchored" data-anchor-id="добавление-тепловой-карты">Добавление тепловой карты</h3>
+<p>В этом примере мы составим наши собственные данные о том, в каких крупных городах эти жанры были наиболее популярны. Поскольку это категориальный, а не порядковый номер, мы должны не забыть изменить столбец на символы (это снова фактор). Чтобы убедиться, что мы назначаем определенные цвета каждой категории, вы можете указать название каждой категории в цветовом векторе, как показано ниже. Если вам все равно, какой цвет присвоен каждой категории, то вам не нужно указывать названия категорий в цветовом векторе. R просто применит цвета к каждой категории в том порядке, в котором они встречаются. Кроме того, если вы ничего не укажете для параметра colors, вам будет предоставлена цветовая палитра по умолчанию.</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">Cities</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Boston"</span>, <span class="st">"NYC"</span>, <span class="st">"LA"</span><span class="op">)</span>, <span class="fl">17</span>, replace <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">metadata</span>, <span class="va">Cities</span><span class="op">)</span></span>
+<span><span class="va">metadata</span><span class="op">$</span><span class="va">Cities</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">metadata</span><span class="op">$</span><span class="va">Cities</span><span class="op">)</span></span>
+<span><span class="co"># metadata[which(metadata$sets %in% c("Drama", "Comedy", "Action", "Thriller", "Romance")), ]</span></span>
+<span></span>
+<span><span class="fu">upset</span><span class="op">(</span><span class="va">movies</span>, </span>
+<span>      set.metadata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">metadata</span>, plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"heat"</span>, column <span class="op">=</span> <span class="st">"Cities"</span>, assign <span class="op">=</span> <span class="fl">10</span>, </span>
+<span>             colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>Boston <span class="op">=</span> <span class="st">"green"</span>, NYC <span class="op">=</span> <span class="st">"navy"</span>, LA <span class="op">=</span> <span class="st">"purple"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>      <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page-inset-left">
+<div id="fig-upset-18" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-18-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;18: График с добавлением тепловой карты</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Теперь давайте также использовать наши числовые значения критики!</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">upset</span><span class="op">(</span><span class="va">movies</span>, </span>
+<span>      set.metadata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">metadata</span>, plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"heat"</span>, column <span class="op">=</span> <span class="st">"Cities"</span>, assign <span class="op">=</span> <span class="fl">10</span>, </span>
+<span>             colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>Boston <span class="op">=</span> <span class="st">"green"</span>, NYC <span class="op">=</span> <span class="st">"navy"</span>, LA <span class="op">=</span> <span class="st">"purple"</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"heat"</span>, column <span class="op">=</span> <span class="st">"avgRottenTomatoesScore"</span>, assign <span class="op">=</span> <span class="fl">10</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>      <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page-inset-left">
+<div id="fig-upset-19" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-19-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;19: График с несколькими тепловыми картами</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="логическая-тепловая-карта" class="level3 page-columns page-full"><h3 class="anchored" data-anchor-id="логическая-тепловая-карта">Логическая тепловая карта</h3>
+<p>Теперь предположим, что у нас есть метаданные, которые сообщают нам, хорошо ли эти жанры приняты за рубежом. Это может быть использовано в качестве категориального столбца, где есть только две категории, но для этого примера мы предположим, что ваши данные закодированы в 1 и 0. Важно иметь в виду, что если вы запустите “heat” с 0 и 1 вместо “bool”, двоичные данные будут обрабатываться как числовые значения, а цветовой градиент будет использоваться для отображения относительных различий.</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">accepted</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span><span class="op">(</span><span class="fl">17</span>, min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">metadata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">metadata</span>, <span class="va">accepted</span><span class="op">)</span></span>
+<span><span class="co"># metadata[which(metadata$sets %in% c("Drama", "Comedy", "Action", "Thriller", "Romance")), ]</span></span>
+<span></span>
+<span><span class="fu">upset</span><span class="op">(</span><span class="va">movies</span>, </span>
+<span>      set.metadata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">metadata</span>, plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"bool"</span>, column <span class="op">=</span> <span class="st">"accepted"</span>, assign <span class="op">=</span> <span class="fl">5</span>, colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"#FF3333"</span>, <span class="st">"#006400"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>      <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page-inset-left">
+<div id="fig-upset-20" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-20-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;20: График с логической тепловой картой</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Давайте посмотрим, что произойдет, когда мы выберем “heat” вместо “bool” для нашего столбца двоичных данных.</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">upset</span><span class="op">(</span><span class="va">movies</span>, </span>
+<span>      set.metadata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">metadata</span>, plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"heat"</span>, column <span class="op">=</span> <span class="st">"accepted"</span>, assign <span class="op">=</span> <span class="fl">5</span>, colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"red"</span>, <span class="st">"green"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>      <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page-inset-left">
+<div id="fig-upset-21" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-21-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;21: График с тепловой картой</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Допустим, мы предпочитаем показывать текст вместо тепловой карты для городов, в которых эти жанры были наиболее популярны.</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">upset</span><span class="op">(</span><span class="va">movies</span>, </span>
+<span>      set.metadata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">metadata</span>, plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"text"</span>, column <span class="op">=</span> <span class="st">"Cities"</span>, assign <span class="op">=</span> <span class="fl">10</span>, </span>
+<span>             colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>Boston <span class="op">=</span> <span class="st">"green"</span>, NYC <span class="op">=</span> <span class="st">"navy"</span>, LA <span class="op">=</span> <span class="st">"purple"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>      <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page-inset-left">
+<div id="fig-upset-22" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-22-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;22: График с тепловой картой в виде текста</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section><section id="применение-метаданных-к-матрице" class="level3 page-columns page-full"><h3 class="anchored" data-anchor-id="применение-метаданных-к-матрице">Применение метаданных к матрице</h3>
+<p>В некоторых случаях мы можем просто захотеть включить метаданные категориального набора непосредственно в график расслоения, чтобы легко идентифицировать характеристики наборов с помощью матрицы. Для этого нам нужно указать тип как <code>matrix_rows</code>, какой столбец мы используем для категоризации наборов, и цвета, которые будут применяться к каждой категории. Существует также возможность изменить непрозрачность фона матрицы с помощью альфа-кода. Чтобы изменить непрозрачность фона матрицы без применения заданных метаданных, см. параметр <code>shade.alpha</code> в документации к функции <code>disapport()</code>.</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">upset</span><span class="op">(</span><span class="va">movies</span>, </span>
+<span>      set.metadata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">metadata</span>, plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"hist"</span>, column <span class="op">=</span> <span class="st">"avgRottenTomatoesScore"</span>, assign <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>, </span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"matrix_rows"</span>, column <span class="op">=</span> <span class="st">"Cities"</span>, </span>
+<span>             colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>Boston <span class="op">=</span> <span class="st">"green"</span>, NYC <span class="op">=</span> <span class="st">"navy"</span>, LA <span class="op">=</span> <span class="st">"purple"</span><span class="op">)</span>, </span>
+<span>    alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page-inset-left">
+<div id="fig-upset-23" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-23-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;23: Окрашивание пересечений по значениям категорий</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Объединим методы рассмотренные выше на одном графике</strong></p>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">upset</span><span class="op">(</span><span class="va">movies</span>, </span>
+<span>      set.metadata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">metadata</span>, plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"hist"</span>, column <span class="op">=</span> <span class="st">"avgRottenTomatoesScore"</span>, assign <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>, </span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"bool"</span>, column <span class="op">=</span> <span class="st">"accepted"</span>, assign <span class="op">=</span> <span class="fl">5</span>, colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"#FF3333"</span>, <span class="st">"#006400"</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"text"</span>, column <span class="op">=</span> <span class="st">"Cities"</span>, assign <span class="op">=</span> <span class="fl">5</span>, </span>
+<span>             colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>Boston <span class="op">=</span> <span class="st">"green"</span>, NYC <span class="op">=</span> <span class="st">"navy"</span>, LA <span class="op">=</span> <span class="st">"purple"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span>      <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page-inset-left">
+<div id="fig-upset-24" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-24-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;24: График с совмещенными методами метаданных</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<p>А теперь соединим методы добавления метаданных, атрибутов и запросов</p>
+<div class="cell page-columns page-full">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">upset</span><span class="op">(</span><span class="va">movies</span>, </span>
+<span>      set.metadata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">metadata</span>, plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"hist"</span>, column <span class="op">=</span> <span class="st">"avgRottenTomatoesScore"</span>, assign <span class="op">=</span> <span class="fl">20</span><span class="op">)</span>, </span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"bool"</span>, column <span class="op">=</span> <span class="st">"accepted"</span>, assign <span class="op">=</span> <span class="fl">5</span>, colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"#FF3333"</span>, <span class="st">"#006400"</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"text"</span>, column <span class="op">=</span> <span class="st">"Cities"</span>,   assign <span class="op">=</span> <span class="fl">5</span>, colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>Boston <span class="op">=</span> <span class="st">"green"</span>, NYC <span class="op">=</span> <span class="st">"navy"</span>, LA <span class="op">=</span> <span class="st">"purple"</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"matrix_rows"</span>, column <span class="op">=</span> <span class="st">"Cities"</span>, colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>Boston <span class="op">=</span> <span class="st">"green"</span>, NYC <span class="op">=</span> <span class="st">"navy"</span>, LA <span class="op">=</span> <span class="st">"purple"</span><span class="op">)</span>, </span>
+<span>             alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>      queries <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">intersects</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"Drama"</span><span class="op">)</span>, color <span class="op">=</span> <span class="st">"red"</span>, active <span class="op">=</span> <span class="cn">F</span><span class="op">)</span>, </span>
+<span>                     <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">intersects</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"Action"</span>, <span class="st">"Drama"</span><span class="op">)</span>, active <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, </span>
+<span>                     <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>query <span class="op">=</span> <span class="va">intersects</span>, params <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">"Drama"</span>, <span class="st">"Comedy"</span>, <span class="st">"Action"</span><span class="op">)</span>, </span>
+<span>                          color <span class="op">=</span> <span class="st">"orange"</span>, active <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span>, </span>
+<span>      attribute.plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>gridrows <span class="op">=</span> <span class="fl">45</span>, plots <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>plot <span class="op">=</span> <span class="va">scatter_plot</span>, x <span class="op">=</span> <span class="st">"ReleaseDate"</span>, y <span class="op">=</span> <span class="st">"AvgRating"</span>, queries <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, </span>
+<span>        <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>plot <span class="op">=</span> <span class="va">scatter_plot</span>, x <span class="op">=</span> <span class="st">"AvgRating"</span>, y <span class="op">=</span> <span class="st">"Watches"</span>, queries <span class="op">=</span> <span class="cn">F</span><span class="op">)</span><span class="op">)</span>, ncols <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, </span>
+<span>      query.legend <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display column-page-inset-left">
+<div id="fig-upset-25" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure"><p><img src="packege_upsetr_files/figure-html/fig-upset-25-1.png" class="img-fluid figure-img" width="672"></p>
+<p></p><figcaption class="figure-caption">Figure&nbsp;25: методы добавления метаданных, атрибутов и запросов на одном графике</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section></section><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{practicesit2022,
+  author = {Best Practices IT},
+  title = {Создание Графиков в Пакете {UpSetR}},
+  date = {2022-11-24},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-practicesit2022" class="csl-entry quarto-appendix-citeas" role="doc-biblioentry">
+Best Practices IT. 2022. <span>“Создание Графиков в Пакете
+UpSetR.”</span> November 24, 2022.
+</div></div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../../../visualization/Diagramms/Upset/diagramm_upsetr.html" class="pagination-link">
+        <span class="nav-page-text">UpSet диаграммы - введение</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer">
+    <div class="nav-footer-left">Copyright 2022, Best Practices IT</div>   
+      <div class="nav-footer-center">
+        <ul class="footer-items list-unstyled">
+<li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/Azveg">
+      <i class="bi bi-github" role="img">
+</i> 
+    </a>
+  </li>  
+    <li class="nav-item compact">
+    <a class="nav-link" href="https://t.me/best_practices_it">
+      <i class="bi bi-telegram" role="img">
+</i> 
+    </a>
+  </li>  
+</ul>
+</div>
+  </div>
+</footer>
+
+
+<script src="../../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
