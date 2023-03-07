@@ -1,0 +1,751 @@
+---
+title: "Tibble"  
+format: 
+   html:
+     df-print: tibble
+date: 02-09-2023  
+categories: 
+  - R
+  - tibble
+  - tidyverse
+description: "Обзор основного функционала пакета tibble"
+toc-depth: 5 
+smooth-scroll: true
+author: 
+  - "Best Practices IT"
+  - url: https://t.me/best_practices_it
+citation: true
+---
+
+```{r}
+#| echo: true
+#| include: false
+#| warning: false
+
+library(tidyverse)
+library(bench)
+```
+
+## О tibble
+
+Класс tbl_df является подклассом data.frame, созданным для того, чтобы иметь другое поведение по умолчанию. Разговорный термин "tibble" относится к фрейму данных, который имеет класс tbl_df.
+
+У класса tbl_df следующие зависимости:
+
+-   атрибуты класса: c("tbl_df", "tbl", "data.frame")
+
+-   базовый элемент - вектор, где каждый вектор имеет одину и ту же длинну [vctrs::vec_size()](https://vctrs.r-lib.org/reference/vec_size.html)
+
+-   атрибут names, представляющий собой вектор символов той же длины, что и базовый список
+
+-   атрибут row.names, включенный для совместимости с data.frame. К этому атрибуту обращаются только для запроса количества строк, любые имена строк, которые могут там храниться, игнорируются большинством методов tibble.
+
+Поведение объектов класса tbl_df
+
+-   символьные вектора не приводятся принудительно к типу факторов
+-   имена столбцов не изменяются
+-   Переработка происходит только для векторов длиной 1, т.к. расширение векторов длинной более 1 элемента к длинне других векторов фрейма часто приводит к ошибкам [vctrs::vec_recycle()](https://vctrs.r-lib.org/reference/vec_recycle.html)
+-   Имена столбцов не заполняются, хотя отсутствующие имена заполняются автоматически. Пустые и дублирующиеся имена столбцов категорически не рекомендуются, но пользователь должен указать, как их разрешить. Подробнее читайте в [vctrs::vec_as_names()](https://vctrs.r-lib.org/reference/vec_as_names.html)
+-   Имена строк не добавляются и настоятельно не рекомендуются в пользу сохранения этой информации в виде столбца. Читайте об этом в [именах строк](https://tibble.tidyverse.org/reference/rownames.html)
+-   df\[, j\] возвращает tibble; он не извлекает автоматически столбец внутри. значение по умолчанию - df\[, j, drop = FALSE\]. Подробнее читайте в разделе [подмножество](https://tibble.tidyverse.org/reference/subsetting.html)
+
+
+## Создание tibble
+
+Аргументы:
+
+-   `.rows` - количество строк
+-   `.name_repair` - проверка имен столбцов
+    -   `minimal` - без проверки, кроме самого наличия имени столбца
+    -   `unique` - имя должно быть уникальное и не пустое
+    -   `check_unique` - имя должно быть уникальное
+    -   `universal` - делает имена уникальными и синтетическими
+
+### tibble
+
+**Определение**
+
+Метод создающий фрейм данных
+
+**Использование**
+
+`tibble(..., .rows = NULL, .name_repair = c("check_unique", "unique", "universal", "minimal"))`
+
+```{r}
+a <- 1:5
+tibble(a, a * 2, a, .name_repair = "universal")
+```
+
+### tibble_row
+
+**Определение**
+
+Метод создающий фрейм данных содержащий только одну строку. Векторные столбцы должны иметь длинну в один элемент, не векторные приводятся к типу список
+
+**Использование**
+
+`tibble_row(..., .name_repair = c("check_unique", "unique", "universal", "minimal") )`
+
+```{r}
+tibble_row(a = 1, lm = lm(Height ~ Girth + Volume, data = trees))
+```
+
+### tribble
+
+**Определение**
+
+Метод для создания фрейма данных строка за строкой, т.е. задать вручную данные для небольшого набора, где важна удобочитаемость примера.
+
+::: {.column-screen-inset-left layout-ncol="2" layout-valign="top"}
+```{r}
+tribble(
+  ~colA, ~colB,
+  "a",   1,
+  "b",   2,
+  "c",   3
+)
+```
+
+```{r}
+tribble(
+  ~a, ~b, ~c,
+  1, "2000-01-01", "1.5"
+) %>%
+  dplyr::mutate(
+    dplyr::across(a, as.integer),
+    dplyr::across(b, as.Date)
+  )
+```
+:::
+
+### new_tibble
+
+**Определение**
+
+Метод создающий фрейм данных, оптимизированный по производительности, проверки сведены к минимуму. Реализован на основе метода [new_data_frame()](https://vctrs.r-lib.org/reference/new_data_frame.html) из пакета vctrs
+
+**Использование**
+
+`new_tibble(x, ..., nrow = NULL, class = NULL, subclass = NULL)`
+
+```{r}
+new_tibble(list(a = 1:3, b = 4:6), nrow = 3)
+```
+
+## Создание матрицы
+
+### frame_matrix
+
+**Определение**
+
+Метод для создания небольших матриц, например ковариационных, где важна наглядность с расположением данных по строкам
+
+**Использование**
+
+`frame_matrix(...)`
+
+```{r}
+frame_matrix(
+  ~col1, ~col2,
+  1,     3,
+  5,     2
+)
+```
+
+## Отображение tibble
+
+### print
+
+**Определение**
+
+Выводит на печать фрейм данных
+
+**Атрибуты метода:**
+
+-   `x` - объект, который нужно отформатировать или напечатать
+-   `width` - ширина выводимого текста фрейма
+-   `n` - количество отображаемых строк
+-   `max_extra_cols` - количество дополнительных столбцов для печати сокращенной информации, если ширина слишком мала для всего текста
+-   `max_footer_lines` - максимальное количество строк нижнего колонтитула. Если значение равно NULL, используется параметр max_footer_lines.
+
+**Использование**
+
+`print(x, width = NULL, ..., n = NULL, max_extra_cols = NULL, max_footer_lines = NULL)`
+
+::: {.column-screen-inset-left layout-ncol="2" layout-valign="top"}
+```{r}
+print(as_tibble(mtcars), n = 1, width = 50)
+```
+
+```{r}
+print(as_tibble(mtcars), n = 3, width = 50)
+```
+:::
+
+### view
+
+**Определение**
+
+Выводит отображение фрейма данных в отдельное окно. Опять же не так актуально при работе с данными в блокноте.
+
+```{r}
+view(as_tibble(mtcars), title = 'Date frame', n = 10)
+```
+
+## Обработка векторов
+
+### num
+
+**Определение**
+
+Создает числовой вектор, которорый можно отформатировать
+
+**Атрибуты метода:**
+
+-   `x` - числовой вектор
+-   `sigfig` - задает количество значащих цифр, не комбинируется с `digits`
+-   `digits` - количество отображаемых цифр после десятичных знаков, не комбинируется с `sigfig`
+-   `label` - метка столбца вместо отображения типа
+-   `scale` - множитель применяемый перед отображением
+-   `notation` - нотация отображения
+    -   `fit` - десятичная нотация, используется если поле содержит 13 и меньше цифр
+    -   `dec` - десятичная нотация, не зависящая от ширины
+    -   `sci` - научная нотация
+    -   `eng` - инженерная нотация (научная нотация использующая показатели равные трем)
+    -   `si` - система SI (поддерживаются префиксы между 1e-24 и 1e24)
+-   `fixed_exponent` - задает показатель степени для всех чисел в научной, инженерной системе счисления или системе SI
+-   `extra_sigfig` -
+
+**Использование**
+
+```{r}
+df <- tibble(
+  x   = num(9:11 * 100 + 0.5, label = "базовый"),
+  x0  = num(9:11 * 100 + 0.5, digits = 0,       label = "dig 0"),
+  x1  = num(9:11 * 100 + 0.5, digits = -1,      label = "dig -1"),
+  x2  = num(9:11 * 100 + 0.5, digits = -2,      label = "dig -2"),
+  x3  = num(9:11 * 100 + 0.5, digits = 2,       label = "dig 2"),
+  x4  = num(9:11 * 100 + 0.5, sigfig = 3,       label = "sig 3"),
+  x5  = num(9:11 * 100 + 0.5, sigfig = 4,       label = "sig 4"),
+  x6  = num(9:11 * 100 + 0.5, sigfig = 5,       label = "sig 5"),
+  x7  = num(9:11 * 100 + 0.5, scale = 10,       label = "scale 10"),
+  x8  = num(9:11 * 100 + 0.5, scale = 100,      label = "scale 100"),
+  x9  = num(9:11 * 100 + 0.5, scale = 0.1,      label = "scale 0.1"),
+  x10 = num(9:11 * 100 + 0.5, notation = "sci", label = "sci"),
+  x11 = num(9:11 * 100 + 0.5, notation = "eng", label = "eng"),
+  x12 = num(9:11 * 100 + 0.5, notation = "si",  label = "si"),
+  x13 = num(9:11 * 100 + 0.5, notation = "dec", label = "dec"),
+) 
+
+print(df, width = 200)
+```
+
+```{r}
+tibble(
+  scismall = num(10^(-7:6) * 123, notation = "sci", fixed_exponent = -3),
+  scilarge = num(10^(-7:6) * 123, notation = "sci", fixed_exponent = 3),
+  scimax   = num(10^(-7:6) * 123, notation = "sci", fixed_exponent = Inf)
+)
+```
+
+```{r}
+tibble(
+  default = num(100 + 1:3 * 0.001),
+  extra1 = num(100 + 1:3 * 0.001, extra_sigfig = TRUE),
+  extra2 = num(100 + 1:3 * 0.0001, extra_sigfig = TRUE),
+  extra3 = num(10000 + 1:3 * 0.00001, extra_sigfig = TRUE)
+)
+```
+
+### char
+
+**Определение**
+
+Создает вектор символов, который может быть отформатирован с заданной минимальной шириной или без ограничений по ширине, и в котором можно настроить стиль аббревиатуры.
+
+**Атрибуты метода:**
+
+-   `x` - символьный вектор
+-   `min_chars` - Минимальная ширина, выделяемая для этого столбца, по умолчанию равна 15
+-   `shorten` - задает сокращение и его стиль
+    -   `back` - добавляет многоточие в конце (по умолчанию)
+    -   `front` - добавляет многоточие спереди
+    -   `mid` - добавляет многоточие по середине
+    -   `abbreviate` - использование аббревиатуры
+
+**Использование**
+
+`char(x, ..., min_chars = NULL,shorten = c("back", "front", "mid", "abbreviate"))`
+
+```{r}
+lipsum <- unlist(strsplit(stringi::stri_rand_lipsum(1), "(?<=[.]) +", perl = TRUE))
+tibble(
+  x = char(lipsum, min_chars = 15),
+  x0 = char(lipsum, min_chars = 10),
+  x1 = char(lipsum, min_chars = 10, shorten = 'back'),
+  x2 = char(lipsum, min_chars = 10, shorten = 'front'),
+  x3 = char(lipsum, min_chars = 10, shorten = 'mid'),
+  x4 = char(lipsum, min_chars = 10, shorten = 'abbreviate')
+)
+
+```
+
+### lst
+
+**Определение**
+
+Создает список с последовательным определением компонентов и автоматической генерацией отсутствующих имен. При определении компонента можно ссылаться на компоненты, созданные ранее в вызове
+
+**Использование**
+
+`lst(...)`
+
+```{r}
+tibble(
+  lst(1:3, z = letters[4:6], runif(3))
+)
+
+```
+
+### enframe
+
+**Определение**
+
+преобразует именованные атомарные векторы или списки в фреймы данных с одним или двумя столбцами. Для списка результатом будет вложенный tibble со столбцом типа list. Для безымянных векторов в качестве столбца name используется естественная последовательность.
+
+**Атрибуты метода:**
+
+-   `x` - вектор
+-   `name`, `value` - имена столбцов, в которых хранятся имена и значения
+
+**Использование**
+
+`enframe(x, name = "name", value = "value")`
+
+::: {.column-screen-inset-left layout-ncol="3" layout-valign="top"}
+```{r}
+enframe(1:3)
+```
+
+```{r}
+enframe(c(a = 5, b = 7))
+```
+
+```{r}
+enframe(list(one = 1, two = 2:3, three = 4:6))
+```
+:::
+
+### deframe
+
+**Определение**
+
+преобразует фреймы данных из двух столбцов в именованный вектор или список, используя первый столбец в качестве имени, а второй - в качестве значения. Если входные данные содержат только один столбец, возвращается безымянный вектор.
+
+**Атрибуты метода:**
+
+-   `x` - фрейм данных с одним или двумя столбцами
+
+**Использование**
+
+`deframe(x)`
+
+::: {.column-screen-inset-left layout-ncol="3" layout-valign="top"}
+```{r}
+deframe(enframe(3:1))
+```
+
+```{r}
+deframe(tibble(a = 1:3))
+```
+
+```{r}
+deframe(tibble(a = as.list(1:3)))
+```
+:::
+
+## Проверки
+
+### is_tibble
+
+**Определение**
+
+Проверяет относится ли объект к tibbles или его подклассу
+
+**Использование**
+
+`is_tibble(x)`
+
+::: {.column-screen-inset-left layout-ncol="2" layout-valign="top"}
+
+```{r}
+x <- tibble(a = 1:3)
+is_tibble(x)
+```
+
+```{r}
+y <- data.frame(a = 1:3)
+is_tibble(y)
+```
+:::
+
+### validate_tibble
+
+**Определение**
+
+Выполняет проверки требований к Tibble, таких как:
+
+-   длину столбцов и соответствие vectors::vec_size() данным
+
+-   столбцы являютс векторами\\фреймами или матрицами
+
+-   наличие "минимальных" имен
+
+**Использование**
+
+`validate_tibble(x)`
+
+```{r}
+try(validate_tibble(new_tibble(trees, nrow = 3)))
+```
+
+## Манипуляция данными
+
+### add_row
+
+**Определение**
+
+Добавляет новую строку во фрейм данных
+
+**Атрибуты метода:**
+
+`.before, .after` - индекс строки куда нужно добавить новую строку, по умолчанию добавляет в конец
+
+**Использование**
+
+`add_row(.data, ..., .before = NULL, .after = NULL)` 
+
+
+::: {.column-screen-inset-left layout-ncol="5" layout-valign="top"}
+
+```{r}
+df <- tibble(x = 1:3, y = 3:1)
+df
+```
+
+```{r}
+df %>% 
+  add_row(x = 4, y = 0)
+```
+
+
+```{r}
+df %>% 
+  add_row(x = 4, y = 0, .before = 2)
+```
+
+```{r}
+df %>% 
+  add_row(x = 4:5, y = 0:-1)
+```
+```{r}
+df %>% 
+  add_row(tibble_row(x = 4, y = 0))
+```
+
+:::
+
+
+### add_column
+
+**Определение**
+
+Добавляет один или несколько столбцов во фрейм данных
+
+**Атрибуты метода:**
+
+- `.before, .after` - индекс или имя столбца до\после которого нужно добавлять новый столбец
+- `.name_repair` - проверка имен столбцов, типы проверок аналогичны используемым при создании tibble
+
+**Использование**
+
+`add_column(.data,...,.before = NULL,.after = NULL,.name_repair = c("check_unique", "unique", "universal", "minimal"))` 
+
+
+::: {.column-screen-inset-left layout-ncol="3" layout-valign="top"}
+
+```{r}
+df <- tibble(x = 1:3, y = 3:1)
+df
+```
+
+```{r}
+df %>% 
+  add_column(z = -1:1, w = 0)
+```
+
+```{r}
+df %>% 
+  add_column(z = -1:1, .before = "y")
+```
+
+:::
+
+## Приведение типов
+
+
+### as_tibble
+
+**Определение**
+
+Приводит фрейм данных или матрицу к объекту tibble с классом tbl_df
+
+**Использование**
+
+```{{r}}
+as_tibble(
+  x,
+  ...,
+  .rows = NULL,
+  .name_repair = c("check_unique", "unique", "universal", "minimal"),
+  rownames = pkgconfig::get_config("tibble::rownames", NULL)
+)
+```
+
+```{r}
+m <- matrix(rnorm(50), ncol = 5)
+colnames(m) <- c("a", "b", "c", "d", "e")
+df <- as_tibble(m)
+df
+```
+
+
+### as_tibble_row
+
+**Определение**
+
+Преобразует вектор в tibble с одной строкой. Если ввод представляет собой список, все элементы должны иметь один размер
+
+**Использование**`
+
+`as_tibble_row(x, .name_repair = c("check_unique", "unique", "universal", "minimal"))`
+
+::: {.column-screen-inset-left layout-ncol="3" layout-valign="top"}
+
+```{r}
+as_tibble_row(c(a = 1, b = 2))
+```
+
+```{r}
+as_tibble_row(list(c = "three", d = list(4:5)))
+```
+
+```{r}
+as_tibble_row(1:3, .name_repair = "unique")
+```
+
+:::
+
+### as_tibble_col
+
+**Определение**
+
+Преобразует вектор в tibble с одним столбцом
+
+**Использование**
+
+`as_tibble_col(x, column_name = "value")`
+
+::: {.column-screen-inset-left layout-ncol="2" layout-valign="top"}
+
+```{r}
+as_tibble_col(1:3)
+```
+
+```{r}
+as_tibble_col(
+  list(c = "three", d = list(4:5)),
+  column_name = "data"
+)
+```
+
+:::
+
+## Обработка имен строк
+
+Рассмотрим обработку имен строк на примере фрейма данных **mtcars**
+
+```{r}
+mtcars
+```
+
+
+### has_rownames
+
+**Определение**
+
+Проверяет есть ли во фрейме имена строк
+
+**Использование**
+
+`has_rownames(.data)`
+
+::: {.column-screen-inset-left layout-ncol="2" layout-valign="top"}
+
+```{r}
+has_rownames(mtcars)
+```
+```{r}
+has_rownames(trees)
+```
+:::
+
+
+### remove_rownames
+
+**Определение**
+
+Удаляет имена строк из фрейма данных
+
+**Использование**
+
+`remove_rownames(.data)`
+
+```{r}
+remove_rownames(mtcars) %>% 
+  has_rownames()
+```
+
+
+
+### rownames_to_column
+
+**Определение**
+
+Преобразует имена строк в столбец
+
+**Использование**
+
+`rownames_to_column(.data, var = "rowname")`
+
+::: {.column-screen-inset-left layout-ncol="2" layout-valign="top"}
+
+```{r}
+mtcars
+```
+
+
+```{r}
+mtcars_tbl <- rownames_to_column(mtcars, var = "car") %>% 
+  as_tibble()
+
+mtcars_tbl
+```
+:::
+
+
+
+### column_to_rownames
+
+**Определение**
+
+Преобразует столбец в имена строк
+
+**Использование**
+
+`column_to_rownames(.data, var = "rowname")`
+
+```{r}
+column_to_rownames(mtcars_tbl, var = "car") %>% head()
+```
+
+
+### rowid_to_column
+
+**Определение**
+
+Добавляет столбец с идентификатором и удаляет все имена строк
+
+**Использование**
+
+`rowid_to_column(.data, var = "rowid")`
+
+```{r}
+rowid_to_column(trees) %>% 
+  head()
+```
+
+## Производительность
+
+Выполним простой тест производительности объекта tibble и data.frame
+
+
+
+```{r}
+# пакет для замера производительности
+#| column-page-inset-left
+
+l <- replicate(26, sample(100), simplify = FALSE)
+names(l) <- letters
+
+timing <- bench::mark(
+  as_tibble(l),
+  as.data.frame(l),
+  tibble(l),
+  new_tibble(l),
+  check = FALSE
+)
+
+print(timing )
+```
+
+Расшифровка результатов:
+
+- `expression` - анализируемое выражение
+- `min` - минимальное время выполнения
+- `median` - медиана времени выполнения
+- `itr/sec` - расчетное количество выполнений в секунду
+- `mem_alloc` - общий объем памяти, выделенный R при выполнении выражения
+- `gc/sec` - количество сборок мусора в секунду
+- `n_itr` - общее количество итераций после фильтрации сборок мусора
+- `n_gc` - общее количество сборок мусора, выполненных за все итерации
+- `total_time` - общее время выполнения тестов
+- `result` - список объектов, возвращенных оцениваемым выражением
+- `memory` - список с результатами Rprofmem()
+- `time` - список векторов Bench_time для каждого оцениваемого выражения
+- `gc` - список с таблицами, содержащими уровень сборки мусора (0-2, столбцы) для каждой итерации (строки).
+
+
+
+## Поддерживаемые типы данных
+
+| Class                       | Data type            | Example                         | Column header |
+|------------------|------------------|--------------------|------------------|
+| Atomic                      | logical              | TRUE                            | lgl           |
+| \-                          | integer              | 1L                              | int           |
+| \-                          | double               | 1.5                             | dbl           |
+| \-                          | character            | "A"                             | chr           |
+| \-                          | complex              | 0+1i                            | cpl           |
+| \-                          | raw                  | as.raw(1)                       | raw           |
+| \-                          | list                 | list(1)                         | list          |
+| \-                          | named list           | list(a = 1)                     | named list    |
+| Built-in objects            | factor               | factor("A")                     | fct           |
+| \-                          | ordered              | ordered("a")                    | ord           |
+| \-                          | Date                 | Sys.Date()                      | date          |
+| \-                          | POSIXt               | Sys.time()                      | dttm          |
+| \-                          | difftime             | vctrs::new_duration(1)          | drtn          |
+| Objects from other packages | hms                  | hms::hms(1)                     | time          |
+| \-                          | integer64            | bit64::as.integer64(1e+10)      | int64         |
+| \-                          | blob                 | blob::blob(raw(1))              | blob          |
+| Data frames                 | data.frame           | data.frame(a = 1)               | df\[,1\]      |
+| \-                          | tbl_df               | tibble(a = 1)                   | tibble\[,1\]  |
+| Unchanged                   | AsIs                 | I(1L)                           | I             |
+| vctrs types                 | unspecified          | vctrs::unspecified(1)           | ???           |
+| \-                          | vctrs_list_of        | vctrs::list_of(c(1L))           | list          |
+| \-                          | vctrs_vctr           | vctrs::new_vctr(1L)             | vctrs_vc      |
+| \-                          | vctrs_partial_factor | vctrs::partial_factor(letters)  | prtl_fctr     |
+| \-                          | vctrs_partial_frame  | vctrs::partial_frame(a = 1)     | prtl          |
+| Language objects            | function             | function() NULL                 | fn            |
+| \-                          | symbol               | quote(a)                        | sym           |
+| \-                          | expression           | parse(text = "a \<- 1\nb\<- 2") | expression    |
+| \-                          | quosures             | rlang::quos(a = 1)              | quos          |

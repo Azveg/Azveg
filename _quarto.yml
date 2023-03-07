@@ -50,7 +50,7 @@ website:
     
   # настройка нижнего колонтитула         
   page-footer:
-    left: "Copyright 2022, Best Practices IT" 
+    left: "Copyright 2022-2023, Best Practices IT" 
     center: 
       - icon: github
         href: https://github.com/Azveg

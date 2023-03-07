@@ -1,5 +1,5 @@
 ---
-title: "Dplyr cheat sheet"  
+title: "Dplyr"  
 date: 11-16-2022  
 categories: 
   - R
