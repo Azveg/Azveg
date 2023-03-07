@@ -32,7 +32,10 @@ website:
       contents:
         - r_language/r_language_page.qmd
         - section: "Tidyverse"
-          contents: r_language/Tidyverse/*_tidyverse.qmd
+          contents: 
+            - r_language/Tidyverse/tibble_tidyverse.qmd
+            - r_language/Tidyverse/dplyr_tidyverse.qmd
+            
         - text: "---"
         - section: "Tutorial"
           contents: 
