@@ -769,6 +769,111 @@ starwars %>%
 ```
 
 
+## Условные функции и обработка Null
+
+
+### if_else
+
+if_else векторизованная условная функция с возможность задать правило обработки Null значений
+
+
+`if_else(condition, true, false, missing = NULL, ..., ptype = NULL, size = NULL)`
+
+Аргументы:
+
+- condition - логическое условие
+- true - значение если условие True
+- false - значение если условие False
+- missing - значение если элемент равен Null
+- ptype - желаемый тип вывода
+- size - желаемый размер\\длинна вывода
+
+
+Рассмотрим пример когда относительно роста нужно распределить персонажей по ростовым категориям, а где значение роста равно Null присвоем другое значение
+
+```{r}
+starwars %>%
+  slice(80:87) %>% 
+  mutate(category = if_else(height < 100, "short", "tall", missing = "Неопределенный"), .keep = "used")
+```
+
+
+### case_when
+
+Функция позволяет векторизовать несколько операторов if_else(). Каждый случай оценивается последовательно, и первое совпадение для каждого элемента определяет соответствующее значение в выходном векторе. Если ни один из вариантов не совпадает, используется значение .default.
+
+`case_when(..., .default = NULL, .ptype = NULL, .size = NULL)`
+
+В примере ниже показано как через одну функцию задать несколько разных условий по разным полям набора данных
+
+```{r}
+starwars %>% 
+  select(name, species, height, mass) %>% 
+  mutate(
+    type = case_when(
+      height > 200 | mass > 200 ~ "large",
+      species == "Droid" ~ "robot",
+      .default = "other"
+    )
+  )
+```
+
+
+### case_match
+
+Функция позволяет векторизовать несколько операторов switch(). Каждый случай оценивается последовательно, и первое совпадение для каждого элемента определяет соответствующее значение в выходном векторе. Если ни один из вариантов не совпадает, используется значение .default.
+
+`case_match(.x, ..., .default = NULL, .ptype = NULL)`
+
+В примере первым применением функции case_match обрабатываем NULL, во втором правим название типа персонажа
+
+```{r}
+starwars %>%
+  mutate(
+    hair_color = case_match(hair_color, NA ~ "unknown", .default = hair_color),
+    species = case_match(
+      species,
+      "Human" ~ "Humanoid",
+      "Droid" ~ "Robot",
+      c("Wookiee", "Ewok") ~ "Hairy",
+      .default = species
+    ),
+    .keep = "used"
+  )
+```
+
+
+### coaleasce
+
+Функция находит первое не пропущенное значение и выводит его
+
+`coalesce(..., .ptype = NULL, .size = NULL)`
+
+В примере в новую колонку пишем первое не равное Null значение, сначала проверяем поле mass, если там Null проверяем поле height, если и в нем Null, то пишем нуль.
+
+```{r}
+starwars %>%
+  slice(70:77) %>% select(name, mass, height) %>% 
+  mutate(new_col = coalesce(mass, height, 0))
+```
+
+
+### na_if
+
+Функция заменяет заданное значение на Null
+
+`na_if(x, y)`
+
+В примере заменяем значение 188 на Null
+
+```{r}
+starwars %>%
+  slice(10:17) %>% 
+  select(name, height) %>% 
+  mutate(new_height = na_if(height, 188) )
+```
+
+
 ## Обработка групп
 
 ### group_by
@@ -1575,3 +1680,5 @@ setdiff(df2, df1)
 ```
 
 :::
+
+
